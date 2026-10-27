@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#183f39">
+  <title>Spoolancer</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+  <noscript>This device interface needs JavaScript. Enable it to read live measurements and manage spools.</noscript>
+  <div id="demo-banner" class="demo-banner" hidden><strong>Demo</strong> Simulated device, weight and NFC. No hardware or Spoolman is connected. <label>Try a state <select id="demo-scenario"><option value="ready">Ready</option><option value="moving">Moving spool</option><option value="uncalibrated">Needs calibration</option><option value="unknown">Unknown empty weight</option><option value="removed">Tag removed</option><option value="readonly">Original printer tag</option><option value="offline">Device disconnected</option><option value="sync-error">Spoolman unavailable</option><option value="headless-setup">Screenless first setup</option></select></label><button id="demo-arm" class="button small secondary" type="button" hidden>Simulate BOOT press</button></div>
+  <aside id="setup-banner" class="setup-banner" hidden aria-label="Temporary setup network"><strong>Temporary setup network has no password; use it in a trusted location</strong><p>Wi-Fi credentials are sent over local HTTP. <span id="setup-time"></span></p></aside>
+  <header class="app-header">
+    <a class="brand" href="#scale" aria-label="Spoolancer scale"><span class="brand-mark" aria-hidden="true"><img src="./favicon.svg" width="43" height="43" alt=""></span><span>Spoolancer<small id="device-name">Spool scale</small></span></a>
+    <div class="header-actions"><span id="connection" class="connection"><i aria-hidden="true"></i><span>Connecting</span></span><label class="theme-control"><span class="sr-only">Appearance</span><select id="theme-select" aria-label="Appearance"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label><button id="pair-button" class="button small secondary">Pair device</button></div>
+  </header>
+  <nav class="tabs" aria-label="Main navigation"><a href="#scale" data-view="scale" aria-current="page">Scale</a><a href="#inventory" data-view="inventory">Inventory <span id="spool-count">0</span></a><a href="#settings" data-view="settings">Settings</a></nav>
+  <main>
+    <div id="notice" class="notice" role="status" hidden><span></span><button aria-label="Dismiss message" type="button">×</button></div>
+    <section id="view-scale" class="view" aria-labelledby="scale-title">
+      <div class="page-heading"><div><p class="eyebrow">Measure & identify</p><h1 id="scale-title">Weigh a spool.</h1><p>Place it in the cradle. Scan its tag or choose a saved spool.</p></div><button class="button secondary" id="refresh-button">Refresh</button></div>
+      <div class="scale-layout">
+        <article class="weight-card" aria-labelledby="weight-label">
+          <div class="card-top"><span id="weight-label" class="eyebrow">Gross spool weight</span><span id="scale-state" class="pill">Connecting</span></div>
+          <div class="weight-number"><span id="weight-value">—</span><span class="unit">g</span></div>
+          <p id="weight-message" class="weight-message">Waiting for a live measurement.</p>
+          <div class="meter" id="weight-meter" hidden><span></span></div>
+          <div class="weight-details"><div><span>Gross weight</span><strong id="gross-value">—</strong></div><div><span>Empty spool</span><strong id="tare-value">Not set</strong></div><div><span>Initial filament</span><strong id="initial-value">Not set</strong></div></div>
+          <div class="card-footer"><span id="reading-time">No reading received</span><div class="button-row"><button id="save-measurement" class="button inverse small" disabled>Save measurement</button><button id="tare-button" class="button inverse small">Zero empty scale</button></div></div>
+        </article>
+        <article class="card active-card" aria-labelledby="active-title">
+          <div class="card-top"><h2 id="active-title">On the scale</h2><button id="edit-active" class="text-button" disabled>Edit</button></div>
+          <div class="spool-identity"><div class="spool-drawing" id="active-swatch" aria-hidden="true"><i></i></div><div><span class="eyebrow" id="active-material">No spool selected</span><h3 id="active-name">Choose a spool</h3><p id="active-brand">Save a profile to track what is left.</p></div></div>
+          <label for="active-select">Saved spool</label><select id="active-select"><option value="">Choose a spool…</option></select>
+          <button id="select-spool" class="button secondary full">Use this spool</button>
+          <button id="new-spool-scale" class="text-button add-link">+ Add a spool</button>
+        </article>
+        <article class="card" aria-labelledby="nfc-title">
+          <div class="card-top"><div><p class="eyebrow">NFC reader</p><h2 id="nfc-title">The tag in the cradle</h2></div><span id="tag-state" class="pill neutral">No tag</span></div>
+          <dl class="details-list"><div><dt>Tag type</dt><dd id="tag-type">—</dd></div><div><dt>UID</dt><dd id="tag-uid" class="mono">—</dd></div></dl>
+          <p id="tag-message" class="helper">Position the tag over the reader. Only writable inventory tags can be edited.</p>
+          <div class="button-row"><button id="read-tag" class="button secondary">Read tag</button><button id="write-tag" class="button" disabled>Write inventory tag</button><button id="link-tag" class="button secondary" disabled>Link tag to spool</button></div>
+          <p class="fine-print">Original Bambu and Snapmaker tags remain read-only. Reading their proprietary data depends on firmware support; a detected UID alone does not identify material.</p>
+        </article>
+        <article class="card" aria-labelledby="sync-title">
+          <div class="card-top"><div><p class="eyebrow">Optional connection</p><h2 id="sync-title">Spoolman</h2></div><span id="sync-state" class="pill neutral">Not configured</span></div>
+          <p id="sync-message" class="helper">Connect your server in Settings. Local weighing works without it.</p>
+          <dl class="details-list"><div><dt>Linked spool</dt><dd id="linked-spool">Not linked</dd></div><div><dt>Measurement</dt><dd id="sync-weight">No valid measurement</dd></div></dl>
+          <button id="sync-button" class="button secondary full" disabled>Send measurement</button>
+          <p class="fine-print">Unlinked profiles can create a Spoolman spool after confirmation. Failed requests stay visible; retry manually after checking the server.</p>
+        </article>
+      </div>
+    </section>
+    <section id="view-inventory" class="view" aria-labelledby="inventory-title" hidden>
+      <div class="page-heading"><div><p class="eyebrow">Your collection</p><h1 id="inventory-title">Spool inventory</h1><p>Keep each spool's identity and empty weight together.</p></div><button id="new-spool" class="button">+ Add spool</button></div>
+      <div class="inventory-toolbar"><label class="search-field">Find a spool<input id="inventory-search" type="search" placeholder="Name, brand or material" autocomplete="off"></label><span id="inventory-total" class="helper">Loading inventory</span></div>
+      <div id="inventory-list" class="inventory-grid"></div>
+      <div id="inventory-empty" class="empty-state" hidden><span class="brand-mark" aria-hidden="true"><img src="./favicon.svg" width="43" height="43" alt=""></span><h2>No spools yet</h2><p>Add a spool and its known empty weight to calculate remaining filament.</p><button id="new-spool-empty" class="button">Add your first spool</button></div>
+    </section>
+    <section id="view-settings" class="view" aria-labelledby="settings-title" hidden>
+      <div class="page-heading"><div><p class="eyebrow">Device setup</p><h1 id="settings-title">Settings</h1><p>Pair with your device to make changes.</p></div></div>
+      <div class="settings-layout">
+        <form id="config-form" class="card"><h2>Device & connections</h2><p id="wifi-help" class="helper">A Wi-Fi change can disconnect this page. Reopen it at the device’s new address after reconnecting.</p>
+          <label>Device name<input name="device_name" maxlength="48" required autocomplete="off"></label>
+          <div class="section-rule"></div><h3>Wi-Fi</h3><label>Network name<input name="wifi_ssid" maxlength="32" autocomplete="off"></label><label>New Wi-Fi password<input name="wifi_password" type="password" maxlength="63" autocomplete="new-password" placeholder="Leave blank to keep the saved password"></label><p id="password-status" class="fine-print">Saved passwords are never returned to this page.</p><label class="checkbox"><input name="clear_wifi_password" type="checkbox"> Clear the saved password for an open network</label>
+          <div class="section-rule"></div><h3>Spoolman</h3><label>Server URL<input name="spoolman_url" type="url" placeholder="http://192.168.1.50:7912" maxlength="200" autocomplete="off"></label><p class="fine-print">Use http:// with the server's numeric IPv4 address. Port is optional; hostnames and HTTPS are not supported. Leave blank to disable synchronization.</p>
+          <div class="button-row"><button class="button" type="submit">Save settings</button><button class="button secondary" type="button" id="test-spoolman">Test saved server</button></div><p id="config-result" class="inline-result" role="status"></p>
+        </form>
+        <div class="settings-side"><article class="card"><h2>Scale calibration</h2><p class="helper">First remove the spool and zero the empty cradle. Then place a known reference mass on it and wait for the reading to settle.</p><button class="button secondary" id="tare-settings">Zero empty scale</button><form id="calibration-form"><label>Reference mass <span class="label-unit">g</span><input name="reference_g" type="number" min="100" max="2000" step="0.1" inputmode="decimal" required placeholder="1000"></label><button class="button" type="submit">Calibrate with this mass</button></form><p class="fine-print">A nominal 1 kg filament spool is not a known calibration mass. Calibration needs the actual scale and cannot be verified by this interface alone.</p></article>
+          <article class="card"><h2>Connection</h2><dl class="details-list"><div><dt>Device address</dt><dd id="device-ip">—</dd></div><div><dt>Wi-Fi</dt><dd id="wifi-state">Unknown</dd></div><div><dt>Browser access</dt><dd id="session-state">View only</dd></div></dl><p id="pairing-help" class="fine-print">Pair using the PIN shown by your device or Serial output. The session stays in this tab’s memory and is cleared on reload.</p></article></div>
+      </div>
+    </section>
+    <footer class="app-footer"><span>Spoolancer <span class="footer-dot">·</span> Local spool scale</span><span id="footer-mode">Live device interface</span></footer>
+  </main>
+  <dialog id="pair-dialog" aria-labelledby="pair-title"><form id="pair-form"><div class="dialog-heading"><h2 id="pair-title">Pair with your scale</h2><button class="close-button" type="button" data-close aria-label="Close pairing">×</button></div><p id="pair-description" class="helper">Enter the PIN shown on the device or in its Serial output. Pairing enables changes in this browser tab.</p><p id="enrollment-warning" class="setup-warning" hidden>Temporary setup network has no password; use it in a trusted location. Wi-Fi credentials are sent over local HTTP.</p><p id="enrollment-status" class="helper" role="status" hidden></p><label id="pin-field"><span id="pin-label">Device PIN</span><input name="pin" type="password" inputmode="numeric" autocomplete="off" minlength="8" maxlength="8" pattern="[0-9]{8}" required autofocus></label><p id="pair-error" class="form-error" role="alert"></p><div class="dialog-actions"><button type="button" class="button secondary" data-close>Cancel</button><button id="pair-submit" class="button" type="submit">Pair device</button></div></form></dialog>
+  <dialog id="spool-dialog" class="wide-dialog" aria-labelledby="spool-dialog-title"><form id="spool-form"><div class="dialog-heading"><h2 id="spool-dialog-title">Add a spool</h2><button class="close-button" type="button" data-close aria-label="Close spool editor">×</button></div><input name="id" type="hidden"><label>Spool name<input name="name" maxlength="64" required autocomplete="off" placeholder="Forest green PLA"></label><div class="form-grid"><label>Brand<input name="brand" maxlength="60" required autocomplete="off" placeholder="Manufacturer or Generic"></label><div class="material-field"><input name="material" type="hidden"><label for="material-select">Material<select id="material-select" required><option value="">Choose a material…</option><option value="custom">Custom material…</option></select></label><label id="material-custom-label" for="material-custom" hidden>Custom material<input id="material-custom" maxlength="30" autocomplete="off" placeholder="For example, PA-CF" disabled></label></div><fieldset class="color-field"><legend>Filament color</legend><div id="color-swatches" class="color-swatches" role="group" aria-label="Preset filament colors"></div><div class="color-custom-row"><label for="spool-color">Custom picker<input id="spool-color" name="color" type="color" value="#386c56" aria-label="Custom filament color picker"></label><label for="color-hex">Hex color<input id="color-hex" type="text" value="#386C56" maxlength="7" pattern="#?[0-9A-Fa-f]{3}([0-9A-Fa-f]{3})?" required spellcheck="false" autocomplete="off" aria-describedby="color-description" placeholder="#386C56"></label></div><p id="color-description" class="fine-print" role="status">Selected color #386C56</p></fieldset><label>Empty spool weight <span class="label-unit">g</span><input name="empty_weight_g" type="number" min="0" max="2000" step="0.1" inputmode="decimal" placeholder="Unknown"></label><label>Initial filament weight <span class="label-unit">g</span><input name="initial_weight_g" type="number" min="1" max="5000" step="0.1" inputmode="decimal" required value="1000"></label><label>Spoolman spool ID <span class="label-unit">optional</span><input name="spoolman_id" type="number" min="1" max="2147483647" step="1" inputmode="numeric" placeholder="Not linked"></label></div><p class="fine-print">Use a measured empty-spool weight or a confirmed profile. Leave it blank if unknown. Initial filament weight excludes the spool.</p><details class="advanced-fields"><summary>Filament properties for Spoolman</summary><div class="form-grid"><label>Density <span class="label-unit">g/cm³</span><input name="density_g_cm3" type="number" min="0.1" max="5" step="0.01" value="1.24" required inputmode="decimal"></label><label>Diameter <span class="label-unit">mm</span><input name="diameter_mm" type="number" min="0.5" max="5" step="0.01" value="1.75" required inputmode="decimal"></label></div><p class="fine-print">Defaults are 1.24 g/cm³ and 1.75 mm. Verify them for your filament before creating a Spoolman entry.</p></details><p id="spool-error" class="form-error" role="alert"></p><div class="dialog-actions"><button class="button secondary" type="button" data-close>Cancel</button><button class="button" type="submit">Save spool</button></div></form></dialog>
+  <dialog id="action-dialog" aria-labelledby="action-title"><div class="dialog-heading"><h2 id="action-title">Confirm action</h2><button class="close-button" type="button" data-close aria-label="Cancel action">×</button></div><p id="action-description" class="helper"></p><dl id="action-details" class="details-list"></dl><p id="action-error" class="form-error" role="alert"></p><div class="dialog-actions"><button class="button secondary" type="button" data-close>Cancel</button><button id="action-confirm" class="button" type="button">Confirm</button></div></dialog>
+</body>
+</html>

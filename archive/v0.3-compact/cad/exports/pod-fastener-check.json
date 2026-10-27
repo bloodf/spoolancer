@@ -1,0 +1,50 @@
+{
+  "scope": "Two M3x8 reader height-adjustment fasteners with 0.5mm washers, 5.5mm AF x 2.4mm nuts, 5.5mm diameter x 3mm heads. Nominal envelopes; real fit unverified. PCB mounting and printed pilot threads excluded.",
+  "cases": [
+    {
+      "width_mm": 50,
+      "pod_center_mm": 90,
+      "positive_volume_intersections": {}
+    },
+    {
+      "width_mm": 50,
+      "pod_center_mm": 155,
+      "positive_volume_intersections": {}
+    },
+    {
+      "width_mm": 50,
+      "pod_center_mm": 175,
+      "positive_volume_intersections": {}
+    },
+    {
+      "width_mm": 80,
+      "pod_center_mm": 90,
+      "positive_volume_intersections": {}
+    },
+    {
+      "width_mm": 80,
+      "pod_center_mm": 155,
+      "positive_volume_intersections": {}
+    },
+    {
+      "width_mm": 80,
+      "pod_center_mm": 175,
+      "positive_volume_intersections": {}
+    },
+    {
+      "width_mm": 100,
+      "pod_center_mm": 90,
+      "positive_volume_intersections": {}
+    },
+    {
+      "width_mm": 100,
+      "pod_center_mm": 155,
+      "positive_volume_intersections": {}
+    },
+    {
+      "width_mm": 100,
+      "pod_center_mm": 175,
+      "positive_volume_intersections": {}
+    }
+  ]
+}

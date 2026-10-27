@@ -1,0 +1,22 @@
+{
+  "revision": "v0.4-touch",
+  "slicer": "OrcaSlicer 2.4.1",
+  "reference_printer": "Bambu Lab P1S 0.4 nozzle",
+  "material": "Generic PETG",
+  "layer_height_mm": 0.2,
+  "walls": 4,
+  "top_bottom_layers": 5,
+  "infill": "20% gyroid",
+  "supports": false,
+  "brim": false,
+  "physical_validation": false,
+  "parts": {
+    "touch_stand": {
+      "grams": 18.03,
+      "metres": 5.90161,
+      "quantity": 1,
+      "stl_sha256": "89165aa17202963b8afffc4a6fd4d9ea52a308b31d21f5077e93aa3278be681d"
+    }
+  },
+  "total_grams": 18.03
+}

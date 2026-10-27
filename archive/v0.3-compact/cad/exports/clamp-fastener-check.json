@@ -1,0 +1,90 @@
+{
+  "scope": "Nominal M3 screw shafts, 5.5mm diameter x 3mm heads, 7mm diameter x0.5mm washers, 5.5mm AF x2.4mm nuts; guide width extremes and all rail/cover joints. Roof engagement is a CAD condition, not a strength test.",
+  "retaining_roof_mm": {
+    "guide": 3,
+    "rail": 3,
+    "cover": 3
+  },
+  "checks": [
+    {
+      "joint": "guide width 50 at -1,-15",
+      "positive_volume_intersections": {}
+    },
+    {
+      "joint": "guide width 50 at -1,15",
+      "positive_volume_intersections": {}
+    },
+    {
+      "joint": "guide width 50 at 1,-15",
+      "positive_volume_intersections": {}
+    },
+    {
+      "joint": "guide width 50 at 1,15",
+      "positive_volume_intersections": {}
+    },
+    {
+      "joint": "guide width 80 at -1,-15",
+      "positive_volume_intersections": {}
+    },
+    {
+      "joint": "guide width 80 at -1,15",
+      "positive_volume_intersections": {}
+    },
+    {
+      "joint": "guide width 80 at 1,-15",
+      "positive_volume_intersections": {}
+    },
+    {
+      "joint": "guide width 80 at 1,15",
+      "positive_volume_intersections": {}
+    },
+    {
+      "joint": "guide width 100 at -1,-15",
+      "positive_volume_intersections": {}
+    },
+    {
+      "joint": "guide width 100 at -1,15",
+      "positive_volume_intersections": {}
+    },
+    {
+      "joint": "guide width 100 at 1,-15",
+      "positive_volume_intersections": {}
+    },
+    {
+      "joint": "guide width 100 at 1,15",
+      "positive_volume_intersections": {}
+    },
+    {
+      "joint": "rail -64,-60",
+      "positive_volume_intersections": {}
+    },
+    {
+      "joint": "rail -64,60",
+      "positive_volume_intersections": {}
+    },
+    {
+      "joint": "rail 64,-60",
+      "positive_volume_intersections": {}
+    },
+    {
+      "joint": "rail 64,60",
+      "positive_volume_intersections": {}
+    },
+    {
+      "joint": "cover -78,-106",
+      "positive_volume_intersections": {}
+    },
+    {
+      "joint": "cover 78,-106",
+      "positive_volume_intersections": {}
+    },
+    {
+      "joint": "cover -78,66",
+      "positive_volume_intersections": {}
+    },
+    {
+      "joint": "cover 78,66",
+      "positive_volume_intersections": {}
+    }
+  ]
+}

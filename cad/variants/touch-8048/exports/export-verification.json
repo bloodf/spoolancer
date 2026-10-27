@@ -1,0 +1,415 @@
+{
+  "revision": "v0.4-touch-8048-moving-nfc-fit-prototype",
+  "physical_validation": false,
+  "stl_files": {
+    "base": {
+      "reopened_closed_mesh": true,
+      "self_intersections": false,
+      "print_bounds_mm": [
+        170.0,
+        160.0,
+        35.0
+      ],
+      "bed_z_mm": 0.0
+    },
+    "carrier": {
+      "reopened_closed_mesh": true,
+      "self_intersections": false,
+      "print_bounds_mm": [
+        140.0,
+        130.0,
+        25.3
+      ],
+      "bed_z_mm": 0.0
+    },
+    "rim_rail": {
+      "reopened_closed_mesh": true,
+      "self_intersections": false,
+      "print_bounds_mm": [
+        140.0,
+        27.53,
+        31.0
+      ],
+      "bed_z_mm": 0.0
+    },
+    "side_guide": {
+      "reopened_closed_mesh": true,
+      "self_intersections": false,
+      "print_bounds_mm": [
+        52.0,
+        130.0,
+        16.0
+      ],
+      "bed_z_mm": 0.0
+    },
+    "nfc_guide": {
+      "reopened_closed_mesh": true,
+      "self_intersections": false,
+      "print_bounds_mm": [
+        134.0,
+        130.0,
+        16.0
+      ],
+      "bed_z_mm": 0.0
+    },
+    "nfc_pod": {
+      "reopened_closed_mesh": true,
+      "self_intersections": false,
+      "print_bounds_mm": [
+        46.8,
+        71.0,
+        13.6
+      ],
+      "bed_z_mm": 0.0
+    },
+    "nfc_pod_cover": {
+      "reopened_closed_mesh": true,
+      "self_intersections": false,
+      "print_bounds_mm": [
+        46.8,
+        49.1,
+        1.6
+      ],
+      "bed_z_mm": 0.0
+    },
+    "top_cover": {
+      "reopened_closed_mesh": true,
+      "self_intersections": false,
+      "print_bounds_mm": [
+        170.0,
+        160.0,
+        3.0
+      ],
+      "bed_z_mm": 0.0
+    },
+    "touch_bezel": {
+      "reopened_closed_mesh": true,
+      "self_intersections": false,
+      "print_bounds_mm": [
+        139.0,
+        82.0,
+        5.8
+      ],
+      "bed_z_mm": 0.0
+    },
+    "touch_stand": {
+      "reopened_closed_mesh": true,
+      "self_intersections": false,
+      "print_bounds_mm": [
+        140.0,
+        49.0,
+        77.12
+      ],
+      "bed_z_mm": 0.0
+    },
+    "touch_bridge": {
+      "reopened_closed_mesh": true,
+      "self_intersections": false,
+      "print_bounds_mm": [
+        164.0,
+        23.0,
+        3.0
+      ],
+      "bed_z_mm": 0.0
+    },
+    "fit_nfc": {
+      "reopened_closed_mesh": true,
+      "self_intersections": false,
+      "print_bounds_mm": [
+        46.8,
+        71.0,
+        13.6
+      ],
+      "bed_z_mm": 0.0
+    },
+    "fit_cell": {
+      "reopened_closed_mesh": true,
+      "self_intersections": false,
+      "print_bounds_mm": [
+        24.0,
+        80.0,
+        3.0
+      ],
+      "bed_z_mm": 0.0
+    },
+    "fit_touch_mount": {
+      "reopened_closed_mesh": true,
+      "self_intersections": false,
+      "print_bounds_mm": [
+        20.0,
+        19.45,
+        5.8
+      ],
+      "bed_z_mm": 0.0
+    }
+  },
+  "individual_step_files": {
+    "base": {
+      "reopened_valid_single_solid": true,
+      "print_bounds_mm": [
+        170.0,
+        160.0,
+        35.0
+      ],
+      "bed_z_mm": 0.0,
+      "volume_mm3": 141195.039695,
+      "stl_volume_mm3": 141174.078125,
+      "stl_volume_difference_percent": 0.014846,
+      "max_design_bounds_difference_mm": 0.0,
+      "max_stl_bounds_difference_mm": 0.0,
+      "sha256": "092d710637b9722fb4744ed69d0e88143327bc46fa94064f475d3c3fa69b3b55"
+    },
+    "carrier": {
+      "reopened_valid_single_solid": true,
+      "print_bounds_mm": [
+        140.0,
+        130.0,
+        25.3
+      ],
+      "bed_z_mm": -0.0,
+      "volume_mm3": 121417.622853,
+      "stl_volume_mm3": 121417.398438,
+      "stl_volume_difference_percent": 0.000185,
+      "max_design_bounds_difference_mm": 0.0,
+      "max_stl_bounds_difference_mm": 1e-06,
+      "sha256": "ceade65b5020bd60f8edc0a6f2cae55615c82ed5c29e801619a03c9693e3bdf6"
+    },
+    "rim_rail": {
+      "reopened_valid_single_solid": true,
+      "print_bounds_mm": [
+        140.0,
+        27.527767,
+        31.0
+      ],
+      "bed_z_mm": -0.0,
+      "volume_mm3": 41127.957427,
+      "stl_volume_mm3": 41129.144531,
+      "stl_volume_difference_percent": 0.002886,
+      "max_design_bounds_difference_mm": 0.0,
+      "max_stl_bounds_difference_mm": 0.0,
+      "sha256": "5d449e55a3a5a0e1f8bf65cfa03e4356bb7aa1bfb1c58fb9f7901ed12c7c98ef"
+    },
+    "side_guide": {
+      "reopened_valid_single_solid": true,
+      "print_bounds_mm": [
+        52.0,
+        130.0,
+        16.0
+      ],
+      "bed_z_mm": -0.0,
+      "volume_mm3": 17547.136431,
+      "stl_volume_mm3": 17547.207031,
+      "stl_volume_difference_percent": 0.000402,
+      "max_design_bounds_difference_mm": 0.0,
+      "max_stl_bounds_difference_mm": 0.0,
+      "sha256": "7d65cc8d608e6d9ea83f56fedc5354d68937ff85482374525e12960434524ba0"
+    },
+    "nfc_guide": {
+      "reopened_valid_single_solid": true,
+      "print_bounds_mm": [
+        134.0,
+        130.0,
+        16.0
+      ],
+      "bed_z_mm": -0.0,
+      "volume_mm3": 19856.197852,
+      "stl_volume_mm3": 19856.353516,
+      "stl_volume_difference_percent": 0.000784,
+      "max_design_bounds_difference_mm": 0.0,
+      "max_stl_bounds_difference_mm": 0.0,
+      "sha256": "21225ed3b4d1025a1334d620edd929cd2041b4fd3fb830fd50b945f3ca30b82f"
+    },
+    "nfc_pod": {
+      "reopened_valid_single_solid": true,
+      "print_bounds_mm": [
+        46.8,
+        71.0,
+        13.6
+      ],
+      "bed_z_mm": -0.0,
+      "volume_mm3": 7076.190831,
+      "stl_volume_mm3": 7076.153809,
+      "stl_volume_difference_percent": 0.000523,
+      "max_design_bounds_difference_mm": 0.0,
+      "max_stl_bounds_difference_mm": 1e-06,
+      "sha256": "5db273baf96c45e0bf2aeb051cc3937b008680c42e556997bf8a80bad657cce8"
+    },
+    "nfc_pod_cover": {
+      "reopened_valid_single_solid": true,
+      "print_bounds_mm": [
+        46.8,
+        49.1,
+        1.6
+      ],
+      "bed_z_mm": -0.0,
+      "volume_mm3": 3658.286232,
+      "stl_volume_mm3": 3658.302734,
+      "stl_volume_difference_percent": 0.000451,
+      "max_design_bounds_difference_mm": 0.0,
+      "max_stl_bounds_difference_mm": 2e-06,
+      "sha256": "ac3fd6561e31cee3e9bcce14a7dd02f9cd6397c69e955a3400404a885499c2d1"
+    },
+    "top_cover": {
+      "reopened_valid_single_solid": true,
+      "print_bounds_mm": [
+        170.0,
+        160.0,
+        3.0
+      ],
+      "bed_z_mm": 0.0,
+      "volume_mm3": 22782.14335,
+      "stl_volume_mm3": 22782.091797,
+      "stl_volume_difference_percent": 0.000226,
+      "max_design_bounds_difference_mm": 0.0,
+      "max_stl_bounds_difference_mm": 0.0,
+      "sha256": "ef3e8e906666ad235ada93099d10b55e1f49d0ee27e3f60f7be8a04f647e4018"
+    },
+    "touch_bezel": {
+      "reopened_valid_single_solid": true,
+      "print_bounds_mm": [
+        139.0,
+        82.0,
+        5.8
+      ],
+      "bed_z_mm": -0.0,
+      "volume_mm3": 9582.045085,
+      "stl_volume_mm3": 9581.34375,
+      "stl_volume_difference_percent": 0.007319,
+      "max_design_bounds_difference_mm": 0.0,
+      "max_stl_bounds_difference_mm": 0.0,
+      "sha256": "b4f3c4d653a2ab3519be17f5fc9d4d613a4d3de1450ce20ea00b30b2129d0762"
+    },
+    "touch_stand": {
+      "reopened_valid_single_solid": true,
+      "print_bounds_mm": [
+        140.0,
+        49.0,
+        77.117192
+      ],
+      "bed_z_mm": -0.0,
+      "volume_mm3": 16690.646808,
+      "stl_volume_mm3": 16690.609375,
+      "stl_volume_difference_percent": 0.000224,
+      "max_design_bounds_difference_mm": 0.0,
+      "max_stl_bounds_difference_mm": 3e-06,
+      "sha256": "1fe4c46ab01d4a8a6805308e6b447145db9e404737f9b585c37261788c017958"
+    },
+    "touch_bridge": {
+      "reopened_valid_single_solid": true,
+      "print_bounds_mm": [
+        164.0,
+        23.0,
+        3.0
+      ],
+      "bed_z_mm": 0.0,
+      "volume_mm3": 5447.049567,
+      "stl_volume_mm3": 5447.150879,
+      "stl_volume_difference_percent": 0.00186,
+      "max_design_bounds_difference_mm": 0.0,
+      "max_stl_bounds_difference_mm": 0.0,
+      "sha256": "87cb469157ec60cecdb714ddda132824822777e3b554fd60022c59a1b8d04d20"
+    },
+    "fit_nfc": {
+      "reopened_valid_single_solid": true,
+      "print_bounds_mm": [
+        46.8,
+        71.0,
+        13.6
+      ],
+      "bed_z_mm": -0.0,
+      "volume_mm3": 7076.190831,
+      "stl_volume_mm3": 7076.153809,
+      "stl_volume_difference_percent": 0.000523,
+      "max_design_bounds_difference_mm": 0.0,
+      "max_stl_bounds_difference_mm": 1e-06,
+      "sha256": "db45879d61d0a5230c4e33385af807c1625f128de71e5b74a1959335ec944ac3"
+    },
+    "fit_cell": {
+      "reopened_valid_single_solid": true,
+      "print_bounds_mm": [
+        24.0,
+        80.0,
+        3.0
+      ],
+      "bed_z_mm": 0.0,
+      "volume_mm3": 5512.505331,
+      "stl_volume_mm3": 5512.741699,
+      "stl_volume_difference_percent": 0.004288,
+      "max_design_bounds_difference_mm": 0.0,
+      "max_stl_bounds_difference_mm": 0.0,
+      "sha256": "ecb7e7c69ede33c77cfb7f1fbaa2962e56f3f3175b4481dc5b16414387d19385"
+    },
+    "fit_touch_mount": {
+      "reopened_valid_single_solid": true,
+      "print_bounds_mm": [
+        20.0,
+        19.45,
+        5.8
+      ],
+      "bed_z_mm": 0.0,
+      "volume_mm3": 783.561271,
+      "stl_volume_mm3": 783.383118,
+      "stl_volume_difference_percent": 0.022736,
+      "max_design_bounds_difference_mm": 0.0,
+      "max_stl_bounds_difference_mm": 1e-06,
+      "sha256": "d043c3da6cb6f183ce382e26be9c9e9b089bff9b761a480f7d7488d693c46ccd"
+    }
+  },
+  "source_sha256": {
+    "parameters.json": "f8dabba145b0cbe62ecde1e0d4ff5a9ca15db01fe16e8ca66024de3a90eacb9e",
+    "build.py": "10dc8f32f361724b1010a21ecda7a52cf33280690e8d979815bc9837e1c71971",
+    "render.py": "256901110f148d5a31fc8ddab0dece2778ac27ebe301fb793b23152d61cedf3a",
+    "verify_exports.py": "8c473e624a3e160ca0e6aec3b536817b8913c544e16f7a64ab7cda2c0e42b6bb",
+    "variants/touch-8048/parameters.json": "775ba983302003ff43ad1c87bcff80e00b1440658e8833b446763e7fc083c1f5"
+  },
+  "freecad_version": "1.1.4",
+  "step_bounds_method": "optimalBoundingBox(useTriangulation=False, useShapeTolerance=False)",
+  "comparison_tolerances": {
+    "step_vs_design_bounds_mm": 0.001,
+    "step_vs_stl_bounds_mm": 0.2,
+    "step_vs_design_volume_mm3": 0.02,
+    "step_vs_stl_relative_volume": 0.005
+  },
+  "freecad": {
+    "reopened_valid_shapes": 32,
+    "printed_instances": 12
+  },
+  "step": {
+    "reopened_valid": true,
+    "solids": 30
+  },
+  "touch_fastener_checks": [
+    {
+      "sample": "display_M3x10_-58_-33.55",
+      "positive_volume_intersections": {}
+    },
+    {
+      "sample": "display_M3x10_-58_33.55",
+      "positive_volume_intersections": {}
+    },
+    {
+      "sample": "display_M3x10_58_-33.55",
+      "positive_volume_intersections": {}
+    },
+    {
+      "sample": "display_M3x10_58_33.55",
+      "positive_volume_intersections": {}
+    },
+    {
+      "sample": "bridge_M3x12_-65",
+      "positive_volume_intersections": {}
+    },
+    {
+      "sample": "bridge_M3x12_65",
+      "positive_volume_intersections": {}
+    },
+    {
+      "sample": "front_closure_M3x16_-78",
+      "positive_volume_intersections": {}
+    },
+    {
+      "sample": "front_closure_M3x16_78",
+      "positive_volume_intersections": {}
+    }
+  ]
+}

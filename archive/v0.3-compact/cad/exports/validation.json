@@ -1,0 +1,571 @@
+{
+  "revision": "v0.3-compact-moving-nfc-fit-prototype",
+  "units": "mm",
+  "physical_validation": false,
+  "parts": {
+    "base": {
+      "solid_valid": true,
+      "solid_count": 1,
+      "closed_mesh": true,
+      "mesh_self_intersections": false,
+      "triangle_count": 10916,
+      "print_z_min_mm": 0.0,
+      "volume_mm3": 159308.37,
+      "print_bounds_mm": [
+        170.0,
+        190.0,
+        35.0
+      ],
+      "quantity": 1
+    },
+    "carrier": {
+      "solid_valid": true,
+      "solid_count": 1,
+      "closed_mesh": true,
+      "mesh_self_intersections": false,
+      "triangle_count": 9020,
+      "print_z_min_mm": 0.0,
+      "volume_mm3": 121417.62,
+      "print_bounds_mm": [
+        140.0,
+        130.0,
+        25.3
+      ],
+      "quantity": 1
+    },
+    "rim_rail": {
+      "solid_valid": true,
+      "solid_count": 1,
+      "closed_mesh": true,
+      "mesh_self_intersections": false,
+      "triangle_count": 2272,
+      "print_z_min_mm": 0.0,
+      "volume_mm3": 41127.96,
+      "print_bounds_mm": [
+        140.0,
+        27.53,
+        31.0
+      ],
+      "quantity": 2
+    },
+    "side_guide": {
+      "solid_valid": true,
+      "solid_count": 1,
+      "closed_mesh": true,
+      "mesh_self_intersections": false,
+      "triangle_count": 768,
+      "print_z_min_mm": 0.0,
+      "volume_mm3": 17547.14,
+      "print_bounds_mm": [
+        52.0,
+        130.0,
+        16.0
+      ],
+      "quantity": 1
+    },
+    "nfc_guide": {
+      "solid_valid": true,
+      "solid_count": 1,
+      "closed_mesh": true,
+      "mesh_self_intersections": false,
+      "triangle_count": 2220,
+      "print_z_min_mm": 0.0,
+      "volume_mm3": 19856.2,
+      "print_bounds_mm": [
+        134.0,
+        130.0,
+        16.0
+      ],
+      "quantity": 1
+    },
+    "nfc_pod": {
+      "solid_valid": true,
+      "solid_count": 1,
+      "closed_mesh": true,
+      "mesh_self_intersections": false,
+      "triangle_count": 6060,
+      "print_z_min_mm": 0.0,
+      "volume_mm3": 7076.19,
+      "print_bounds_mm": [
+        46.8,
+        71.0,
+        13.6
+      ],
+      "quantity": 1
+    },
+    "nfc_pod_cover": {
+      "solid_valid": true,
+      "solid_count": 1,
+      "closed_mesh": true,
+      "mesh_self_intersections": false,
+      "triangle_count": 692,
+      "print_z_min_mm": 0.0,
+      "volume_mm3": 3658.29,
+      "print_bounds_mm": [
+        46.8,
+        49.1,
+        1.6
+      ],
+      "quantity": 1
+    },
+    "top_cover": {
+      "solid_valid": true,
+      "solid_count": 1,
+      "closed_mesh": true,
+      "mesh_self_intersections": false,
+      "triangle_count": 6218,
+      "print_z_min_mm": 0.0,
+      "volume_mm3": 32988.75,
+      "print_bounds_mm": [
+        170.0,
+        190.0,
+        6.5
+      ],
+      "quantity": 1
+    },
+    "button_cap": {
+      "solid_valid": true,
+      "solid_count": 1,
+      "closed_mesh": true,
+      "mesh_self_intersections": false,
+      "triangle_count": 1004,
+      "print_z_min_mm": 0.0,
+      "volume_mm3": 165.93,
+      "print_bounds_mm": [
+        10.0,
+        10.0,
+        3.3
+      ],
+      "quantity": 3
+    },
+    "fit_display": {
+      "solid_valid": true,
+      "solid_count": 1,
+      "closed_mesh": true,
+      "mesh_self_intersections": false,
+      "triangle_count": 2746,
+      "print_z_min_mm": 0.0,
+      "volume_mm3": 4251.3,
+      "print_bounds_mm": [
+        68.0,
+        44.0,
+        6.5
+      ],
+      "quantity": 1
+    },
+    "fit_nfc": {
+      "solid_valid": true,
+      "solid_count": 1,
+      "closed_mesh": true,
+      "mesh_self_intersections": false,
+      "triangle_count": 6060,
+      "print_z_min_mm": 0.0,
+      "volume_mm3": 7076.19,
+      "print_bounds_mm": [
+        46.8,
+        71.0,
+        13.6
+      ],
+      "quantity": 1
+    },
+    "fit_buttons": {
+      "solid_valid": true,
+      "solid_count": 1,
+      "closed_mesh": true,
+      "mesh_self_intersections": false,
+      "triangle_count": 1416,
+      "print_z_min_mm": 0.0,
+      "volume_mm3": 2451.31,
+      "print_bounds_mm": [
+        20.0,
+        47.0,
+        6.5
+      ],
+      "quantity": 1
+    },
+    "fit_esp32": {
+      "solid_valid": true,
+      "solid_count": 1,
+      "closed_mesh": true,
+      "mesh_self_intersections": false,
+      "triangle_count": 140,
+      "print_z_min_mm": 0.0,
+      "volume_mm3": 8417.29,
+      "print_bounds_mm": [
+        69.0,
+        41.0,
+        11.0
+      ],
+      "quantity": 1
+    },
+    "fit_cell": {
+      "solid_valid": true,
+      "solid_count": 1,
+      "closed_mesh": true,
+      "mesh_self_intersections": false,
+      "triangle_count": 1372,
+      "print_z_min_mm": 0.0,
+      "volume_mm3": 5512.51,
+      "print_bounds_mm": [
+        24.0,
+        80.0,
+        3.0
+      ],
+      "quantity": 1
+    }
+  },
+  "geometry_checks": {
+    "carrier_body_vertical_gap_mm": 3.0,
+    "carrier_cover_plan_gap_mm": 2.0,
+    "esp_wire_allowance_to_carrier_ribs_mm": 2.4,
+    "esp_wire_allowance_to_relief_roof_mm": 1.0,
+    "esp_relief_roof_thickness_mm": 1.4,
+    "nfc_patch_thickness_mm": 1.2,
+    "initial_stop_gap_mm_unvalidated": 1.0,
+    "assembled_printed_bounds_mm": [
+      170.0,
+      190.0,
+      184.0
+    ],
+    "maximum_adjusted_assembly_bounds_mm": [
+      170.0,
+      190.0,
+      198.4
+    ],
+    "nfc_face_to_spool_mm": 2.0,
+    "nfc_antenna_to_spool_nominal_mm": 4.0,
+    "nominal_unloaded_height_with_feet_mm": 185.4,
+    "reference_loaded_height_with_feet_mm": 256.87,
+    "reference_loaded_depth_mm": 215.0
+  },
+  "printed_part_intersections": {},
+  "component_intersections": {
+    "REF_PN532_PCB": {},
+    "REF_PN532_components": {},
+    "REF_PN532_wire_allowance": {},
+    "REF_load_cell": {},
+    "REF_screen_PCB": {},
+    "REF_screen_glass": {},
+    "REF_screen_connector_allowance": {},
+    "REF_ESP32_PCB_estimate": {},
+    "REF_ESP32_module_estimate": {},
+    "REF_USB_-6": {},
+    "REF_USB_6": {},
+    "REF_HX711_PCB": {},
+    "REF_button_perfboard": {},
+    "REF_switch_0": {},
+    "REF_switch_1": {},
+    "REF_switch_2": {},
+    "REF_upright_spool": {},
+    "REF_filament": {}
+  },
+  "esp_wire_envelope_intersections": {},
+  "spool_envelope_checks": [
+    {
+      "diameter_mm": 160.0,
+      "width_mm": 50.0,
+      "pod_center_mm": 90.0,
+      "side_clearance_each_mm": 2.0,
+      "loaded_height_including_feet_mm": 213.78,
+      "loaded_depth_mm": 195.0,
+      "positive_volume_intersections": {}
+    },
+    {
+      "diameter_mm": 160.0,
+      "width_mm": 50.0,
+      "pod_center_mm": 155.0,
+      "side_clearance_each_mm": 2.0,
+      "loaded_height_including_feet_mm": 213.78,
+      "loaded_depth_mm": 195.0,
+      "positive_volume_intersections": {}
+    },
+    {
+      "diameter_mm": 160.0,
+      "width_mm": 50.0,
+      "pod_center_mm": 175.0,
+      "side_clearance_each_mm": 2.0,
+      "loaded_height_including_feet_mm": 213.78,
+      "loaded_depth_mm": 195.0,
+      "positive_volume_intersections": {}
+    },
+    {
+      "diameter_mm": 160.0,
+      "width_mm": 80,
+      "pod_center_mm": 90.0,
+      "side_clearance_each_mm": 2.0,
+      "loaded_height_including_feet_mm": 213.78,
+      "loaded_depth_mm": 195.0,
+      "positive_volume_intersections": {}
+    },
+    {
+      "diameter_mm": 160.0,
+      "width_mm": 80,
+      "pod_center_mm": 155.0,
+      "side_clearance_each_mm": 2.0,
+      "loaded_height_including_feet_mm": 213.78,
+      "loaded_depth_mm": 195.0,
+      "positive_volume_intersections": {}
+    },
+    {
+      "diameter_mm": 160.0,
+      "width_mm": 80,
+      "pod_center_mm": 175.0,
+      "side_clearance_each_mm": 2.0,
+      "loaded_height_including_feet_mm": 213.78,
+      "loaded_depth_mm": 195.0,
+      "positive_volume_intersections": {}
+    },
+    {
+      "diameter_mm": 160.0,
+      "width_mm": 100.0,
+      "pod_center_mm": 90.0,
+      "side_clearance_each_mm": 2.0,
+      "loaded_height_including_feet_mm": 213.78,
+      "loaded_depth_mm": 195.0,
+      "positive_volume_intersections": {}
+    },
+    {
+      "diameter_mm": 160.0,
+      "width_mm": 100.0,
+      "pod_center_mm": 155.0,
+      "side_clearance_each_mm": 2.0,
+      "loaded_height_including_feet_mm": 213.78,
+      "loaded_depth_mm": 195.0,
+      "positive_volume_intersections": {}
+    },
+    {
+      "diameter_mm": 160.0,
+      "width_mm": 100.0,
+      "pod_center_mm": 175.0,
+      "side_clearance_each_mm": 2.0,
+      "loaded_height_including_feet_mm": 213.78,
+      "loaded_depth_mm": 195.0,
+      "positive_volume_intersections": {}
+    },
+    {
+      "diameter_mm": 200,
+      "width_mm": 50.0,
+      "pod_center_mm": 90.0,
+      "side_clearance_each_mm": 2.0,
+      "loaded_height_including_feet_mm": 256.87,
+      "loaded_depth_mm": 215.0,
+      "positive_volume_intersections": {}
+    },
+    {
+      "diameter_mm": 200,
+      "width_mm": 50.0,
+      "pod_center_mm": 155.0,
+      "side_clearance_each_mm": 2.0,
+      "loaded_height_including_feet_mm": 256.87,
+      "loaded_depth_mm": 215.0,
+      "positive_volume_intersections": {}
+    },
+    {
+      "diameter_mm": 200,
+      "width_mm": 50.0,
+      "pod_center_mm": 175.0,
+      "side_clearance_each_mm": 2.0,
+      "loaded_height_including_feet_mm": 256.87,
+      "loaded_depth_mm": 215.0,
+      "positive_volume_intersections": {}
+    },
+    {
+      "diameter_mm": 200,
+      "width_mm": 80,
+      "pod_center_mm": 90.0,
+      "side_clearance_each_mm": 2.0,
+      "loaded_height_including_feet_mm": 256.87,
+      "loaded_depth_mm": 215.0,
+      "positive_volume_intersections": {}
+    },
+    {
+      "diameter_mm": 200,
+      "width_mm": 80,
+      "pod_center_mm": 155.0,
+      "side_clearance_each_mm": 2.0,
+      "loaded_height_including_feet_mm": 256.87,
+      "loaded_depth_mm": 215.0,
+      "positive_volume_intersections": {}
+    },
+    {
+      "diameter_mm": 200,
+      "width_mm": 80,
+      "pod_center_mm": 175.0,
+      "side_clearance_each_mm": 2.0,
+      "loaded_height_including_feet_mm": 256.87,
+      "loaded_depth_mm": 215.0,
+      "positive_volume_intersections": {}
+    },
+    {
+      "diameter_mm": 200,
+      "width_mm": 100.0,
+      "pod_center_mm": 90.0,
+      "side_clearance_each_mm": 2.0,
+      "loaded_height_including_feet_mm": 256.87,
+      "loaded_depth_mm": 215.0,
+      "positive_volume_intersections": {}
+    },
+    {
+      "diameter_mm": 200,
+      "width_mm": 100.0,
+      "pod_center_mm": 155.0,
+      "side_clearance_each_mm": 2.0,
+      "loaded_height_including_feet_mm": 256.87,
+      "loaded_depth_mm": 215.0,
+      "positive_volume_intersections": {}
+    },
+    {
+      "diameter_mm": 200,
+      "width_mm": 100.0,
+      "pod_center_mm": 175.0,
+      "side_clearance_each_mm": 2.0,
+      "loaded_height_including_feet_mm": 256.87,
+      "loaded_depth_mm": 215.0,
+      "positive_volume_intersections": {}
+    },
+    {
+      "diameter_mm": 220.0,
+      "width_mm": 50.0,
+      "pod_center_mm": 90.0,
+      "side_clearance_each_mm": 2.0,
+      "loaded_height_including_feet_mm": 278.42,
+      "loaded_depth_mm": 225.0,
+      "positive_volume_intersections": {}
+    },
+    {
+      "diameter_mm": 220.0,
+      "width_mm": 50.0,
+      "pod_center_mm": 155.0,
+      "side_clearance_each_mm": 2.0,
+      "loaded_height_including_feet_mm": 278.42,
+      "loaded_depth_mm": 225.0,
+      "positive_volume_intersections": {}
+    },
+    {
+      "diameter_mm": 220.0,
+      "width_mm": 50.0,
+      "pod_center_mm": 175.0,
+      "side_clearance_each_mm": 2.0,
+      "loaded_height_including_feet_mm": 278.42,
+      "loaded_depth_mm": 225.0,
+      "positive_volume_intersections": {}
+    },
+    {
+      "diameter_mm": 220.0,
+      "width_mm": 80,
+      "pod_center_mm": 90.0,
+      "side_clearance_each_mm": 2.0,
+      "loaded_height_including_feet_mm": 278.42,
+      "loaded_depth_mm": 225.0,
+      "positive_volume_intersections": {}
+    },
+    {
+      "diameter_mm": 220.0,
+      "width_mm": 80,
+      "pod_center_mm": 155.0,
+      "side_clearance_each_mm": 2.0,
+      "loaded_height_including_feet_mm": 278.42,
+      "loaded_depth_mm": 225.0,
+      "positive_volume_intersections": {}
+    },
+    {
+      "diameter_mm": 220.0,
+      "width_mm": 80,
+      "pod_center_mm": 175.0,
+      "side_clearance_each_mm": 2.0,
+      "loaded_height_including_feet_mm": 278.42,
+      "loaded_depth_mm": 225.0,
+      "positive_volume_intersections": {}
+    },
+    {
+      "diameter_mm": 220.0,
+      "width_mm": 100.0,
+      "pod_center_mm": 90.0,
+      "side_clearance_each_mm": 2.0,
+      "loaded_height_including_feet_mm": 278.42,
+      "loaded_depth_mm": 225.0,
+      "positive_volume_intersections": {}
+    },
+    {
+      "diameter_mm": 220.0,
+      "width_mm": 100.0,
+      "pod_center_mm": 155.0,
+      "side_clearance_each_mm": 2.0,
+      "loaded_height_including_feet_mm": 278.42,
+      "loaded_depth_mm": 225.0,
+      "positive_volume_intersections": {}
+    },
+    {
+      "diameter_mm": 220.0,
+      "width_mm": 100.0,
+      "pod_center_mm": 175.0,
+      "side_clearance_each_mm": 2.0,
+      "loaded_height_including_feet_mm": 278.42,
+      "loaded_depth_mm": 225.0,
+      "positive_volume_intersections": {}
+    }
+  ],
+  "pod_adjustment_checks": [
+    {
+      "width_mm": 50.0,
+      "height_mm": 90.0,
+      "positive_volume_intersections": {}
+    },
+    {
+      "width_mm": 50.0,
+      "height_mm": 155.0,
+      "positive_volume_intersections": {}
+    },
+    {
+      "width_mm": 50.0,
+      "height_mm": 175.0,
+      "positive_volume_intersections": {}
+    },
+    {
+      "width_mm": 80,
+      "height_mm": 90.0,
+      "positive_volume_intersections": {}
+    },
+    {
+      "width_mm": 80,
+      "height_mm": 155.0,
+      "positive_volume_intersections": {}
+    },
+    {
+      "width_mm": 80,
+      "height_mm": 175.0,
+      "positive_volume_intersections": {}
+    },
+    {
+      "width_mm": 100.0,
+      "height_mm": 90.0,
+      "positive_volume_intersections": {}
+    },
+    {
+      "width_mm": 100.0,
+      "height_mm": 155.0,
+      "positive_volume_intersections": {}
+    },
+    {
+      "width_mm": 100.0,
+      "height_mm": 175.0,
+      "positive_volume_intersections": {}
+    }
+  ],
+  "cad_solid_volume_mm3_with_quantities": 444606.27,
+  "comparison_to_v0_2": {
+    "old_base_footprint_mm": [
+      190,
+      230
+    ],
+    "new_base_footprint_mm": [
+      170.0,
+      190.0
+    ],
+    "footprint_area_reduction_percent": 26.09,
+    "old_cad_solid_volume_mm3_with_quantities": 885509.25,
+    "new_cad_solid_volume_mm3_with_quantities": 444606.27,
+    "cad_solid_volume_reduction_percent": 49.79,
+    "meaning": "Analytic CAD solid volume, including print quantities; not mass or sliced filament."
+  }
+}

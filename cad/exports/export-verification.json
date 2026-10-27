@@ -1,0 +1,305 @@
+{
+  "revision": "v0.4.1-headless-onboard-boot-fit-prototype",
+  "physical_validation": false,
+  "stl_files": {
+    "base": {
+      "reopened_closed_mesh": true,
+      "self_intersections": false,
+      "print_bounds_mm": [
+        170.0,
+        160.0,
+        35.0
+      ],
+      "bed_z_mm": 0.0
+    },
+    "carrier": {
+      "reopened_closed_mesh": true,
+      "self_intersections": false,
+      "print_bounds_mm": [
+        140.0,
+        130.0,
+        25.3
+      ],
+      "bed_z_mm": 0.0
+    },
+    "rim_rail": {
+      "reopened_closed_mesh": true,
+      "self_intersections": false,
+      "print_bounds_mm": [
+        140.0,
+        27.53,
+        31.0
+      ],
+      "bed_z_mm": 0.0
+    },
+    "side_guide": {
+      "reopened_closed_mesh": true,
+      "self_intersections": false,
+      "print_bounds_mm": [
+        52.0,
+        130.0,
+        16.0
+      ],
+      "bed_z_mm": 0.0
+    },
+    "nfc_guide": {
+      "reopened_closed_mesh": true,
+      "self_intersections": false,
+      "print_bounds_mm": [
+        134.0,
+        130.0,
+        16.0
+      ],
+      "bed_z_mm": 0.0
+    },
+    "nfc_pod": {
+      "reopened_closed_mesh": true,
+      "self_intersections": false,
+      "print_bounds_mm": [
+        46.8,
+        71.0,
+        13.6
+      ],
+      "bed_z_mm": 0.0
+    },
+    "nfc_pod_cover": {
+      "reopened_closed_mesh": true,
+      "self_intersections": false,
+      "print_bounds_mm": [
+        46.8,
+        49.1,
+        1.6
+      ],
+      "bed_z_mm": 0.0
+    },
+    "top_cover": {
+      "reopened_closed_mesh": true,
+      "self_intersections": false,
+      "print_bounds_mm": [
+        170.0,
+        160.0,
+        3.0
+      ],
+      "bed_z_mm": 0.0
+    },
+    "fit_nfc": {
+      "reopened_closed_mesh": true,
+      "self_intersections": false,
+      "print_bounds_mm": [
+        46.8,
+        71.0,
+        13.6
+      ],
+      "bed_z_mm": 0.0
+    },
+    "fit_esp32": {
+      "reopened_closed_mesh": true,
+      "self_intersections": false,
+      "print_bounds_mm": [
+        69.0,
+        41.0,
+        11.0
+      ],
+      "bed_z_mm": 0.0
+    },
+    "fit_cell": {
+      "reopened_closed_mesh": true,
+      "self_intersections": false,
+      "print_bounds_mm": [
+        24.0,
+        80.0,
+        3.0
+      ],
+      "bed_z_mm": 0.0
+    }
+  },
+  "individual_step_files": {
+    "base": {
+      "reopened_valid_single_solid": true,
+      "print_bounds_mm": [
+        170.0,
+        160.0,
+        35.0
+      ],
+      "bed_z_mm": 0.0,
+      "volume_mm3": 141195.039695,
+      "stl_volume_mm3": 141174.078125,
+      "stl_volume_difference_percent": 0.014846,
+      "max_design_bounds_difference_mm": 0.0,
+      "max_stl_bounds_difference_mm": 0.0,
+      "sha256": "d410971145a5794be224a72783bb77a503078e1fda4d6f489e1991cac53f8f49"
+    },
+    "carrier": {
+      "reopened_valid_single_solid": true,
+      "print_bounds_mm": [
+        140.0,
+        130.0,
+        25.3
+      ],
+      "bed_z_mm": -0.0,
+      "volume_mm3": 121417.622853,
+      "stl_volume_mm3": 121417.398438,
+      "stl_volume_difference_percent": 0.000185,
+      "max_design_bounds_difference_mm": 0.0,
+      "max_stl_bounds_difference_mm": 1e-06,
+      "sha256": "03196050328576cc64a06968c2265789f5e492bdea99463554dddfcaa4374845"
+    },
+    "rim_rail": {
+      "reopened_valid_single_solid": true,
+      "print_bounds_mm": [
+        140.0,
+        27.527767,
+        31.0
+      ],
+      "bed_z_mm": -0.0,
+      "volume_mm3": 41127.957427,
+      "stl_volume_mm3": 41129.144531,
+      "stl_volume_difference_percent": 0.002886,
+      "max_design_bounds_difference_mm": 0.0,
+      "max_stl_bounds_difference_mm": 0.0,
+      "sha256": "39ef9e9929721f071983acafb82c08ad75272cfa77901cff6e36a101c342d8f9"
+    },
+    "side_guide": {
+      "reopened_valid_single_solid": true,
+      "print_bounds_mm": [
+        52.0,
+        130.0,
+        16.0
+      ],
+      "bed_z_mm": -0.0,
+      "volume_mm3": 17547.136431,
+      "stl_volume_mm3": 17547.207031,
+      "stl_volume_difference_percent": 0.000402,
+      "max_design_bounds_difference_mm": 0.0,
+      "max_stl_bounds_difference_mm": 0.0,
+      "sha256": "ef4d791b4a2c072006317c39853bcec5c5b8af54183dab63d6de8f2756bc3154"
+    },
+    "nfc_guide": {
+      "reopened_valid_single_solid": true,
+      "print_bounds_mm": [
+        134.0,
+        130.0,
+        16.0
+      ],
+      "bed_z_mm": -0.0,
+      "volume_mm3": 19856.197852,
+      "stl_volume_mm3": 19856.353516,
+      "stl_volume_difference_percent": 0.000784,
+      "max_design_bounds_difference_mm": 0.0,
+      "max_stl_bounds_difference_mm": 0.0,
+      "sha256": "db5a9063012da88d22c0408f2b1de623dff2c2c997a2cceb3dba846273e22de5"
+    },
+    "nfc_pod": {
+      "reopened_valid_single_solid": true,
+      "print_bounds_mm": [
+        46.8,
+        71.0,
+        13.6
+      ],
+      "bed_z_mm": -0.0,
+      "volume_mm3": 7076.190831,
+      "stl_volume_mm3": 7076.153809,
+      "stl_volume_difference_percent": 0.000523,
+      "max_design_bounds_difference_mm": 0.0,
+      "max_stl_bounds_difference_mm": 1e-06,
+      "sha256": "ed6a449dae42e5b98e08c4c53d9b3acd69deee3e84daea3d8b36a37aefc2f86d"
+    },
+    "nfc_pod_cover": {
+      "reopened_valid_single_solid": true,
+      "print_bounds_mm": [
+        46.8,
+        49.1,
+        1.6
+      ],
+      "bed_z_mm": -0.0,
+      "volume_mm3": 3658.286232,
+      "stl_volume_mm3": 3658.302734,
+      "stl_volume_difference_percent": 0.000451,
+      "max_design_bounds_difference_mm": 0.0,
+      "max_stl_bounds_difference_mm": 2e-06,
+      "sha256": "ac3fd6561e31cee3e9bcce14a7dd02f9cd6397c69e955a3400404a885499c2d1"
+    },
+    "top_cover": {
+      "reopened_valid_single_solid": true,
+      "print_bounds_mm": [
+        170.0,
+        160.0,
+        3.0
+      ],
+      "bed_z_mm": 0.0,
+      "volume_mm3": 22782.14335,
+      "stl_volume_mm3": 22782.091797,
+      "stl_volume_difference_percent": 0.000226,
+      "max_design_bounds_difference_mm": 0.0,
+      "max_stl_bounds_difference_mm": 0.0,
+      "sha256": "ef3e8e906666ad235ada93099d10b55e1f49d0ee27e3f60f7be8a04f647e4018"
+    },
+    "fit_nfc": {
+      "reopened_valid_single_solid": true,
+      "print_bounds_mm": [
+        46.8,
+        71.0,
+        13.6
+      ],
+      "bed_z_mm": -0.0,
+      "volume_mm3": 7076.190831,
+      "stl_volume_mm3": 7076.153809,
+      "stl_volume_difference_percent": 0.000523,
+      "max_design_bounds_difference_mm": 0.0,
+      "max_stl_bounds_difference_mm": 1e-06,
+      "sha256": "e2d2d1e17e912c65fac0960ce79da346aa2b8ef56eb37e6ee3c3fc452c9faf50"
+    },
+    "fit_esp32": {
+      "reopened_valid_single_solid": true,
+      "print_bounds_mm": [
+        69.0,
+        41.0,
+        11.0
+      ],
+      "bed_z_mm": 0.0,
+      "volume_mm3": 8417.288,
+      "stl_volume_mm3": 8417.286133,
+      "stl_volume_difference_percent": 2.2e-05,
+      "max_design_bounds_difference_mm": 0.0,
+      "max_stl_bounds_difference_mm": 0.0,
+      "sha256": "78d7b63cd20603e224ead8af0891e76f7b43508e8fbf878ed8665723edf53f32"
+    },
+    "fit_cell": {
+      "reopened_valid_single_solid": true,
+      "print_bounds_mm": [
+        24.0,
+        80.0,
+        3.0
+      ],
+      "bed_z_mm": 0.0,
+      "volume_mm3": 5512.505331,
+      "stl_volume_mm3": 5512.741699,
+      "stl_volume_difference_percent": 0.004288,
+      "max_design_bounds_difference_mm": 0.0,
+      "max_stl_bounds_difference_mm": 0.0,
+      "sha256": "5a9923195dea662cda2cf0f2e3f0f60412fac9136d650697cd561206ee9424ba"
+    }
+  },
+  "source_sha256": {
+    "parameters.json": "f8dabba145b0cbe62ecde1e0d4ff5a9ca15db01fe16e8ca66024de3a90eacb9e",
+    "build.py": "10dc8f32f361724b1010a21ecda7a52cf33280690e8d979815bc9837e1c71971",
+    "render.py": "256901110f148d5a31fc8ddab0dece2778ac27ebe301fb793b23152d61cedf3a",
+    "verify_exports.py": "8c473e624a3e160ca0e6aec3b536817b8913c544e16f7a64ab7cda2c0e42b6bb"
+  },
+  "freecad_version": "1.1.4",
+  "step_bounds_method": "optimalBoundingBox(useTriangulation=False, useShapeTolerance=False)",
+  "comparison_tolerances": {
+    "step_vs_design_bounds_mm": 0.001,
+    "step_vs_stl_bounds_mm": 0.2,
+    "step_vs_design_volume_mm3": 0.02,
+    "step_vs_stl_relative_volume": 0.005
+  },
+  "freecad": {
+    "reopened_valid_shapes": 30,
+    "printed_instances": 9
+  },
+  "step": {
+    "reopened_valid": true,
+    "solids": 28
+  }
+}

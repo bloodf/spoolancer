@@ -1,0 +1,39 @@
+name: Hardware fit or bench report
+description: Share measured fit, wiring, weighing or NFC results from an actual assembly.
+title: "Hardware: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        A CAD render or passing build does not establish physical fit or operation. Report only checks you performed; mark the rest untested. Remove personal information and credentials from photographs and logs.
+  - type: input
+    id: revision
+    attributes:
+      label: CAD and firmware revision
+      description: Include the variant, release or commit and any local modifications.
+    validations:
+      required: true
+  - type: textarea
+    id: parts
+    attributes:
+      label: Actual parts
+      description: Board markings/revision, load-cell dimensions and capacity, HX711, PN532, tag type and USB supply. Include component links or clear photographs when useful.
+    validations:
+      required: true
+  - type: textarea
+    id: printing
+    attributes:
+      label: Print and assembly
+      description: Printer, filament, layer height, walls/infill, fit-sample results, fasteners, clearances and any filing or changes needed. Include BOOT and USB access if checked.
+  - type: textarea
+    id: measurements
+    attributes:
+      label: Checks performed and measured results
+      description: For weighing, provide reference masses, repeated readings, off-center readings and reader/cable positions. For NFC, include tag placement and read/write/read-back results with the spool seated. For power, state measurement method and observed values. Mark anything not tested.
+    validations:
+      required: true
+  - type: textarea
+    id: limitations
+    attributes:
+      label: Failures, limitations and proposed correction
+      description: Separate observations from suggested causes. Do not infer compatibility with other board revisions or stock-printer tag formats.

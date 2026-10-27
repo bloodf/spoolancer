@@ -1,0 +1,35 @@
+# Build caches and local tooling
+.DS_Store
+.pio/
+__pycache__/
+*.py[cod]
+.venv/
+node_modules/
+.vscode/
+.idea/
+*.log
+.env
+.env.*
+!.env.example
+
+# Rebuilt from web/ by PlatformIO
+/firmware/data/
+
+# Release downloads are attached to GitHub Releases
+/dist/
+/*.zip
+/*.zip.sha256
+
+# CAD autosaves and local slicer work. Keep STEP, STL and native CAD sources.
+*.FCBak
+*.FCStd1
+*.gcode
+*.3mf
+/archive/v0.2-intermediate-backups/
+/analysis/material-comparison/isolated-settings/
+/analysis/material-comparison/machine.json
+/analysis/material-comparison/process.json
+/analysis/material-comparison/filament.json
+
+# Full vendor documents are linked from the mechanical source notes
+/docs/reference/*.pdf

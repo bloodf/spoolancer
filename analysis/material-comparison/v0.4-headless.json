@@ -1,0 +1,76 @@
+{
+  "revision": "v0.4-headless",
+  "slicer": "OrcaSlicer 2.4.1",
+  "reference_printer": "Bambu Lab P1S 0.4 nozzle",
+  "material": "Generic PETG",
+  "layer_height_mm": 0.2,
+  "walls": 4,
+  "top_bottom_layers": 5,
+  "infill": "20% gyroid",
+  "supports": false,
+  "brim": false,
+  "physical_validation": false,
+  "parts": {
+    "base": {
+      "grams": 148.09,
+      "metres": 48.47798,
+      "quantity": 1,
+      "stl_sha256": "f01d7a184c7daac94cb14ed2180421a96147155aae2ea938e81fbe7adbc68212"
+    },
+    "carrier": {
+      "grams": 85.67,
+      "metres": 28.046860000000002,
+      "quantity": 1,
+      "stl_sha256": "78146b065c67a1f246e113b27dec78549d2deb0652584600f6455a71390797df",
+      "reused_from": "v0.3; identical STL and slicing settings"
+    },
+    "rim_rail": {
+      "grams": 44.3,
+      "metres": 14.50136,
+      "quantity": 2,
+      "stl_sha256": "1a701ddd34dd3c0cadf372518b7b2a0c48c278b10fa6301c8406ad32c344249e",
+      "reused_from": "v0.3; identical STL and slicing settings"
+    },
+    "side_guide": {
+      "grams": 15.18,
+      "metres": 4.97045,
+      "quantity": 1,
+      "stl_sha256": "b9c162b762c76614120f5dd0c25f13ba5a5cf760bd9f7d57e11d9c167e9ca5b0",
+      "reused_from": "v0.3; identical STL and slicing settings"
+    },
+    "nfc_guide": {
+      "grams": 18.37,
+      "metres": 6.01293,
+      "quantity": 1,
+      "stl_sha256": "d0b3eee1dd270aea8269fe9dce7cad773ba54ef6e0030a8f59a92eef91ef1702",
+      "reused_from": "v0.3; identical STL and slicing settings"
+    },
+    "nfc_pod": {
+      "grams": 8.53,
+      "metres": 2.7931399999999997,
+      "quantity": 1,
+      "stl_sha256": "4e6a5024bcc6951b17c52e85b41141e843d69ec22e1312d3ebae3a7c6b4db266",
+      "reused_from": "v0.3; identical STL and slicing settings"
+    },
+    "nfc_pod_cover": {
+      "grams": 4.5,
+      "metres": 1.47311,
+      "quantity": 1,
+      "stl_sha256": "1e3f6d9e9a87433e0c17263200be92eb9c31ff2e3023b79cbe17bafd7f9fca60",
+      "reused_from": "v0.3; identical STL and slicing settings"
+    },
+    "top_cover": {
+      "grams": 22.99,
+      "metres": 7.52641,
+      "quantity": 1,
+      "stl_sha256": "be9057c9462abdc99d4bf97da337d34429e56b7bc027eec72f6018f84b8ef760"
+    },
+    "button_cap": {
+      "grams": 0.39,
+      "metres": 0.12866,
+      "quantity": 1,
+      "stl_sha256": "25ff10ddb5e9ee4f66b2f19b94b4649e57492ff493f922cd1eeb5b5e941692bf"
+    }
+  },
+  "total_grams": 392.32
+}

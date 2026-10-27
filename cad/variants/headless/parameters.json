@@ -1,0 +1,223 @@
+{
+  "revision": "v0.4.1-headless-onboard-boot-fit-prototype",
+  "wall": 2.0,
+  "floor": 2.6,
+  "body_top": 35.0,
+  "lid_thickness": 3.0,
+  "cell_length": 80.0,
+  "cell_width": 12.7,
+  "cell_height": 12.7,
+  "cell_front_y": -70.0,
+  "cell_bottom": 12.0,
+  "cell_hole_offsets": [
+    5.0,
+    20.0,
+    60.0,
+    75.0
+  ],
+  "fixed_clearance_diameter": 5.6,
+  "moving_clearance_diameter": 4.6,
+  "fixed_head_seat_z": 6.2,
+  "moving_head_seat_z": 43.7,
+  "stop_post_top": 25.0,
+  "stop_nut_height": 4.2,
+  "stop_initial_gap": 1.0,
+  "nfc_board": [
+    42.7,
+    40.4,
+    1.6
+  ],
+  "nfc_wall": 1.2,
+  "nfc_air_gap": 0.8,
+  "nfc_hole_pitch": [
+    27.8,
+    25.2
+  ],
+  "esp_center": [
+    -48,
+    -24
+  ],
+  "esp_envelope": [
+    63.3,
+    27.6,
+    1.6
+  ],
+  "esp_pcb_bottom": 9.0,
+  "esp_rail_length": 48.0,
+  "esp_header_wire_height": 25.0,
+  "hx_center": [
+    42,
+    -24
+  ],
+  "hx_board": [
+    34.0,
+    20.0,
+    1.6
+  ],
+  "hx_pcb_bottom": 8.0,
+  "foot_thickness": 2.0,
+  "base_width": 170.0,
+  "base_depth": 160.0,
+  "base_center_y": -5.0,
+  "base_corner_radius": 8.0,
+  "carrier_size": [
+    140.0,
+    130.0
+  ],
+  "carrier_top": 50.0,
+  "carrier_plate": 4.0,
+  "carrier_rib_height": 8.0,
+  "carrier_rib_width": 3.0,
+  "cover_carrier_gap": 2.0,
+  "saddle_width": 140.0,
+  "saddle_depth": 130.0,
+  "saddle_apex_z": 40.0,
+  "saddle_angle_deg": 30.0,
+  "saddle_bolt_positions": [
+    [
+      -64,
+      -60
+    ],
+    [
+      -64,
+      60
+    ],
+    [
+      64,
+      -60
+    ],
+    [
+      64,
+      60
+    ]
+  ],
+  "stop_positions": [
+    [
+      -61,
+      -52
+    ],
+    [
+      -61,
+      52
+    ],
+    [
+      61,
+      -52
+    ],
+    [
+      61,
+      52
+    ]
+  ],
+  "lid_posts": [
+    [
+      -78,
+      -76
+    ],
+    [
+      78,
+      -76
+    ],
+    [
+      -78,
+      66
+    ],
+    [
+      78,
+      66
+    ]
+  ],
+  "feet_positions": [
+    [
+      -72,
+      -72
+    ],
+    [
+      72,
+      -72
+    ],
+    [
+      -72,
+      62
+    ],
+    [
+      72,
+      62
+    ]
+  ],
+  "guide_top": 102.0,
+  "guide_thickness": 4.0,
+  "guide_clearance_total": 4.0,
+  "guide_bolt_offset": 10.0,
+  "guide_bolt_seat_z": 55.0,
+  "spool_width_min": 50.0,
+  "spool_width_max": 100.0,
+  "spool_diameter_min": 160.0,
+  "spool_diameter_max": 220.0,
+  "reference_spool_width": 80.0,
+  "reference_spool_diameter": 200.0,
+  "esp_cover_relief_depth": 1.6,
+  "rim_inner_y": 34.0,
+  "rim_outer_y": 65.0,
+  "rim_roof": 4.0,
+  "rim_floor": 3.0,
+  "guide_foot_top": 55.0,
+  "nfc_height_min": 90.0,
+  "nfc_height_max": 175.0,
+  "nfc_height_reference": 155.0,
+  "nfc_pod_outer": [
+    49.1,
+    46.8
+  ],
+  "nfc_pod_depth": 13.6,
+  "nfc_back_thickness": 1.6,
+  "nfc_mast_y": 29.5,
+  "nfc_mast_top": 184.0,
+  "nfc_cover_screw_positions": [
+    [
+      -20,
+      -18
+    ],
+    [
+      20,
+      18
+    ]
+  ],
+  "variant": "headless",
+  "display_enabled": false,
+  "fixed_spine_length": 44.0,
+  "fixed_spine_center_y": -62.0,
+  "cover_support_posts": [
+    [
+      29,
+      -81
+    ],
+    [
+      51,
+      -81
+    ]
+  ],
+  "cell_wire_allowance": [
+    18,
+    12,
+    10
+  ],
+  "cell_wire_allowance_center": [
+    0,
+    -76,
+    12
+  ],
+  "boot_center_estimate": [
+    -51,
+    -18
+  ],
+  "boot_body_height_estimate": 2.5,
+  "boot_actuator_height_estimate": 1.0,
+  "boot_tool_entry": [
+    -94,
+    -18,
+    33
+  ],
+  "boot_tool_diameter": 2.5,
+  "boot_gpio": 0
+}

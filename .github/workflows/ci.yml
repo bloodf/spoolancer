@@ -1,0 +1,67 @@
+name: Checks
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: checks-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  web:
+    name: Web logic and syntax
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - name: Check JavaScript syntax
+        run: |
+          node --check web/app.js
+          node --check web/logic.js
+          node --check web/demo.js
+      - name: Test browser logic
+        run: node --test web/tests/*.test.js
+
+  firmware:
+    name: Firmware logic, builds and asset images
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    env:
+      PLATFORMIO_CORE_VERSION: '6.1.19'
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: '3.12'
+      - name: Test native logic with sanitizers
+        env:
+          CXX: clang++
+        run: python3 firmware/tests/run.py
+      - name: Install PlatformIO
+        run: python3 -m pip install "platformio==${PLATFORMIO_CORE_VERSION}"
+      - uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5.1.0
+        with:
+          path: |
+            ~/.platformio/packages
+            ~/.platformio/platforms
+            firmware/.pio/libdeps
+          key: ${{ runner.os }}-${{ runner.arch }}-pio-${{ env.PLATFORMIO_CORE_VERSION }}-${{ hashFiles('firmware/platformio.ini', '.github/workflows/ci.yml') }}
+      - name: Compile all board variants
+        run: pio run -d firmware -e spoolancer-headless -e spoolancer-touch-8048 -e spoolancer-s3
+      - name: Build all asset images
+        run: pio run -d firmware -e spoolancer-headless -e spoolancer-touch-8048 -e spoolancer-s3 -t buildfs
+      - name: Verify partitions and packaged assets
+        run: python3 firmware/tests/check_filesystem.py

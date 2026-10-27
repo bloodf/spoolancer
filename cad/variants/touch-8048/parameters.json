@@ -1,0 +1,35 @@
+{
+  "revision": "v0.4-touch-8048-moving-nfc-fit-prototype",
+  "variant": "touch-8048",
+  "display_enabled": true,
+  "button_count": 0,
+  "touch_board": [
+    123,
+    74,
+    1.6
+  ],
+  "touch_glass": [
+    105.5,
+    67.2,
+    3
+  ],
+  "touch_bezel": [
+    139,
+    82,
+    2
+  ],
+  "touch_window": [
+    107,
+    64
+  ],
+  "touch_hole_pitch": [
+    116,
+    67.1
+  ],
+  "touch_angle_deg": 60,
+  "touch_origin": [
+    0,
+    -108.5,
+    45.507041555
+  ]
+}

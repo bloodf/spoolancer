@@ -1,0 +1,14 @@
+{
+  "baseline_grams": 617.96,
+  "compact_grams": 421.8,
+  "saved_grams": 196.16,
+  "reduction_percent": 31.74,
+  "basis": "Same OrcaSlicer 2.4.1 profile, quantity-inclusive; fit coupons excluded; optional button caps included",
+  "physical_validation": false,
+  "headless_v0_4_grams": 392.32,
+  "headless_saved_from_v0_2_grams": 225.64,
+  "headless_reduction_from_v0_2_percent": 36.51,
+  "touch_v0_4_grams": 427.29,
+  "touch_saved_from_v0_2_grams": 190.67,
+  "touch_reduction_from_v0_2_percent": 30.85
+}

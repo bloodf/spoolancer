@@ -1,0 +1,168 @@
+{
+  "revision": "v0.1-fit-prototype",
+  "units": "mm",
+  "physical_validation": false,
+  "parts": {
+    "base": {
+      "solid_valid": true,
+      "solid_count": 1,
+      "closed_mesh": true,
+      "mesh_self_intersections": false,
+      "triangle_count": 10108,
+      "volume_mm3": 227054.53,
+      "print_bounds_mm": [
+        200.0,
+        248.0,
+        35.0
+      ],
+      "quantity": 1
+    },
+    "tray": {
+      "solid_valid": true,
+      "solid_count": 1,
+      "closed_mesh": true,
+      "mesh_self_intersections": false,
+      "triangle_count": 4908,
+      "volume_mm3": 160293.64,
+      "print_bounds_mm": [
+        196.0,
+        195.92,
+        25.3
+      ],
+      "quantity": 1
+    },
+    "front_panel": {
+      "solid_valid": true,
+      "solid_count": 1,
+      "closed_mesh": true,
+      "mesh_self_intersections": false,
+      "triangle_count": 8624,
+      "volume_mm3": 33461.09,
+      "print_bounds_mm": [
+        200.0,
+        122.0,
+        6.5
+      ],
+      "quantity": 1
+    },
+    "button_cap": {
+      "solid_valid": true,
+      "solid_count": 1,
+      "closed_mesh": true,
+      "mesh_self_intersections": false,
+      "triangle_count": 1004,
+      "volume_mm3": 165.93,
+      "print_bounds_mm": [
+        10.0,
+        10.0,
+        3.3
+      ],
+      "quantity": 3
+    },
+    "fit_display": {
+      "solid_valid": true,
+      "solid_count": 1,
+      "closed_mesh": true,
+      "mesh_self_intersections": false,
+      "triangle_count": 2748,
+      "volume_mm3": 4251.3,
+      "print_bounds_mm": [
+        68.0,
+        44.0,
+        6.5
+      ],
+      "quantity": 1
+    },
+    "fit_nfc": {
+      "solid_valid": true,
+      "solid_count": 1,
+      "closed_mesh": true,
+      "mesh_self_intersections": false,
+      "triangle_count": 2764,
+      "volume_mm3": 4766.67,
+      "print_bounds_mm": [
+        53.0,
+        47.0,
+        3.0
+      ],
+      "quantity": 1
+    },
+    "fit_buttons": {
+      "solid_valid": true,
+      "solid_count": 1,
+      "closed_mesh": true,
+      "mesh_self_intersections": false,
+      "triangle_count": 1436,
+      "volume_mm3": 2431.32,
+      "print_bounds_mm": [
+        20.0,
+        47.0,
+        6.5
+      ],
+      "quantity": 1
+    },
+    "fit_esp32": {
+      "solid_valid": true,
+      "solid_count": 1,
+      "closed_mesh": true,
+      "mesh_self_intersections": false,
+      "triangle_count": 398,
+      "volume_mm3": 10876.0,
+      "print_bounds_mm": [
+        68.0,
+        41.0,
+        35.0
+      ],
+      "quantity": 1
+    },
+    "fit_cell": {
+      "solid_valid": true,
+      "solid_count": 1,
+      "closed_mesh": true,
+      "mesh_self_intersections": false,
+      "triangle_count": 1372,
+      "volume_mm3": 5512.51,
+      "print_bounds_mm": [
+        24.0,
+        80.0,
+        3.0
+      ],
+      "quantity": 1
+    }
+  },
+  "geometry_checks": {
+    "base_tray_overlap_mm3": 0.0,
+    "base_front_panel_overlap_mm3": 0.0,
+    "front_panel_tray_overlap_mm3": 0.0,
+    "base_load_cell_overlap_mm3": 0.0,
+    "tray_load_cell_overlap_mm3": 0.0,
+    "tray_body_vertical_gap_mm": 3.0,
+    "tray_front_panel_plan_gap_mm": 2.0,
+    "esp_wire_allowance_to_tray_ribs_mm": 2.4,
+    "nfc_patch_thickness_mm": 1.6,
+    "initial_stop_gap_mm_unvalidated": 1.0,
+    "assembled_printed_bounds_mm": [
+      200.0,
+      248.0,
+      50.0
+    ],
+    "nominal_total_height_with_feet_mm": 51.4
+  },
+  "component_intersections": {
+    "REF_load_cell": {},
+    "REF_screen_PCB": {},
+    "REF_screen_glass": {},
+    "REF_screen_connector_allowance": {},
+    "REF_PN532_PCB": {},
+    "REF_PN532_components": {},
+    "REF_ESP32_PCB_estimate": {},
+    "REF_ESP32_module_estimate": {},
+    "REF_USB_-6": {},
+    "REF_USB_6": {},
+    "REF_HX711_PCB": {},
+    "REF_button_perfboard": {},
+    "REF_switch_0": {},
+    "REF_switch_1": {},
+    "REF_switch_2": {}
+  }
+}

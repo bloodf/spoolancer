@@ -1,0 +1,129 @@
+{
+  "revision": "v0.2-upright-fit-prototype",
+  "physical_validation": false,
+  "stl_files": {
+    "base": {
+      "reopened_closed_mesh": true,
+      "self_intersections": false,
+      "print_bounds_mm": [
+        190.0,
+        230.0,
+        35.0
+      ],
+      "bed_z_mm": 0.0
+    },
+    "carrier": {
+      "reopened_closed_mesh": true,
+      "self_intersections": false,
+      "print_bounds_mm": [
+        154.0,
+        138.0,
+        25.3
+      ],
+      "bed_z_mm": 0.0
+    },
+    "saddle": {
+      "reopened_closed_mesh": true,
+      "self_intersections": false,
+      "print_bounds_mm": [
+        148.0,
+        130.0,
+        42.53
+      ],
+      "bed_z_mm": 0.0
+    },
+    "side_guide": {
+      "reopened_closed_mesh": true,
+      "self_intersections": false,
+      "print_bounds_mm": [
+        65.0,
+        130.0,
+        16.0
+      ],
+      "bed_z_mm": 0.0
+    },
+    "top_cover": {
+      "reopened_closed_mesh": true,
+      "self_intersections": false,
+      "print_bounds_mm": [
+        190.0,
+        230.0,
+        6.5
+      ],
+      "bed_z_mm": 0.0
+    },
+    "button_cap": {
+      "reopened_closed_mesh": true,
+      "self_intersections": false,
+      "print_bounds_mm": [
+        10.0,
+        10.0,
+        3.3
+      ],
+      "bed_z_mm": 0.0
+    },
+    "fit_display": {
+      "reopened_closed_mesh": true,
+      "self_intersections": false,
+      "print_bounds_mm": [
+        68.0,
+        44.0,
+        6.5
+      ],
+      "bed_z_mm": 0.0
+    },
+    "fit_nfc": {
+      "reopened_closed_mesh": true,
+      "self_intersections": false,
+      "print_bounds_mm": [
+        53.0,
+        47.0,
+        3.0
+      ],
+      "bed_z_mm": 0.0
+    },
+    "fit_buttons": {
+      "reopened_closed_mesh": true,
+      "self_intersections": false,
+      "print_bounds_mm": [
+        20.0,
+        47.0,
+        6.5
+      ],
+      "bed_z_mm": 0.0
+    },
+    "fit_esp32": {
+      "reopened_closed_mesh": true,
+      "self_intersections": false,
+      "print_bounds_mm": [
+        66.5,
+        41.0,
+        35.0
+      ],
+      "bed_z_mm": 0.0
+    },
+    "fit_cell": {
+      "reopened_closed_mesh": true,
+      "self_intersections": false,
+      "print_bounds_mm": [
+        24.0,
+        80.0,
+        3.0
+      ],
+      "bed_z_mm": 0.0
+    }
+  },
+  "source_sha256": {
+    "parameters.json": "d5eaf4ec35c7d96dcf63eca25148401bb9b082cd5c964e6da7226f0df834936b",
+    "build.py": "68581b71ff39cfea5b74eaa316ffd2e9451e60e9c737c5d8abcf44ebf8235ec1",
+    "render.py": "be906b8883399e6d38b24fdf5918da80d0676616f0e894682733070ff8ebaa40"
+  },
+  "freecad": {
+    "reopened_valid_shapes": 32,
+    "printed_instances": 9
+  },
+  "step": {
+    "reopened_valid": true,
+    "solids": 30
+  }
+}

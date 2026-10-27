@@ -1,0 +1,52 @@
+{
+  "revision": "v0.2",
+  "slicer": "OrcaSlicer 2.4.1",
+  "reference_printer": "Bambu Lab P1S 0.4 nozzle",
+  "material": "Generic PETG",
+  "layer_height_mm": 0.2,
+  "walls": 4,
+  "top_bottom_layers": 5,
+  "infill": "20% gyroid",
+  "supports": false,
+  "brim": false,
+  "physical_validation": false,
+  "parts": {
+    "base": {
+      "grams": 225.38,
+      "metres": 73.78009,
+      "quantity": 1,
+      "stl_sha256": "9cba6e2651b725e8077a27049592289b47059a167e695a9a26e3e1d815320ea0"
+    },
+    "carrier": {
+      "grams": 109.98,
+      "metres": 36.00397,
+      "quantity": 1,
+      "stl_sha256": "09b358a38af000ee12833305f745fad239cb646e3d7c134ee7b0b325c4079fd2"
+    },
+    "saddle": {
+      "grams": 194.98,
+      "metres": 63.82773,
+      "quantity": 1,
+      "stl_sha256": "e66950ffe7c00cf5571a03fce3d4a31973b49cf87a1993a7bfc038e4e2fbefa9"
+    },
+    "side_guide": {
+      "grams": 16.13,
+      "metres": 5.27883,
+      "quantity": 2,
+      "stl_sha256": "7209b9513bdf31e06ef8a97a959f52783564b58d5ea4b685e8fcd882b18811ec"
+    },
+    "top_cover": {
+      "grams": 54.49,
+      "metres": 17.83728,
+      "quantity": 1,
+      "stl_sha256": "24593f8f2fc87c317ec1299600b409aae4dcdf6cdc1385d75088c47103078ffe"
+    },
+    "button_cap": {
+      "grams": 0.29,
+      "metres": 0.09566,
+      "quantity": 3,
+      "stl_sha256": "ac5379532099bb094056619662f93897fc3aede76a33c3c146032114dccc5340"
+    }
+  },
+  "total_grams": 617.96
+}

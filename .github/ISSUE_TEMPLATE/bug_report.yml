@@ -1,0 +1,46 @@
+name: Software bug
+description: Report a reproducible firmware, browser or integration problem.
+title: "Bug: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For suspected vulnerabilities, use [SECURITY.md](https://github.com/bloodf/spoolancer/blob/main/SECURITY.md). Do not include Wi-Fi passwords, pairing PINs, session tokens or private server data in a public report.
+  - type: input
+    id: revision
+    attributes:
+      label: Version or commit
+      description: Include the firmware version and repository commit, if known.
+    validations:
+      required: true
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Where did it happen?
+      options:
+        - ESP32-S3 N16R8 screenless hardware
+        - ESP-8048S043C-I touch hardware
+        - Legacy ST7789 hardware
+        - Browser demo only
+        - Build or automated test
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Include the smallest sequence that reproduces the problem.
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Expected and actual result
+    validations:
+      required: true
+  - type: textarea
+    id: details
+    attributes:
+      label: Relevant setup and evidence
+      description: Board revision, operating system/browser, PlatformIO environment, Spoolman version, sanitized logs or screenshots. Clearly label simulated data and physical measurements.

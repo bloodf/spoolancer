@@ -1,0 +1,91 @@
+{
+  "physical_validation": false,
+  "shared_stl_sha256_match_headless": {
+    "base": true,
+    "carrier": true,
+    "rim_rail": true,
+    "side_guide": true,
+    "nfc_guide": true,
+    "nfc_pod": true,
+    "nfc_pod_cover": true,
+    "top_cover": true
+  },
+  "headless_cad_volume_mm3": 415788.54,
+  "touch_cad_volume_mm3": 447508.29,
+  "added_cad_volume_mm3": 31719.75,
+  "printed_instances": 12,
+  "touch_parts": {
+    "top_cover": {
+      "solid_valid": true,
+      "solid_count": 1,
+      "closed_mesh": true,
+      "mesh_self_intersections": false,
+      "triangle_count": 2080,
+      "print_z_min_mm": 0.0,
+      "volume_mm3": 22782.14,
+      "print_bounds_mm": [
+        170.0,
+        160.0,
+        3.0
+      ],
+      "quantity": 1
+    },
+    "touch_bezel": {
+      "solid_valid": true,
+      "solid_count": 1,
+      "closed_mesh": true,
+      "mesh_self_intersections": false,
+      "triangle_count": 2864,
+      "print_z_min_mm": 0.0,
+      "volume_mm3": 9582.05,
+      "print_bounds_mm": [
+        139.0,
+        82.0,
+        5.8
+      ],
+      "quantity": 1
+    },
+    "touch_stand": {
+      "solid_valid": true,
+      "solid_count": 1,
+      "closed_mesh": true,
+      "mesh_self_intersections": false,
+      "triangle_count": 6700,
+      "print_z_min_mm": 0.0,
+      "volume_mm3": 16690.65,
+      "print_bounds_mm": [
+        140.0,
+        49.0,
+        77.12
+      ],
+      "quantity": 1
+    },
+    "touch_bridge": {
+      "solid_valid": true,
+      "solid_count": 1,
+      "closed_mesh": true,
+      "mesh_self_intersections": false,
+      "triangle_count": 1404,
+      "print_z_min_mm": 0.0,
+      "volume_mm3": 5447.05,
+      "print_bounds_mm": [
+        164.0,
+        23.0,
+        3.0
+      ],
+      "quantity": 1
+    }
+  },
+  "bounds": [
+    170.0,
+    205.73,
+    184.0
+  ],
+  "loaded_depth_by_diameter_mm": {
+    "160.0": 210.73,
+    "200": 230.73,
+    "220.0": 240.73
+  },
+  "meaning": "Analytic CAD solid volume including quantities, not grams or sliced filament.",
+  "headless_revision": "v0.4.1-headless-onboard-boot-fit-prototype"
+}

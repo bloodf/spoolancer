@@ -1,0 +1,1 @@
+v0.3 compact design with a 2-inch ST7789 display. The current v0.4 default is screenless. This archive preserves the v0.3 mechanical design and its documentation; current firmware retains an optional small-screen build. Do not mix revision-specific base, cover or reset-button parts.
