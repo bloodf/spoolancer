@@ -12,7 +12,7 @@ The viewer is a build guide. It does not connect to an ESP32, read a scale, writ
 - Move the explosion control to separate parts; return it to zero for their actual modeled locations.
 - Select a numbered part in the list or model to identify it. Isolate a part to inspect hidden features.
 - Hide the reference spool or housing to inspect the electronics and load cell.
-- Toggle clearance references to see provisional plug, wire and converter space.
+- Toggle clearance references to see provisional plug and wire space.
 - Use a standard camera view or reset the view if the assembly moves off screen.
 
 An exploded view spreads parts for visibility; its separated distances are not assembly measurements or a required installation sequence.
@@ -21,9 +21,9 @@ An exploded view spreads parts for visibility; its separated distances are not a
 
 The printed parts use the same geometry as the selected variant's individual STEP/STL files. The two rim rails are separate physical instances. Electronics, the load cell and reference spool are simplified envelopes with the locations used by the CAD checks. Their detailed component shapes and wiring are not manufacturer CAD.
 
-The purple converter reference is unassigned clearance, not a selected module or a dedicated mount. The builder chooses where to glue an insulated converter and drill the DC-jack opening after checking the real parts. No exact jack or flexible cable routing is claimed. See [power instructions](DC-POWER.md) and [the variant fit notes](OLED-RGB-VARIANT.md).
+The converter and jack are not modeled. The builder chooses where to glue an insulated converter and drill the DC-jack opening after checking the real parts against the internal cable route and moving assembly. Cable references show a nominal routing envelope, not simulated bending forces or a physically verified harness. See [power instructions](DC-POWER.md) and [the variant fit notes](OLED-RGB-VARIANT.md).
 
-The fixed base carries the controller, HX711 and indicator pod. The load cell connects the fixed base to the floating carrier. The rim rails, side guides, NFC pod and spool move with that carrier. Wires must not become a second support path or pull on the moving assembly.
+The fixed base carries the controller, HX711 and the vertical front-wall OLED/LED supports. The load cell connects the fixed base to the floating carrier. The rim rails, side guides, NFC pod, cable channel and spool move with that carrier. The channel hides the reader-height slack behind a removable cover; a flexible tail connects to the fixed electronics inside the base. Wires must not become a second support path or pull on the moving assembly.
 
 ## Local copy and editable source
 

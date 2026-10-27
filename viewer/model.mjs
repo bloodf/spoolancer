@@ -9,6 +9,8 @@ export function partPosition(part, amount) {
 }
 
 export function partVisible(part, visibility, isolated, hidden) {
+  const alternatePose = part.pose === 'min' || part.pose === 'max';
+  if (alternatePose && isolated !== part.id) return false;
   return (!isolated || part.id === isolated) && !hidden.has(part.id) &&
     (part.category === 'printed' || Boolean(visibility[part.category]));
 }

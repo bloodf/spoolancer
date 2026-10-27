@@ -27,7 +27,7 @@ def tone(part):
         return COLORS['clearance']
     if part['category'] != 'printed':
         return COLORS['hardware']
-    return COLORS['moving'] if part['id'] in MOVING else COLORS['fixed']
+    return COLORS['moving'] if part['id'] in MOVING or part['number'] == '29' else COLORS['fixed']
 
 
 class Scene:
@@ -35,6 +35,9 @@ class Scene:
         self.data = data
         self.parts = [p for p in metadata['parts'] if any(m in data for m in p['meshes'])]
         self.by_id = {p['id']: p for p in self.parts}
+        mapped = [m for p in self.parts for m in p['meshes']]
+        if len(mapped) != len(set(mapped)) or set(mapped) != set(data):
+            raise ValueError('Part map must cover every scene mesh exactly once; rebuild matching CAD and metadata.')
         self.polydata = {}
         for name, mesh in data.items():
             vertices = np.asarray(mesh['vertices'], dtype=float)
@@ -65,9 +68,12 @@ class Scene:
         return points.min(axis=0), points.max(axis=0)
 
     def draw(self, ax, parts, *, exploded=False, view=(350, -470, 320), opacity=None,
-             center=None, scale=None, anchors=None, mesh_filter=None):
+             center=None, scale=None, anchors=None, mesh_filter=None, shifts=None):
         """Render actual scene meshes and return projected callout anchors."""
         opacity = opacity or {}
+        shifts = shifts or {}
+        def part_shift(part):
+            return np.asarray(part['explode'] if exploded else shifts.get(part['id'], (0, 0, 0)))
         renderer = vtk.vtkRenderer()
         renderer.SetBackground(245 / 255, 244 / 255, 239 / 255)
         renderer.SetUseDepthPeeling(True)
@@ -76,7 +82,7 @@ class Scene:
         bounds = []
         for part in parts:
             alpha = opacity.get(part['id'], 1)
-            shift = np.asarray(part['explode'] if exploded else (0, 0, 0))
+            shift = part_shift(part)
             for name in part['meshes']:
                 if name not in self.data or (mesh_filter and not mesh_filter(name)):
                     continue
@@ -142,8 +148,7 @@ class Scene:
         for part in parts:
             if anchors and part['id'] in anchors:
                 point = np.asarray(anchors[part['id']], dtype=float)
-                if exploded:
-                    point += np.asarray(part['explode'])
+                point += part_shift(part)
             else:
                 # Snap leaders to a real triangle, not the empty centre of a frame.
                 name = next(m for m in part['meshes'] if m in self.data)
@@ -155,8 +160,7 @@ class Scene:
                          'nfc_guide': (50, -30, 165), 'side_guide': (-50, -20, 97)}
                 hint = np.asarray(hints.get(part['id'], (a + b) / 2))
                 point = triangles[np.argmin(np.sum((triangles - hint) ** 2, axis=1))]
-                if exploded:
-                    point += np.asarray(part['explode'])
+                point += part_shift(part)
             renderer.SetWorldPoint(*point, 1)
             renderer.WorldToDisplay()
             x, y, _ = renderer.GetDisplayPoint()
@@ -250,7 +254,20 @@ def render_variant(previews, scene_data, parameters, validation, variant):
     previews = Path(previews)
     printed = [p for p in model.parts if p['category'] == 'printed']
     hardware = [p for p in model.parts if p['category'] in ('electronics', 'hardware')]
+    unique_printed_files = sum(not name.startswith('fit_') for name in validation['parts'])
     main = printed + hardware
+    routes = [p for p in model.parts if p.get('role') == 'cable_route']
+    nominal_routes = [p for p in routes if p.get('pose', 'nominal') == 'nominal']
+    base_routes = [p for p in nominal_routes if 'REF_NFC_base_flex_nominal' in p['meshes']]
+    routing_cover = next((p for p in printed if p['number'] == '29'), None)
+    integrated_front = 'indicator_fascia' not in model.by_id
+    finishing = validation.get('edge_finishing', {}).get('operations', {})
+    chamfer_count = sum(op['operation'] == 'chamfer' for op in finishing.values())
+    if integrated_front and (not finishing or chamfer_count != len(finishing)):
+        raise ValueError('The integrated-front preview requires the final chamfer-only geometry report.')
+    def finish_caption(key, label):
+        op = finishing.get(key)
+        return f"{label}: {op['radius_or_chamfer_mm']:g} mm {op['operation']}" if op else label + ': see geometry report'
     oled = bool(parameters['oled_enabled'])
     name = 'OLED + five LEDs' if oled else 'Five LEDs + web controls'
     revision = parameters['revision']
@@ -269,8 +286,8 @@ def render_variant(previews, scene_data, parameters, validation, variant):
                    opacity={'load_cell': 1, 'esp32': 1, 'hx711': 1})
         notes = [
             ('Upright, adjustable cradle', 'Spools up to 100 mm wide.\nThe reader stays beside the flange.'),
-            ('Softened exterior edges', 'Chamfers and rounded transitions\nare part of the exported CAD.'),
-            ('11 printed pieces', 'Two identical cradle rails.\nRemovable lid, reader and indicator pod.'),
+            ('Chamfered exterior edges', 'Exterior bevels continue across\nthe housing, reader and guides.'),
+            (f'{len(printed)} printed pieces', 'Two identical cradle rails.\nControls integrated into the front wall.' if integrated_front else 'Two identical cradle rails.\nRemovable lid, reader and indicator pod.'),
             ('DC-powered enclosure', 'Closed USB wall and BOOT access.\nDrill your jack hole after checking fit.'),
         ]
         for y, (title, desc) in zip([.76, .59, .42, .25], notes):
@@ -288,70 +305,106 @@ def render_variant(previews, scene_data, parameters, validation, variant):
                         'pn532': 'Inside the side reader pod', 'esp32': 'Approximate board envelope', 'oled': 'Module dimensions provisional',
                         'stops': 'Hardware references; not printed', 'indicator_fascia': 'Fixed to the main enclosure',
                         'leds': '60 LEDs/m · 16.67 mm pitch', 'load_cell': 'Nominal 80 mm bar cell'})
-    footer(fig, '01–11: printed instances (10 unique files). Other numbers: purchased-hardware references. Spool, cables and clearance volumes omitted; converter and jack are not modeled.')
+    footer(fig, f'{len(printed)} printed instances ({unique_printed_files} unique files). Numbers match the 3D viewer. Spool, cables and clearance volumes omitted; converter and jack are not modeled.')
     output(fig, 'exploded')
 
     fig = figure('Where each component lives', f'{name} · Housing and cradle shown transparent; all parts remain in their assembled positions', (20, 14))
     legend(fig)
     ax = axes(fig, [.185, .10, .63, .72])
-    clearances = [model.by_id[k] for k in ['power_space', 'usb_space', 'boot_space']]
+    clearances = [model.by_id[k] for k in ['power_space', 'usb_space', 'boot_space'] if k in model.by_id] + nominal_routes
     opacity = {'base': .18, 'top_cover': .07, 'carrier': .10, 'rim_rail': .16, 'rim_rail_front': .16,
                'side_guide': .28, 'nfc_guide': .32, 'nfc_pod': .15, 'nfc_pod_cover': .12,
                'indicator_fascia': .14, 'indicator_back': .12, 'power_space': .2, 'usb_space': .18, 'boot_space': .15}
+    if routing_cover is not None:
+        opacity[routing_cover['id']] = .12
     positions = model.draw(ax, main + clearances, view=(350, -520, 540), opacity=opacity,
                            anchors={'stops': [61, -52, 32], 'pn532': [45, 0, 155]})
     focus = [p for p in hardware if int(p['number']) <= 18] + clearances
     callouts(fig, ax, focus, positions, left=.025, right=.815, ymin=.16, ymax=.79,
              subtitles={'power_space': 'Unassigned space, not a converter', 'usb_space': 'Internal plug allowance only',
                         'boot_space': 'Onboard button; no extra switch', 'load_cell': 'Fixed end → floating carrier',
-                        'pn532': 'Moves with the weighing assembly', 'leds': 'Fixed front pod',
-                        'oled': 'Fixed above the LEDs', 'stops': 'Set a clearance below the carrier'})
-    footer(fig, 'Purple volume is only an unassigned power-space reference. Glue the insulated 12 V-to-5 V converter to a suitable fixed wall after checking its actual dimensions.')
+                        'pn532': 'Moves with the weighing assembly', 'leds': 'Fixed front wall' if integrated_front else 'Fixed front pod',
+                        'oled': 'Fixed left of the LEDs' if integrated_front else 'Fixed above the LEDs',
+                        'stops': 'Set a clearance below the carrier'})
+    footer(fig, 'Clearance volumes are provisional references. The converter is owner-selected and glued to a suitable fixed wall after checking actual fit and wire clearance.')
     output(fig, 'component-locations')
 
     fig = figure('Inside the fixed base', 'Lid and weighing assembly omitted for service visibility · Hardware and clearance references retain their real locations', (16, 11))
     ax = axes(fig, [.01, .13, .72, .73])
     interior_ids = ['base', 'esp32', 'hx711', 'load_cell', 'stops', 'power_space', 'usb_space', 'boot_space']
-    shown = [model.by_id[k] for k in interior_ids]
+    shown = [model.by_id[k] for k in interior_ids if k in model.by_id] + base_routes
     positions = model.draw(ax, shown, view=(-170, -330, 620),
                            opacity={'base': .55, 'power_space': .2, 'usb_space': .16, 'boot_space': .2})
     for y, (title, desc) in zip([.75, .57, .39, .21], [
         ('12 / Load cell', 'Fixed M5 end bolts to the base.\nM4 end supports the moving carrier.'),
         ('13 + 14 / Control boards', 'ESP32-S3 on the left.\nHX711 amplifier on the right.'),
-        ('20 / Power space', 'Purple volume is unassigned.\nNo converter or mount is modeled.'),
+        ('Power conversion', 'Converter and jack are owner-selected.\nNo mount or jack hole is imposed.'),
         ('21 + 22 / Service access', 'Internal USB power plug allowance.\nBOOT reached through its tool bore.')]):
         fig.text(.75, y, title, fontsize=12, fontweight='bold')
         fig.text(.75, y - .037, desc, fontsize=10, color=MUTED, va='top', linespacing=1.6)
     footer(fig, 'Disconnect converter power before computer USB. Jack location is user-drilled; board, plug, wiring and BOOT access require a physical fit check.')
     output(fig, 'service-interior')
 
-    fig = figure('Indicator pod / inside and outside', 'Actual front-panel and rear-cover geometry · The display and LED envelopes remain provisional', (16, 11))
-    ids = ['indicator_fascia', 'indicator_back', 'leds'] + (['oled'] if oled else [])
-    shown = [model.by_id[k] for k in ids]
-    ax = axes(fig, [.015, .14, .48, .68])
-    model.draw(ax, shown, view=(130, -500, 290))
-    ax2 = axes(fig, [.51, .14, .475, .68])
-    model.draw(ax2, shown, exploded=True, view=(-220, 420, 240))
-    fig.text(.055, .81, 'Assembled front', fontsize=13, fontweight='bold')
-    fig.text(.55, .81, 'Separated rear', fontsize=13, fontweight='bold')
-    fig.text(.055, .12, '10  Front panel with five light openings', fontsize=11, color=MUTED)
-    fig.text(.55, .12, '11  Rear cover     16  LED strip' + ('     17  OLED module' if oled else ''), fontsize=11, color=MUTED)
+    front_ids = ['base', 'top_cover'] if integrated_front else ['indicator_fascia', 'indicator_back']
+    shown = [model.by_id[k] for k in front_ids + ['leds'] + (['oled'] if oled else [])]
+    fig = figure('Vertical front controls' if integrated_front else 'Indicator pod / inside and outside',
+                 'Actual enclosure geometry · LED strip and OLED module dimensions remain provisional', (16, 11))
+    ax = axes(fig, [.015, .17, .48, .60])
+    model.draw(ax, shown, view=(100, -650, 215))
+    ax2 = axes(fig, [.51, .17, .475, .60])
+    inside = [p for p in shown if p['id'] != 'top_cover']
+    model.draw(ax2, inside, exploded=not integrated_front, view=(-120, 400, 390),
+               opacity={'base': .22} if integrated_front else {})
+    fig.text(.055, .81, ('OLED and LEDs in the front wall' if oled else 'Five LEDs in the front wall') if integrated_front else 'Assembled front', fontsize=13, fontweight='bold')
+    fig.text(.55, .81, 'Service through the main lid' if integrated_front else 'Separated rear', fontsize=13, fontweight='bold')
+    fig.text(.055, .12, '01  One base; no separate front pod' if integrated_front else '10  Front panel with five light openings', fontsize=11, color=MUTED)
+    fig.text(.55, .12, '16  LED strip' + ('     17  OLED module' if oled else '') + ('     Lid omitted; base transparent' if integrated_front else '     11  Rear cover'), fontsize=11, color=MUTED)
     footer(fig, 'LED centres: 16.67 mm. Strip width, coating, OLED board and pin dimensions need measuring. No screw-hole pitch is assumed for the OLED.')
     output(fig, 'indicator-detail')
 
-    fig = figure('The edge treatment, up close', 'Rendered from the printable solids · Functional seats, screw holes and the load path retain their clearance geometry', (16, 11))
-    # Closely frame two existing components instead of inventing a decorative model.
+    fig = figure('Exterior chamfers, up close', 'Rendered from the printable solids · Functional seats, screw holes and the load path retain their clearance geometry', (16, 11))
     ax = axes(fig, [.02, .17, .46, .60])
     model.draw(ax, [model.by_id[k] for k in ['base', 'top_cover']], view=(360, -460, 310),
                center=[57, -54, 27], scale=42)
     ax2 = axes(fig, [.52, .17, .46, .60])
-    model.draw(ax2, [model.by_id[k] for k in ['indicator_fascia', 'indicator_back']], view=(220, -420, 300))
+    model.draw(ax2, [model.by_id[k] for k in front_ids], view=(120, -650, 215))
     fig.text(.055, .81, 'Housing rim and outer corner', fontsize=13, fontweight='bold')
-    fig.text(.55, .81, 'Indicator panel perimeter', fontsize=13, fontweight='bold')
-    fig.text(.055, .12, 'Base rim R0.65 mm · lid edge R0.8 mm.', fontsize=11, color=MUTED)
-    fig.text(.55, .12, 'Panel corners R3 mm · front edge R0.7 mm · openings 0.4 mm chamfer.', fontsize=11, color=MUTED)
+    fig.text(.55, .81, 'Vertical front openings' if integrated_front else 'Indicator panel perimeter', fontsize=13, fontweight='bold')
+    fig.text(.055, .12, finish_caption('base_top_outer_perimeter', 'Base rim'), fontsize=11, color=MUTED)
+    fig.text(.55, .12, f'{chamfer_count} chamfer operations recorded in the CAD report.', fontsize=11, color=MUTED)
     footer(fig, 'These are CAD surface details, not simulated print finish. Verify the exported parts in your slicer and print the fit samples first.')
     output(fig, 'edge-detail')
+
+    if routing_cover is not None:
+        min_h = parameters['nfc_height_min']
+        max_h = parameters['nfc_height_max']
+        ref_h = parameters['nfc_height_reference']
+        fig = figure('Hidden NFC wiring / full reader travel',
+                     'Cover removed to reveal the actual channel · Cable volumes are nominal routing envelopes, not a physical flex simulation', (20, 13))
+        fig.text(.04, .825, f'Channel open · reader centre {ref_h:g} mm', fontsize=14, fontweight='bold')
+        ax = axes(fig, [.015, .18, .49, .60])
+        route_base_ids = ['base', 'carrier', 'nfc_guide', 'nfc_pod', 'pn532']
+        route_parts = [model.by_id[k] for k in route_base_ids] + nominal_routes
+        model.draw(ax, route_parts, view=(680, -250, 280),
+                   opacity={'base': .15, 'carrier': .25, 'nfc_pod': .20})
+        fig.text(.04, .135, f"07  Guide and channel     {routing_cover['number']}  Removable cover omitted", fontsize=11, color=MUTED)
+        fig.text(.04, .108, 'Transparent base reveals the internal cable tail.', fontsize=10, color=MUTED)
+        case_base = [model.by_id[k] for k in ['base', 'carrier', 'nfc_guide', 'nfc_pod', 'nfc_pod_cover', 'pn532']]
+        actual_extreme_routes = all(any(p.get('pose') == pose for p in routes) for pose in ['min', 'max'])
+        for x, height, pose, title in [(.51, min_h, 'min', 'Lowest reader position'), (.755, max_h, 'max', 'Highest reader position')]:
+            fig.text(x + .01, .825, title, fontsize=13, fontweight='bold')
+            ax = axes(fig, [x, .18, .235, .60])
+            shift = (0, 0, height - ref_h)
+            moved = {k: shift for k in ['nfc_pod', 'nfc_pod_cover', 'pn532']}
+            actual_route = [p for p in routes if p.get('pose') == pose]
+            model.draw(ax, case_base + actual_route + base_routes, view=(680, 0, 150),
+                       opacity={'base': .14, 'carrier': .20, 'nfc_pod': .20, 'nfc_pod_cover': .18},
+                       shifts=moved, center=[30, -5, 100], scale=145)
+            fig.text(x + .01, .135, f'{height:g} mm reader centre', fontsize=11, color=MUTED)
+        route_note = 'Height panels show the exported reader-loop envelopes with the nominal base tail.' if actual_extreme_routes else 'Height panels show rigid travel geometry; only the left view shows the nominal cable envelope.'
+        fig.text(.52, .108, f'{max_h - min_h:g} mm vertical travel. Cover removed in all three views.', fontsize=10, color=MUTED)
+        footer(fig, route_note + ' Cable bend radius, slack, wear and effect on scale zero require a physical test.')
+        output(fig, 'cable-routing')
 
     if metadata_path.read_bytes() != metadata_bytes or hashlib.sha256((previews / 'scene.json').read_bytes()).hexdigest() != scene_digest:
         raise RuntimeError('Scene or part map changed during rendering; regenerate the previews.')

@@ -29,11 +29,11 @@ All four use one 5 kg bar load cell, an HX711 and a PN532. The side reader moves
 
 ![OLED and five-LED upright CAD prototype with a reference spool](cad/variants/oled-led/previews/assembled.png)
 
-This is a CAD view, not a photograph of a tested build. The current LED/OLED parts have rounded exposed edges and small chamfers, with functional mounting faces retained. Confirm the actual board, load-cell threads and spool fit before printing a full set.
+This is a CAD view, not a photograph of a tested build. The current LED/OLED parts have chamfered exposed edges, integrated vertical front controls and a covered NFC cable route, with functional mounting faces retained. Confirm the actual board, load-cell threads and spool fit before printing a full set.
 
 ## Explore the assembly
 
-Open the [interactive 3D assembly](https://bloodf.github.io/spoolancer/) to rotate the model, select numbered parts, hide the spool or housing, and spread the parts apart with the explosion control. The OLED/LED and LED-only models use geometry generated from their printable CAD. Electronics are simplified placement references; the converter volume is unassigned space for the builder's chosen module.
+Open the [interactive 3D assembly](https://bloodf.github.io/spoolancer/) to rotate the model, select numbered parts, hide the spool or housing, and spread the parts apart with the explosion control. The OLED/LED and LED-only models use geometry generated from their printable CAD. Electronics are simplified placement references. The converter and user-drilled jack are not modeled; their actual placement must clear the internal cable route and moving parts.
 
 ![Numbered OLED and LED exploded assembly](cad/variants/oled-led/previews/exploded.png)
 
@@ -45,8 +45,8 @@ The [prototype pre-release](https://github.com/bloodf/spoolancer/releases/tag/v0
 
 - [Headless print bundle](https://github.com/bloodf/spoolancer/releases/download/v0.6.0-alpha.1/spoolancer-v0.6.0-alpha.1-headless-print.zip): 11 matching STEP/STL pairs, including three fit samples, assembly STEP and native FreeCAD.
 - [Touch print bundle](https://github.com/bloodf/spoolancer/releases/download/v0.6.0-alpha.1/spoolancer-v0.6.0-alpha.1-touch-8048-print.zip): 14 matching pairs, including three fit samples, assembly STEP and native FreeCAD.
-- [Five-LED print bundle](https://github.com/bloodf/spoolancer/releases/download/v0.6.0-alpha.1/spoolancer-v0.6.0-alpha.1-headless-led-print.zip): 15 matching pairs, including five fit samples; eleven production pieces; 170 × 186.48 mm printed footprint.
-- [OLED + five-LED print bundle](https://github.com/bloodf/spoolancer/releases/download/v0.6.0-alpha.1/spoolancer-v0.6.0-alpha.1-oled-led-print.zip): 16 matching pairs, including six fit samples; eleven production pieces; 170 × 201.48 mm printed footprint. Both new bundles include editable assemblies and DC/fit instructions.
+- [Five-LED print bundle](https://github.com/bloodf/spoolancer/releases/download/v0.6.0-alpha.1/spoolancer-v0.6.0-alpha.1-headless-led-print.zip): 14 matching pairs, including five fit samples; ten production pieces; 170 × 160 mm printed footprint.
+- [OLED + five-LED print bundle](https://github.com/bloodf/spoolancer/releases/download/v0.6.0-alpha.1/spoolancer-v0.6.0-alpha.1-oled-led-print.zip): 15 matching pairs, including six fit samples; ten production pieces; 170 × 160 mm printed footprint. Both new bundles include editable assemblies and DC/fit instructions.
 - [Complete source bundle](https://github.com/bloodf/spoolancer/releases/download/v0.6.0-alpha.1/spoolancer-v0.6.0-alpha.1-source.zip): firmware, web interface, current and historical CAD, generation scripts, project art, tests and documentation.
 - [Interactive assembly viewer](https://github.com/bloodf/spoolancer/releases/download/v0.6.0-alpha.1/spoolancer-v0.6.0-alpha.1-assembly-viewer.zip): locally bundled 3D viewer, both current LED models, labels and exploded-view controls. New print bundles also include numbered assembly images.
 - [SHA-256 checksums](https://github.com/bloodf/spoolancer/releases/download/v0.6.0-alpha.1/SHA256SUMS.txt) for the downloads.

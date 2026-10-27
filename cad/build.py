@@ -146,8 +146,14 @@ def rail_pair(cx,cy,length,width,z):
 
 BW,BD,CY,W=P['base_width'],P['base_depth'],P['base_center_y'],P['wall']
 BT,LT=P['body_top'],P['lid_thickness']
-front_face=rounded_rectangle(BW,BD,P['base_corner_radius'],cy=CY)
-inner_face=rounded_rectangle(BW-2*W,BD-2*W,P['base_corner_radius']-W,cy=CY)
+def beveled_rectangle(width,depth,bevel,cx=0,cy=0):
+    x0,x1=cx-width/2,cx+width/2;y0,y1=cy-depth/2,cy+depth/2;c=bevel
+    pts=[V(x0+c,y0,0),V(x1-c,y0,0),V(x1,y0+c,0),V(x1,y1-c,0),V(x1-c,y1,0),V(x0+c,y1,0),V(x0,y1-c,0),V(x0,y0+c,0)]
+    return Part.Face(Part.makePolygon(pts+[pts[0]]))
+
+outline=beveled_rectangle if INDICATORS else rounded_rectangle
+front_face=outline(BW,BD,P['base_corner_radius'],cy=CY)
+inner_face=outline(BW-2*W,BD-2*W,P['base_corner_radius']-W,cy=CY)
 base=extrusion(front_face,BT).cut(extrusion(inner_face,BT,P['floor']))
 holes=[P['cell_front_y']+o for o in P['cell_hole_offsets']]
 fixed_y=(holes[0]+holes[1])/2
@@ -185,8 +191,7 @@ else:
     boot_top=P['esp_pcb_bottom']+P['esp_envelope'][2]+P['boot_body_height_estimate']+P['boot_actuator_height_estimate']
     entry=V(*P['boot_tool_entry']);direction=V(bx,by,boot_top+1.5)-entry
     base_cut.append(Part.makeCylinder(P['boot_access_hole_diameter']/2,direction.Length,entry,direction))
-    # Fixed indicator wiring exits clear of the load cell's centered lead space.
-    base_cut.append(Part.makeCylinder(3,8,V(40,CY-BD/2-2,26),V(0,1,0)))
+
 tie_locations=[(ex-18,ey,ew+9),(ex+17,ey,ew+9),(hx,hy,hw+9)]
 for x,y,span in tie_locations:
     for side in (-1,1):
@@ -195,13 +200,26 @@ for x,y,span in tie_locations:
 feet=P['feet_positions']
 for x,y in feet:
     base_cut.append(cyl(6.2,0.6,x,y,0))
+if INDICATORS:
+    from indicators import make_indicators
+    indicator_data=make_indicators(P,App,Part,box,cyl,union,cut,add,finish,near)
+    base=union([base]+indicator_data['base_additions'])
+    base_cut += indicator_data['base_cutters']
+    # Fixed cable tie saddle, wholly below the carrier's open central side bay.
+    base=union([base,box(10,8,5,24,12,P['floor'])])
+    base_cut += [box(2,12,2,24,12,4.2)]
 base=cut(base,base_cut)
 if INDICATORS:
+    base=indicator_data['finish_base'](base)
     def base_outline(b,z):
         return near(b.ZMin,z) and near(b.ZMax,z) and (near(b.XMin,-BW/2) or near(b.XMax,BW/2) or near(b.YMin,CY-BD/2) or near(b.YMax,CY+BD/2))
-    base=finish('base_bottom_perimeter',base,'fillet',P['finish_base_bottom_radius'],lambda b:base_outline(b,0))
-    base=finish('base_top_outer_perimeter',base,'fillet',P['finish_base_top_radius'],lambda b:base_outline(b,BT))
+    base=finish('base_bottom_perimeter',base,'chamfer',P['finish_base_bottom_chamfer'],lambda b:base_outline(b,0))
+    base=finish('base_top_outer_perimeter',base,'chamfer',P['finish_base_top_chamfer'],lambda b:base_outline(b,BT))
 add('base',base,(0.15,0.20,0.23))
+if INDICATORS:
+    indicator_data['coupons']=indicator_data['coupons_from_base'](base)
+    from cable_route import cable_system
+    CABLE=cable_system(P,App,Part,box,union,cut,finish,near)
 
 # All contact parts and the reader move with the cell. The carrier has open bays.
 cw,cd=P['carrier_size']
@@ -230,7 +248,7 @@ for x in (-49.5,49.5):
         carrier_cut += [slot(x,y,37,3.4,28.4,15),box(38,5.8,2.6,math.copysign(52,x),y,44.4)]
 carrier=cut(carrier,carrier_cut)
 if INDICATORS:
-    carrier=finish('carrier_lower_outer_edges',carrier,'fillet',P['finish_carrier_radius'],
+    carrier=finish('carrier_lower_outer_edges',carrier,'chamfer',P['finish_carrier_chamfer'],
         lambda b:near(b.ZMin,rib_bottom) and near(b.ZMax,rib_bottom) and (near(b.XMin,-cw/2) or near(b.XMax,cw/2) or near(b.YMin,-cd/2) or near(b.YMax,cd/2)))
 add('carrier',carrier,(0.67,0.77,0.74))
 
@@ -250,7 +268,7 @@ for x in (-61,61):
     rail_cut.append(cyl(1.75,50,x,52,49))
 rail=cut(rail,rail_cut)
 if INDICATORS:
-    rail=finish('rim_rail_external_end_perimeters',rail,'fillet',P['finish_rail_end_radius'],lambda b:near(abs(b.XMin),cw/2) and near(b.XLength,0))
+    rail=finish('rim_rail_external_end_perimeters',rail,'chamfer',P['finish_rail_end_chamfer'],lambda b:near(abs(b.XMin),cw/2) and near(b.XLength,0))
 add('rim_rail',rail,(0.77,0.84,0.82))
 front_rail=rail.copy();front_rail.rotate(V(0,0,0),V(0,0,1),180)
 
@@ -262,7 +280,11 @@ def x_slot(x,y,z,diameter,length,depth):
                   box(depth,diameter,2*delta,x+depth/2,y,z-delta)])
 
 
+GUIDE_CACHE={}
+
 def guide_for_width(width,left=False,nfc=False):
+    key=(width,left,nfc)
+    if key in GUIDE_CACHE:return GUIDE_CACHE[key].copy()
     inner=(width+P['guide_clearance_total'])/2
     top=P['guide_top'];h=half_depth
     bottom=[(-h,surface(h)+1),(-34,surface(34)+1),(-33,50),(33,50),(34,surface(34)+1),(h,surface(h)+1)]
@@ -282,18 +304,21 @@ def guide_for_width(width,left=False,nfc=False):
     guide=cut(guide,cutters)
     if INDICATORS:
         if nfc:
-            guide=finish('nfc_mast_external_vertical_corners',guide,'fillet',P['finish_mast_corner_radius'],
+            guide=finish('nfc_mast_external_vertical_corners',guide,'chamfer',P['finish_mast_corner_chamfer'],
                 lambda b:near(b.XMin,inner+6) and near(b.XMax,inner+6) and b.ZLength>50 and near(b.YLength,0) and (near(abs(b.YMin),P['nfc_mast_y']+4) or near(abs(b.YMin),P['nfc_mast_y']-4)))
-            guide=finish('nfc_mast_top_outer_edges',guide,'fillet',P['finish_mast_top_radius'],
+            guide=finish('nfc_mast_top_outer_edges',guide,'chamfer',P['finish_mast_top_chamfer'],
                 lambda b:near(b.ZMin,P['nfc_mast_top']) and near(b.ZMax,P['nfc_mast_top']) and (near(b.XMin,inner) or near(b.XMax,inner+6) or near(abs(b.YMin),P['nfc_mast_y']+4) or near(abs(b.YMax),P['nfc_mast_y']+4) or near(abs(b.YMin),P['nfc_mast_y']-4) or near(abs(b.YMax),P['nfc_mast_y']-4)))
         else:
-            guide=finish('side_guide_top_outer_edge',guide,'fillet',P['finish_guide_top_radius'],
+            guide=finish('side_guide_top_outer_edge',guide,'chamfer',P['finish_guide_top_chamfer'],
                 lambda b:near(b.ZMin,top) and near(b.ZMax,top) and near(b.XMin,inner+4) and near(b.XMax,inner+4))
+    if INDICATORS and nfc:guide=union([guide,CABLE['channel'](width)[0]])
     if left: guide.rotate(V(0,0,0),V(0,0,1),180)
+    GUIDE_CACHE[key]=guide.copy()
     return guide
 
 add('side_guide',guide_for_width(P['reference_spool_width'],True),(0.25,0.43,0.42))
 add('nfc_guide',guide_for_width(P['reference_spool_width'],nfc=True),(0.25,0.43,0.42))
+if INDICATORS:add('nfc_cable_cover',CABLE['channel'](P['reference_spool_width'])[1],(.18,.29,.30))
 
 
 def x_cylinder(radius,length,x,y,z):
@@ -320,16 +345,20 @@ def pod_for_setting(width,height):
         cuts.append(x_cylinder(1.05,9,inner+5,y,height+dz))
     pod=union([pod]+additions)
     # Bottom slot permits direct solder wires with a silicone service loop.
-    cuts.append(box(10,12,5,inner+9,0,height-oz/2-1))
+    if not INDICATORS:cuts.append(box(10,12,5,inner+9,0,height-oz/2-1))
     pod=cut(pod,cuts)
     cover=box(P['nfc_back_thickness'],oy,oz,inner+depth+P['nfc_back_thickness']/2,0,height-oz/2)
     cover=cut(cover,[x_cylinder(1.35,4,inner+depth-1,y,height+dz) for y,dz in P['nfc_cover_screw_positions']])
     if INDICATORS:
         def corner(b):return near(b.YLength,0) and near(b.ZLength,0) and near(abs(b.YMin),oy/2) and (near(b.ZMin,height-oz/2) or near(b.ZMin,height+oz/2))
-        pod=finish('nfc_pod_external_corners',pod,'fillet',P['finish_nfc_corner_radius'],corner)
-        cover=finish('nfc_back_cover_corners',cover,'fillet',P['finish_nfc_corner_radius'],corner)
-        cover=finish('nfc_back_cover_outer_rim',cover,'fillet',P['finish_nfc_back_edge_radius'],
+        pod=finish('nfc_pod_external_corners',pod,'chamfer',P['finish_nfc_corner_chamfer'],corner)
+        cover=finish('nfc_back_cover_corners',cover,'chamfer',P['finish_nfc_corner_chamfer'],corner)
+        cover=finish('nfc_back_cover_outer_rim',cover,'chamfer',P['finish_nfc_back_edge_chamfer'],
             lambda b:near(b.XMin,inner+depth+P['nfc_back_thickness']) and near(b.XLength,0) and (near(b.YMin,-oy/2) or near(b.YMax,oy/2) or near(b.ZMin,height-oz/2) or near(b.ZMax,height+oz/2)))
+    if INDICATORS:
+        port=CABLE['port'](width,height)
+        pod=pod.cut(port).removeSplitter()
+        cover=union([cover,CABLE['hood'](width,height)]).cut(port).removeSplitter()
     pcb=box(P['nfc_board'][2],P['nfc_board'][0],P['nfc_board'][1],inner+2+P['nfc_board'][2]/2,0,height-P['nfc_board'][1]/2)
     pcb=cut(pcb,[x_cylinder(1.524,4,inner+1,y,height+dz) for y,dz in [(-13.9,-12.6),(13.9,12.6)]])
     components=box(2.4,28,22,inner+4.8,0,height-11)
@@ -342,9 +371,13 @@ add('nfc_pod_cover',pod_cover,(0.78,0.42,0.16))
 add('REF_PN532_PCB',pnboard,(0.71,0.16,0.13),True)
 add('REF_PN532_components',pncomponents,(0.18,0.18,0.18),True)
 add('REF_PN532_wire_allowance',pnwires,(0.34,0.23,0.15),True)
+if INDICATORS:
+    for label,height in [('nominal',P['nfc_height_reference']),('low',P['nfc_height_min']),('high',P['nfc_height_max'])]:
+        add('REF_NFC_cable_'+label,CABLE['wire'](P['reference_spool_width'],height),(.90,.48,.13),True)
+    add('REF_NFC_base_flex_nominal',CABLE['base_flex'](P['reference_spool_width']),(.90,.48,.13),True)
 
 # Full fixed cover, with a 2 mm plan gap around the floating carrier.
-lid=extrusion(front_face,LT,BT).cut(extrusion(rounded_rectangle(
+lid=extrusion(front_face,LT,BT).cut(extrusion(outline(
     cw+2*P['cover_carrier_gap'],cd+2*P['cover_carrier_gap'],6),LT+2,BT-1))
 # The USB-side GPIO wires extend under the fixed cover, outside its aperture.
 lid=lid.cut(box(20,36,P['esp_cover_relief_depth']+.1,-79,ey,BT-.1))
@@ -352,7 +385,7 @@ lid=lid.cut(box(20,36,P['esp_cover_relief_depth']+.1,-79,ey,BT-.1))
 # opening. Both variants have a blank fixed cover without an added switch mount.
 lid=cut(lid,[cyl(1.7,12,x,y,BT-5) for x,y in lid_posts])
 if INDICATORS:
-    lid=finish('cover_top_outer_perimeter',lid,'fillet',P['finish_cover_radius'],lambda b:base_outline(b,BT+LT))
+    lid=finish('cover_top_outer_perimeter',lid,'chamfer',P['finish_cover_chamfer'],lambda b:base_outline(b,BT+LT))
     lid=finish('cover_top_carrier_aperture',lid,'chamfer',P['finish_cover_aperture_chamfer'],
         lambda b:near(b.ZMin,BT+LT) and near(b.ZMax,BT+LT) and b.XMin>=-cw/2-P['cover_carrier_gap']-.001 and b.XMax<=cw/2+P['cover_carrier_gap']+.001 and b.YMin>=-cd/2-P['cover_carrier_gap']-.001 and b.YMax<=cd/2+P['cover_carrier_gap']+.001)
 add('top_cover',lid,(0.25,0.43,0.42))
@@ -371,7 +404,6 @@ if not TOUCH:
         add('REF_USB_'+str(dy),box(8,9,3.3,ex-P['esp_envelope'][0]/2+3,ey+dy,P['esp_pcb_bottom']+1.6),(0.60,0.64,0.66),True)
 add('REF_HX711_PCB',box(*P['hx_board'],hx,hy,P['hx_pcb_bottom']),(0.16,0.40,0.23),True)
 if INDICATORS:
-    add('REF_power_conversion_space_unassigned',box(*P['power_space'],*P['power_space_center']),(.45,.44,.56),True)
     add('REF_USB_internal_plug_allowance',box(*P['usb_plug_space'],*P['usb_plug_space_center']),(.45,.48,.5),True)
 if not TOUCH:
     bx,by=P['boot_center_estimate']
@@ -440,9 +472,6 @@ if TOUCH:
     add('REF_touch_left_controls_allowance',touch_pose(box(12,40,6,-57,0,-11.4)),(.48,.50,.52),True)
 
 if INDICATORS:
-    from indicators import make_indicators
-    indicator_data=make_indicators(P,App,Part,box,cyl,union,cut,add,finish,near)
-
     def clamp_envelope(x,y,seat,length,nut_z,nut_angle=30):
         shaft=cyl(1.5,length,x,y,seat+.5-length)
         head=cyl(2.75,3,x,y,seat+.5)
@@ -456,7 +485,7 @@ if INDICATORS:
     for x,y in lid_posts:
         front=y<0
         add('REF_fastener_cover_'+str(x)+'_'+str(y),
-            clamp_envelope(x,y,41 if front else 38,16 if front else 10,29.4),(.55,.58,.60),True)
+            clamp_envelope(x,y,38,10,29.4),(.55,.58,.60),True)
     for x,y in P['saddle_bolt_positions']:
         add('REF_fastener_rail_'+str(x)+'_'+str(y),clamp_envelope(x,y,54,12,44.4,0),(.55,.58,.60),True)
     guide_x=(P['reference_spool_width']+P['guide_clearance_total'])/2+P['guide_bolt_offset']
@@ -512,7 +541,7 @@ def print_orientation(name,shape):
         s.rotate(V(0,0,0),V(1,0,0),180)
     if name=='side_guide':
         s.rotate(V(0,0,0),V(0,1,0),90)
-    if name in ('nfc_guide','nfc_pod','nfc_pod_cover','fit_nfc'):
+    if name in ('nfc_guide','nfc_pod','nfc_pod_cover','nfc_cable_cover','fit_nfc'):
         s.rotate(V(0,0,0),V(0,1,0),-90)
     if name=='rim_rail':
         s.rotate(V(0,0,0),V(1,0,0),-90)
@@ -538,6 +567,7 @@ for name,s in {**PARTS,**REFS}.items():
     ob.addProperty('App::PropertyString','Evidence','Design').Evidence='Reference envelope / verify received hardware' if name in REFS else 'Original generated prototype; edit parameters.json and regenerate'
     if getattr(ob,'ViewObject',None):
         ob.ViewObject.ShapeColor=COLORS[name]
+        if name in ('REF_NFC_cable_low','REF_NFC_cable_high'):ob.ViewObject.Visibility=False
     (rg if name in REFS else g).addObject(ob)
 ob=doc.addObject('Part::Feature','RimRailCopy')
 ob.Label='front rim rail (same print, rotated)'
@@ -553,7 +583,7 @@ if INDICATORS:
         'functional_exclusions':['Load-cell bearing pads and bolt seats','Rail slopes within the 100 mm spool width','Guide sliding feet and inner spool-facing planes','Nut pockets and fastener bores','Central NFC antenna face and 1.2 mm window','PCB support pads and OLED glass seat','Indicator opening throats; only front edges are beveled'],
         'coordinate_note':'Selections are recorded in each construction frame before later mirror/rotation; repeated adjustment cases reuse the same predicates.'}
     report['fastener_references']={'included':'Twelve nominal M3 cover/rail/guide clamp sets plus the four existing stop envelopes',
-        'not_complete':'Load-cell, NFC, indicator rear screws, threads, screw drives, cable ties and adhesive are not modeled',
+        'not_complete':'Load-cell, NFC, cable-cover screws, threads, screw drives, cable ties and adhesive are not modeled',
         'physical_fit_verified':False}
 scene={}
 for name,s in {**PARTS,**coupons}.items():
@@ -632,7 +662,7 @@ for i,a in enumerate(names):
             report['printed_part_intersections'][a+' / '+b]=vol
 report['component_intersections']={}
 for name,shape in REFS.items():
-    if 'adjustable_stop' in name:
+    if 'adjustable_stop' in name or name in ('REF_NFC_cable_low','REF_NFC_cable_high'):
         continue
     volumes={part:overlap(shape,s) for part,s in assembly_parts.items()}
     report['component_intersections'][name]={k:v for k,v in volumes.items() if v>0.01}
@@ -644,8 +674,9 @@ for diameter in [P['spool_diameter_min'],200,P['spool_diameter_max']]:
     for width in [P['spool_width_min'],80,P['spool_width_max']]:
         a,b=spool_envelopes(diameter,width)
         envelope=union([a,b])
-        fixed_parts={k:v for k,v in assembly_parts.items() if k not in ('side_guide','nfc_guide','nfc_pod','nfc_pod_cover')}
+        fixed_parts={k:v for k,v in assembly_parts.items() if k not in ('side_guide','nfc_guide','nfc_pod','nfc_pod_cover','nfc_cable_cover')}
         fixed_parts.update(side_guide=guide_for_width(width,True),nfc_guide=guide_for_width(width,nfc=True))
+        if INDICATORS:fixed_parts['nfc_cable_cover']=CABLE['channel'](width)[1]
         for height in [P['nfc_height_min'],P['nfc_height_reference'],P['nfc_height_max']]:
             pod2,cover2,board2,components2,wires2=pod_for_setting(width,height)
             check_parts={**fixed_parts,'nfc_pod':pod2,'nfc_pod_cover':cover2}
@@ -670,6 +701,7 @@ for diameter in [P['spool_diameter_min'],200,P['spool_diameter_max']]:
 if TOUCH or INDICATORS:
     bounds=Part.makeCompound(list(assembly_parts.values())).BoundBox
     report['geometry_checks']['assembled_printed_bounds_mm']=[round(bounds.XLength,2),round(bounds.YLength,2),round(bounds.ZLength,2)]
+    report['geometry_checks']['nominal_unloaded_height_with_feet_mm']=round(bounds.ZMax+P['foot_thickness']-.6,2)
     report['geometry_checks']['maximum_adjusted_assembly_bounds_mm']=[round(bounds.XLength,2),round(bounds.YLength,2),198.4]
     if TOUCH:
         report['geometry_checks']['touch_mount_evidence']='Manufacturer family outline; exact received-board fit unverified'
@@ -680,8 +712,18 @@ if TOUCH or INDICATORS:
         item['loaded_depth_mm']=round(max(bounds.YMax,r)-min(bounds.YMin,-r),2)
 if INDICATORS:
     report['indicator_fit']=indicator_data['notes']
+    insertion_checks={}
+    for name,sweep in indicator_data['insertion_sweeps'].items():
+        # Main lid is removed for service. Carrier, scale hardware and the
+        # remaining enclosure stay in place; compare the entire 40 mm sweep.
+        targets={k:s for k,s in assembly_parts.items() if k!='top_cover'}
+        targets.update({k:s for k,s in REFS.items() if k in ('REF_load_cell','REF_ESP32_PCB_estimate','REF_ESP32_module_estimate','REF_HX711_PCB','REF_load_cell_wire_allowance')})
+        insertion_checks[name]={k:overlap(sweep,s) for k,s in targets.items() if overlap(sweep,s)>.01}
+    report['oled_insertion']={'applicable':P['oled_enabled'],'main_lid_removed':True,'continuous_vertical_lift_mm':40,'reference_envelopes_checked':list(indicator_data['insertion_sweeps']),'positive_volume_intersections':insertion_checks,'physical_insertion_verified':False}
+    if any(insertion_checks.values()):raise RuntimeError('OLED vertical insertion blocked: '+str(insertion_checks))
+    report['nfc_cable_route']=CABLE['verify'](P,PARTS,REFS,guide_for_width,pod_for_setting,overlap)
     report['power_fit']={'external_usb_openings':False,'jack_hole':'User drilled; none modeled',
-        'unassigned_converter_space_mm':P['power_space'],'actual_converter_fit_verified':False,
+        'converter_placement':'User chooses and verifies wall attachment; no reserved module volume','actual_converter_fit_verified':False,
         'internal_usb_plug_envelope_mm':P['usb_plug_space'],'actual_usb_plug_fit_verified':False,
         'pcb_edge_to_closed_inner_wall_mm':round(ex-P['esp_envelope'][0]/2-(-BW/2+W),2)}
 report['cad_solid_volume_mm3_with_quantities']=round(sum(p['volume_mm3']*p['quantity'] for n,p in report['parts'].items() if not n.startswith('fit_')),2)
@@ -717,10 +759,12 @@ if any(v for v in report['component_intersections'].values()) or report['printed
     raise RuntimeError('Assembly intersects; inspect validation.json')
 if any(v['positive_volume_intersections'] for v in report['spool_envelope_checks']+report['pod_adjustment_checks']):
     raise RuntimeError('A spool envelope intersects; inspect validation.json')
+if INDICATORS and not report['nfc_cable_route']['digital_clearance_pass']:
+    raise RuntimeError('NFC cable route clearance failed; inspect validation.json')
 if not TOUCH:
     if report['boot_access']['tool_component_intersections']:
         raise RuntimeError('BOOT approach intersects a modeled component; inspect validation.json')
     # Remove only explicitly superseded outputs owned by this generator.
-    for name in ['button_cap.stl','fit_button.stl','button_cap.step','fit_button.step','spoolancer-v0.4-headless.FCStd','spoolancer-v0.4-headless-assembly.step']:
+    for name in (['indicator_fascia.stl','indicator_fascia.step','indicator_back.stl','indicator_back.step'] if INDICATORS else [])+['button_cap.stl','fit_button.stl','button_cap.step','fit_button.step','spoolancer-v0.4-headless.FCStd','spoolancer-v0.4-headless-assembly.step']:
         (OUT/name).unlink(missing_ok=True)
 App.closeDocument(doc.Name)

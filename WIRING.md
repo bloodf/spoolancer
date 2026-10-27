@@ -66,7 +66,7 @@ Initial checks: detected memory, HX711 raw readings, PN532 firmware identificati
 
 ## Moving reader cable
 
-The PN532 travels with the adjustable side guide. Route four flexible stranded HSU leads through its pod and along the moving guide, then make a broad slack loop to the fixed electronics. Add strain relief at both ends. Keep it clear of rails, carrier edges, cover and stops at every supported width and reader height.
+The PN532 travels with the adjustable side guide. Route four flexible stranded HSU leads through its pod. In the current LED/OLED cases, the leads pass into a covered channel behind the sliding reader; the channel stores slack for height adjustment. Follow the variant notes for the concealed entry into the base. The original headless/touch cases use an exposed guide route. Every variant still needs a broad, flexible slack loop between the moving assembly and fixed electronics. Add strain relief at both ends. Keep it clear of rails, carrier edges, cover and stops at every supported width and reader height.
 
 The reader, holder and moving cable count as scale dead load. Zero the complete empty assembly after changing guide or reader position. Compare zero and repeated known masses at both height extremes and at 50/100 mm guide settings. If touching or repositioning the cable changes the settled reading, revise routing before calibration. Release the spool after NFC handling and wait for a new stable reading.
 

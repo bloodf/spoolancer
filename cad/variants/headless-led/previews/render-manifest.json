@@ -1,20 +1,21 @@
 {
   "variant": "headless-led",
-  "revision": "v0.6-headless-led-rounded-dc-fit-prototype",
+  "revision": "v0.6-headless-led-integrated-chamfer-cable-fit-prototype",
   "source": "actual CAD tessellation",
-  "scene_sha256": "e020768555231f3b4e8d3f13011756d8936496cc6c9a82d07849307f2cf84886",
-  "part_map_sha256": "c2b69605714094cce6a2f2593856e3fa758a85dcdb4c4da2e6f0ce187a69bf03",
-  "renderer_sha256": "399dabdc9a04493acd46634f327bbdb07604292e99ff3656805d63b4cabf7daa",
-  "numbered_printed_instances": 11,
+  "scene_sha256": "b70b753864d4d7a2b8434f0de04c12f6c8bc14d88838f8257c2aad7f6fc140db",
+  "part_map_sha256": "915192757b5f1e98a21af38b6f98b3a5fb429cb3b2653c94e61602c3f4a98ced",
+  "renderer_sha256": "07035c04900f0decf69d3dd599f593da864c4d4c8639818ca6f7513bdee15ea4",
+  "numbered_printed_instances": 10,
   "numbered_hardware_groups": 9,
   "physical_validation": false,
   "images": {
-    "assembled.png": "8903ec2bbf03e75311c03c6dbc03093886947b9c1005f4b04958f7390433367a",
-    "cradle.png": "c24c0c3ae139246fdc539b8ab1dd4f09dc35e4000a7c2076661c087e1dd59b69",
-    "exploded.png": "086d250ac47777507d394ff249a5962ffb1f5f454e87a3976558868a37fcb784",
-    "component-locations.png": "41dee8b0daf7653daa532be6a5b8aef9fba64aad8f6243007515ef6050b37f00",
-    "service-interior.png": "083a928266ea095b9aab24a1e505655970d55abc138be021d2e50488db783320",
-    "indicator-detail.png": "3d001724ee642be5eb60f5a13201341ca3899b8da6a8045e5d8a8bc695fd871f",
-    "edge-detail.png": "223570a3edd9cfdd1b0b585d290ef1d0b1ea42d722a2db2d5f880c24388903e4"
+    "assembled.png": "c4d839bb64c1636c8bba40b22cfa9de4e98e3a664ed8a51a0400764880a3d069",
+    "cradle.png": "54e4e85dd101c1c2623e5ecb004a70e6313afff45634d29f3471143273dd1959",
+    "exploded.png": "a0d0ecaf7583d4b5d7750c813c73a014088687548abd8024598f4f048868d0b6",
+    "component-locations.png": "2615c056e8661cbe7be6ac10f0bfc2e95776f96966f8a516ea45b749a4999fa3",
+    "service-interior.png": "194d51fa6be60c09a76bc0d554e817e66be7b3c92e6ed285a71b5fa076b5d720",
+    "indicator-detail.png": "f174907de2186f4dc165ae0012118c3e09fb9768f93e94a56d592d17ef72d994",
+    "edge-detail.png": "14dddc6bce41c85f270499482a2126f2bdd67937a7b8ae877135111b70fe4cc9",
+    "cable-routing.png": "45b2cc5d17d05d7e733df69853c6c9199fb45ebf7b2dbbc52d2b90c2f569f3cb"
   }
 }

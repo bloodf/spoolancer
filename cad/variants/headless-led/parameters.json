@@ -1,5 +1,5 @@
 {
-  "revision": "v0.6-headless-led-rounded-dc-fit-prototype",
+  "revision": "v0.6-headless-led-integrated-chamfer-cable-fit-prototype",
   "variant": "headless-led",
   "indicators_enabled": true,
   "oled_enabled": false,
@@ -24,17 +24,6 @@
     1.5
   ],
   "led_opening_diameter": 6.4,
-  "indicator_angle_deg": 60.0,
-  "indicator_panel_width": 104.0,
-  "indicator_panel_height": 20.0,
-  "indicator_origin": [
-    0,
-    -105,
-    30
-  ],
-  "indicator_depth": 13.0,
-  "indicator_led_y": 0.0,
-  "indicator_wall": 2.0,
   "oled_board": [
     27.3,
     27.3,
@@ -49,23 +38,9 @@
     24,
     14
   ],
-  "oled_center": [
-    0,
-    5.0
-  ],
   "oled_component_depth": 6.0,
   "oled_fit_evidence": "Provisional generic envelope; actual PCB, glass, pins and controller not identified. Winstar WEA012864D-03 gives 27.3 mm square, Joy-IT SBC-OLED01 gives 27 mm square; neither identifies the user board. No board hole pitch assumed.",
   "led_fit_evidence": "60 LEDs/m confirmed; 10 mm strip width and 5050 package provisional. Five-pixel cut length, coating and pads require measurement.",
-  "power_space": [
-    48,
-    40,
-    22.4
-  ],
-  "power_space_center": [
-    44,
-    20,
-    2.6
-  ],
   "usb_plug_space": [
     10,
     22,
@@ -76,7 +51,7 @@
     -29.5,
     10.5
   ],
-  "power_note": "12 V jack hole user-drilled after checking jack body and wire clearance. Reserve is not a buck mount; 12 V must convert to 5 V before electronics.",
+  "power_note": "12 V jack hole user-drilled after checking jack body and wire clearance. Converter attached by owner after checking actual module and cable route; no prescribed mount or volume. 12 V must convert to 5 V before electronics.",
   "boot_tool_entry": [
     -94,
     -23.5,
@@ -85,20 +60,41 @@
   "esp_header_wire_length": 55.8,
   "esp_header_wire_x_offset": -1.0,
   "esp_wire_envelope_evidence": "Provisional 22-pin 2.54 mm header-row length; route wires inside 55.8 mm length and 25 mm height. Exact board and wire fit require verification.",
-  "finish_base_bottom_radius": 1.0,
-  "finish_base_top_radius": 0.65,
-  "finish_cover_radius": 0.8,
   "finish_cover_aperture_chamfer": 0.45,
-  "finish_carrier_radius": 0.6,
-  "finish_rail_end_radius": 1.2,
-  "finish_guide_top_radius": 1.2,
-  "finish_mast_corner_radius": 1.5,
-  "finish_mast_top_radius": 0.6,
-  "finish_nfc_corner_radius": 2.2,
-  "finish_nfc_back_edge_radius": 0.45,
-  "finish_indicator_corner_radius": 3.0,
-  "finish_indicator_front_radius": 0.7,
   "finish_indicator_opening_chamfer": 0.4,
-  "finish_indicator_back_corner_radius": 1.0,
-  "finish_indicator_back_edge_radius": 0.4
+  "finish_base_bottom_chamfer": 1.0,
+  "finish_base_top_chamfer": 0.65,
+  "finish_cover_chamfer": 0.8,
+  "finish_carrier_chamfer": 0.6,
+  "finish_rail_end_chamfer": 1.2,
+  "finish_guide_top_chamfer": 1.2,
+  "finish_mast_corner_chamfer": 1.5,
+  "finish_mast_top_chamfer": 0.6,
+  "finish_nfc_corner_chamfer": 2.2,
+  "finish_nfc_back_edge_chamfer": 0.45,
+  "finish_indicator_corner_chamfer": 3.0,
+  "finish_indicator_front_chamfer": 0.7,
+  "finish_indicator_back_corner_chamfer": 1.0,
+  "finish_indicator_back_edge_chamfer": 0.4,
+  "nfc_cable_bundle_diameter": 4.0,
+  "nfc_cable_bend_radius": 10.0,
+  "finish_channel_chamfer": 0.5,
+  "front_led_center": [
+    0,
+    29
+  ],
+  "front_oled_center": [
+    -52,
+    19
+  ],
+  "cover_support_posts": [
+    [
+      29,
+      -75
+    ],
+    [
+      51,
+      -75
+    ]
+  ]
 }

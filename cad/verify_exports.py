@@ -99,18 +99,22 @@ if variant in ('headless-led','oled-led'):
     checks=[]
     printed=list(doc.getObject('PrintedParts').Group)
     for x in (-78,78):
-        shaft=cyl(1.5,16,x,-76,25.5)
-        head=cyl(2.75,3,x,-76,41.5)
-        washer=cyl(3.2,.5,x,-76,41).cut(cyl(1.6,1,x,-76,40.9))
+        shaft=cyl(1.5,10,x,-76,28.5)
+        head=cyl(2.75,3,x,-76,38.5)
+        washer=cyl(3.2,.5,x,-76,38).cut(cyl(1.6,1,x,-76,37.9))
         radius=5.5/math.sqrt(3)
         vertices=[V(x+radius*math.cos(math.radians(60*i)),-76+radius*math.sin(math.radians(60*i)),29.4) for i in range(6)]
         nut=Part.Face(Part.makePolygon(vertices+[vertices[0]])).extrude(V(0,0,2.4)).cut(cyl(1.5,3,x,-76,29.3))
         hardware=Part.makeCompound([shaft,head,washer,nut])
         collisions={o.Name:round(hardware.common(o.Shape).Volume,5) for o in printed if hardware.common(o.Shape).Volume>.01}
         assert not collisions,(x,collisions)
-        checks.append({'fastener':'front cover M3x16','x_mm':x,'positive_volume_intersections':collisions})
+        checks.append({'fastener':'front cover M3x10','x_mm':x,'positive_volume_intersections':collisions})
     r['indicator_front_clamp_checks']=checks
-    r['indicator_rear_fastener_note']='M2.5x10 screws intentionally engage 2.1 mm plastic pilot holes; actual thread retention and screw head fit need physical checks.'
+    r['nfc_cable_cover_fastener_note']='Two M2.5x10 prototype plastic-pilot screws; actual retention and screw head fit require physical checks. Front indicators use integrated slots and adhesive/foam, with no rear cover screws.'
+    assert v['nfc_cable_route']['digital_clearance_pass']
+    assert not any(v['oled_insertion']['positive_volume_intersections'].values())
+    assert all(x['operation']=='chamfer' for x in v['edge_finishing']['operations'].values())
+    assert r['freecad']['printed_instances']==10
     assert v['power_fit']['external_usb_openings'] is False
     assert not v['boot_access']['tool_component_intersections']
     assert v['edge_finishing']['all_operations_remove_material_only']
@@ -118,8 +122,11 @@ if variant in ('headless-led','oled-led'):
     assert all(t['valid_single_solid'] and t['added_volume_mm3']<.001 and t['removed_volume_mm3']>.001 for t in v['edge_finishing']['operations'].values())
     r['edge_finishing']={'verified_operation_count':len(v['edge_finishing']['operations']),'removal_only':True,'physical_validation':False}
     r['indicator_geometry_checks']={'spool_cases':len(v['spool_envelope_checks']),'dedicated_boot_bore_mm':v['boot_access']['bore_diameter_mm'],'physical_validation':False}
+    r['oled_insertion']=v['oled_insertion']
+    r['nfc_cable_route_digital_clearance_pass']=v['nfc_cable_route']['digital_clearance_pass']
+    r['nominal_unloaded_height_with_feet_mm']=v['geometry_checks']['nominal_unloaded_height_with_feet_mm']
 
-sources=[root/'indicators.py',root/'parameters.json',root/'build.py',root/'render.py',root/'verify_exports.py']+([target/'parameters.json'] if variant!='headless' else [])
+sources=[root/'cable_route.py',root/'indicators.py',root/'parameters.json',root/'build.py',root/'render.py',root/'verify_exports.py']+([target/'parameters.json'] if variant!='headless' else [])
 sources += [path for path in [root/'exploded_render.py',root/'assembly-parts.json'] if path.exists()]
 for source in sources:
     r['source_sha256'][str(source.relative_to(root))]=hashlib.sha256(source.read_bytes()).hexdigest()

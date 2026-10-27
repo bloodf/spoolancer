@@ -1,6 +1,6 @@
 # Spoolancer enclosure variants · headless v0.4.1
 
-**Current LED/OLED CAD:** [3D assembly viewer](https://bloodf.github.io/spoolancer/) · [numbered views and controls](../docs/ASSEMBLY-VIEW.md) · [print manifest](../docs/PRINTING.md). The v0.6 files under `variants/headless-led` and `variants/oled-led` include actual rounded edges and chamfers, with protected fit regions recorded in [edge-finish-verification.json](edge-finish-verification.json). Their per-variant notes describe every radius and retained interface. The original headless/touch models and the earlier material estimates below are unchanged.
+**Current LED/OLED CAD:** [3D assembly viewer](https://bloodf.github.io/spoolancer/) · [numbered views and controls](../docs/ASSEMBLY-VIEW.md) · [print manifest](../docs/PRINTING.md). The v0.6 files under `variants/headless-led` and `variants/oled-led` include actual exterior chamfers, integrated vertical front controls and a covered NFC cable route, with protected fit regions recorded in [edge-finish-verification.json](edge-finish-verification.json). Their per-variant notes describe each chamfer and retained interface. The original headless/touch models and the earlier material estimates below are unchanged.
 
 
 Print the small fit samples before the full enclosure. This editable prototype uses the selected ESP32-S3, PN532 and 80 mm load cell. CAD checks and firmware compilation have passed; physical fit, weighing accuracy and NFC performance remain untested. Build instructions are in [firmware/README.md](../firmware/README.md), with daily operation in the [web-interface guide](../docs/WEB-INTERFACE.md).
@@ -11,11 +11,11 @@ See the [assembled](previews/assembled.png), [exploded](previews/exploded.png), 
 
 ## New DC-powered indicator variants
 
-The additive **[headless + five LEDs](variants/headless-led/NOTES.md)** and **[0.96-inch OLED + five LEDs](variants/oled-led/NOTES.md)** prototypes use five round openings at 16.6667 mm centers. Their fixed front pods share the upright cradle. These variants close the USB wall, provide a separate BOOT access bore, and leave the DC jack opening for the user to drill. A separate 12 V-to-5 V converter is required; no converter mount is assumed.
+The additive **[headless + five LEDs](variants/headless-led/NOTES.md)** and **[0.96-inch OLED + five LEDs](variants/oled-led/NOTES.md)** prototypes use five round openings at 16.6667 mm centers. Their vertical front controls are integrated into the base and share the upright cradle. These variants close the USB wall, provide a separate BOOT access bore, and leave the DC jack opening for the user to drill. A separate 12 V-to-5 V converter is required; no converter mount is assumed.
 
 The new [headless LED](variants/headless-led/exports) and [OLED LED](variants/oled-led/exports) directories contain individual STEP/STL files, full FreeCAD/STEP assemblies, fit samples, validation reports and [previews](variants/oled-led/previews/assembled.png). Existing release files below are preserved. OLED board dimensions, strip width, USB plug and power converter fit remain unverified. Read each variant's notes before printing.
 
-Regenerate with `--variant headless-led` or `--variant oled-led` on `build.py`, `verify_exports.py` and `render.py`. Their parameter files override the shared baseline; `indicators.py` contains the front pod geometry. The new fascia has an elevated integrated mounting bridge and needs local slicer support in its exported face-down pose.
+Regenerate with `--variant headless-led` or `--variant oled-led` on `build.py`, `verify_exports.py` and `render.py`. Their parameter files override the shared baseline; `indicators.py` contains integrated front controls and `cable_route.py` contains the covered adjustable-reader route. Inspect support needs at the internal front supports, hood and cable-channel bridges before printing.
 
 ## Choose a variant
 

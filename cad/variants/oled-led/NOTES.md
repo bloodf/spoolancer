@@ -1,91 +1,61 @@
-# 0.96-inch OLED and five LEDs · DC enclosure fit prototype
+# 0.96-inch OLED and five LEDs · integrated DC enclosure fit prototype
 
-This additive variant keeps the upright cradle and adds five separate light openings on a fixed, inclined front pod. It uses the existing ESP32-S3 and PN532. The screenless LED version is in [../headless-led](../headless-led/NOTES.md). Previous headless and touchscreen release files are preserved.
+The front is vertical and part of the **170 × 160 mm base**. The OLED sits on the left and five status lights on the right. The projecting indicator fascia and rear cover have been removed. The NFC guide now carries a covered cable channel and one removable cover. The [other LED variant](../headless-led/NOTES.md) uses the same cradle. Original headless and touchscreen release artifacts remain unchanged.
 
-**This is a fit prototype.** The 60 LEDs/metre pitch is user-confirmed. Strip width, coating, LED package, board dimensions, USB plug, power converter, jack, fastening and all physical behavior remain unverified. Print the fit samples before a full base. Parameters are editable in [parameters.json](parameters.json), the common [generator](../../build.py) and [indicator geometry](../../indicators.py).
+**Physical validation is false.** The 60 LEDs/metre pitch and 0.96-inch display size are user-confirmed; strip width, coating, PCB/glass/header dimensions, cable flexibility, USB plug, converter and all printed fits remain provisional. Print the small fit samples first. Parameters are editable in [parameters.json](parameters.json), with geometry in [build.py](../../build.py), [indicators.py](../../indicators.py) and [cable_route.py](../../cable_route.py).
 
-## Power and service access
+## Integrated front and service
 
-The new base has **no external USB opening and no pre-cut DC jack hole**. The user will drill the jack opening after checking its body and wires inside the enclosure. Keep clear of the fixed load-cell mount, overload posts, electronics, carrier and its motion. A separate 12 V-to-5 V converter is required; do not feed 12 V into the ESP32 or the 5 V strip. No dedicated converter bracket or hole pattern is provided; the owner intends to fix it to a wall.
+Five 6.4 mm holes have **1000/60 = 16.6667 mm** center spacing, at z=29 mm. Their row center is x=22 mm; the OLED center is x=-52,z=19 mm. Each front opening has a 0.4 mm chamfer; the throat diameter remains unchanged. The strip reference is 83.33 × 10 × 0.5 mm with five 5 × 5 × 1.5 mm packages. Only pitch is confirmed. The built-in gutter includes nominal 0.2 mm adhesive and 0.2 mm LED-to-wall allowances, and stays 1 mm above the modeled load-cell lead envelope. The two front lid-support posts move to y=-75 mm to clear the strip.
 
-A translucent 48 × 40 × 22.4 mm reference identifies one unassigned internal clearance volume. It does not identify a selected converter or prove its mounting, airflow, electrical insulation or cable fit. Keep any adhered module and wires out of the scale's moving structure.
+Install and service the strip through the main lid. Front-control wiring stays entirely in the fixed base. Use suitable insulating adhesive; do not force LED packages against the wall. Check cut pads, coating, adhesion, light bleed and diffusion on real hardware. No transparent light pipes or sealing claim is included.
 
-For these new variants only, the ESP32 rails move 8 mm inward and 5.5 mm toward the front. A **provisional** 10 × 22 × 12 mm internal USB plug envelope is checked in the model, with 11.35 mm from PCB edge to the inside of the closed wall. Actual right-angle plug fit is not established. The new wiring allowance is 55.8 mm long, centered 1 mm toward USB from the PCB center, and 25 mm high above the PCB. This assumes 22 positions at 2.54 mm pitch: 21 intervals span 53.34 mm, plus 2.46 mm total end allowance. It leaves 1.1 mm to the modeled moving-cell mount. The PCB has 2 mm nominal separation from the load-cell body, but that does not include unknown protruding solder or cable bends. Keep all headers, solder and bends within the checked envelopes and verify the actual assembly. Open the lid for programming and disconnect the converter supply before using computer USB; consult the project's power wiring guide before assembling.
+The OLED reference uses a **27.3 × 27.3 × 1.6 mm PCB**, 26 × 15 × 3 mm glass, 24 × 14 mm opening, and 21.74 × 11.18 mm active area. Open-top side guides, a bottom stop, a lower front PCB-edge pad and rear edge rails retain the board. A nominal 0.4 mm rear gap allows a soft edge shim. No PCB screw-hole pattern is assumed; do not clamp the glass. Controller, pins and real component protrusions must be checked before power is applied.
 
-A separate angled **4 mm BOOT access bore** replaces the large service opening. A modeled 2.5 mm blunt nonconductive tool follows the earlier photo-estimated path, updated for the moved board. Position and button operation need physical verification. It is not an external USB opening.
+These are adjustable design assumptions. [Winstar WEA012864D-03](https://www.winstar.com.tw/products/oled-module/graphic-oled-display/4-pin-oled.html) and [Joy-IT SBC-OLED01](https://www.joy-it.net/en/products/SBC-OLED01) are dimensional references, not identification of the user's module. `fit_oled_face` includes the actual front opening, edge supports and rear rails; test headers and cables in the complete base as well.
 
-## Front pod
+## Concealed adjustable reader wiring
 
-The face is inclined 60 degrees from horizontal and has five 6.4 mm round openings on **1000/60 = 16.6667 mm** centers. Its strip reference is **83.33 × 10 mm**, with five 5 × 5 × 1.5 mm LED packages. These are editable provisional dimensions, except the confirmed pitch. Measure the cut pads and strip coating before cutting or printing.
+The channel body is integrated into `nfc_guide`; `nfc_cable_cover` is the only added print. The rear cassette and lower side gutter open together when this cover is removed. Two **M2.5×10 prototype plastic-pilot screws** secure it; retention and screw-head fit require a print test. The cover can be removed without undoing the reader height clamp. A conservative 5.5 mm head/tool corridor is checked along both height slots.
 
-The removable rear part supports the strip. Use its existing adhesive or a thin insulating adhesive layer; do not load the LED packages against the face. The five LED openings are open; no untested transparent light pipes or sealing claim is made. Light bleed and actual diffusion need a physical check.
+The design uses four fine flexible leads within a **provisional 4 mm bundle envelope**. Inside the cassette, the reader pigtail and U-shaped slack loop move over the full **90–175 mm reader-center range**. The moving route has a modeled **10 mm bend radius** and constant 220.25 mm centerline length including its lower exit. This is an envelope calculation, not a prescribed cut length or proof of how a real cable will flex. Leave additional lead length for soldering and strain relief.
 
-The pod attaches to the **fixed front cover posts**. It does not attach to the floating cradle. Its wiring passes through a separate 6 mm hole in the fixed base's front wall at x=40 mm and z=26 mm, away from the load-cell lead allowance. Secure slack to the fixed enclosure so these wires cannot pull on the moving carrier.
+The pigtail passes through a new rear-cover port into an overlapping hood, away from the clamp slots. The channel returns inward below the reader's lowest position and ends at z=42 mm over the carrier's open bay. Its outlet center is at x=guide inner face+7.8 mm, y=0. Across 50–100 mm spool widths, this stays clear of the carrier ribs and fixed lid. No printed bridge connects the moving guide to the fixed base.
 
-## OLED fit assumptions
+A flexible tail passes into the enclosure below the lid, so it is concealed in ordinary assembled views. The base-tail reference is illustrative: its small arc is R5 mm, and its length changes in the drawn width examples. The first bend is a tangent cubic Bezier enclosed by its control-point hull, which provides the checked continuous-width space bound. It does **not** prove a constant-length flex mechanism or acceptable cable force. Dress actual slack within the checked interior space; avoid stiff jackets and tight cable ties. Tie slots are provided at the moving pigtail hood, guide-side anchor and fixed-base saddle. Do not immobilize the flexible section between moving and fixed anchors.
 
-The user confirmed a 0.96-inch 128×64 display, but has not confirmed its controller, PCB dimensions, glass position, hole pattern or headers. This prototype uses a **27.3 × 27.3 × 1.6 mm PCB**, 26 × 15 × 3 mm glass envelope, 24 × 14 mm viewing window and 21.74 × 11.18 mm active-area reference. The PCB is supported at its outer top/bottom edges, with light rear foam shims; there is **no assumed PCB screw-hole pattern**. Do not clamp the glass. Rear pads include a 0.3 mm nominal gap for a compressible pad; check the stack before tightening.
+Before use, adjust reader height and spool width through their complete ranges with the cover open, checking bends, strain relief, abrasion, slack and clamp access. Close the cover, then confirm the scale returns to zero and gives the same known load at every setting. Digital clearance does not prove that cable forces are negligible.
 
-These are design assumptions, not measurements of the user's display. [Winstar's WEA012864D-03](https://www.winstar.com.tw/products/oled-module/graphic-oled-display/4-pin-oled.html) publishes a 27.3 mm square PCB, while [Joy-IT's SBC-OLED01](https://www.joy-it.net/en/products/SBC-OLED01) publishes 27 × 27 × 11 mm. Neither identifies the received module. These differing primary sources are why the CAD remains adjustable. Controller and pin order must be checked separately before powering it.
+## Power and BOOT access
 
-Print `fit_oled_face` to check the glass opening and edge pads, then verify PCB placement, the rear pins, wire exit and gently retained fit with the complete `indicator_back`. A passing front coupon alone does not prove the rear/header fit. The firmware choice must match the actual controller.
+There is **no external USB opening and no pre-cut DC jack hole**. Drill the jack opening only after checking the actual jack body, converter and wiring inside the base. A 12 V-to-5 V converter is required. Do not connect 12 V directly to the ESP32, reader or 5 V strip. The owner chooses a wall attachment for the converter after checking clearances; no converter footprint or reserved mounting volume is claimed. Keep it and its wires away from the moving structure and NFC tail.
 
-## Prints and assembly
+The ESP32 rails sit 8 mm inward and 5.5 mm toward the front relative to the original headless model. A **provisional 10 × 22 × 12 mm internal USB plug envelope** is checked; actual right-angle plug fit is unverified. The estimated PCB edge is 11.35 mm from the closed inner wall. The header-wire envelope is 55.8 mm long and 25 mm above the PCB: 22 positions at 2.54 mm pitch span 53.34 mm, plus 2.46 mm total allowance. It leaves 1.1 mm to the modeled moving-cell mount. The PCB itself has 2 mm nominal separation from the load-cell body; unknown solder and cable bends must remain inside checked space.
 
-Use the individual files in [exports](exports); do not print the complete assembly STEP. STEP/STL pairs share their intended print pose. The complete `spoolancer-v0.6-oled-led.FCStd` and `*-assembly.step` include reference bodies for editing and inspection.
+A dedicated angled **4 mm BOOT bore** accepts the modeled 2.5 mm blunt nonconductive tool. Its position is based on the board photograph and needs a physical button-access test. Open the main lid for programming and disconnect converter power before computer USB, following the project's wiring guide.
 
-Print the shared carrier, side guide, NFC guide, pod and pod cover once; print the rim rail twice. Print the new base, top cover, indicator fascia and indicator back once. This makes **eleven production pieces**, ten unique production models. Shared cradle contact, sliding and mounting dimensions are retained; exposed edges now have modeled rounds and chamfers.
+## Prints, chamfers and assembly
 
-Compared with the headless fastener list, replace the two front M3×10 closure screws with **two M3×16** screws because the bracket adds 3 mm. Use **four M2.5×10** screws for the indicator rear cover's pilot holes, designed as provisional plastic threads; tighten lightly and test retention in the intended print material. Existing rear closure screws remain M3×10. These modeled lengths still need a real assembly check.
+Print one each of `base`, `top_cover`, `carrier`, `side_guide`, `nfc_guide`, `nfc_pod`, `nfc_pod_cover` and `nfc_cable_cover`, and **two `rim_rail`** pieces: **10 production pieces, nine unique models**. All four main-cover closure screws are M3×10; the old front M3×16 bridge screws and four indicator-back screws are no longer used. Add the two M2.5×10 channel-cover screws noted above. Existing cradle, load-cell and reader hardware remains as documented in the assembly guide.
 
-Fit samples reuse the actual production geometry:
+The external style is modeled straight chamfers, not render-only smoothing. The base plan has 8 mm corner bevels, with 1.0/0.65 mm bottom/top rim chamfers. The lid uses a 0.8 mm outer rim and 0.45 mm aperture chamfer. Carrier lower edges use 0.6 mm, rail outer ends 1.2 mm, plain-guide top 1.2 mm, mast long corners/top 1.5/0.6 mm, NFC pod/cover corners 2.2 mm, and reader-cover rear rim 0.45 mm. Channel, cover and pigtail-hood exposed edges use 0.5 mm chamfers.
 
-- `fit_oled_face`: provisional OLED viewing opening and edge supports.
-- `fit_led_face`: all five holes and their spacing.
-- `fit_led_carrier`: rear strip support, width and coating clearance.
-- `fit_esp32`: shifted rails and underside clearance; this small coupon does not reproduce the complete closed USB wall.
-- `fit_cell` and `fit_nfc`: shared sensor and reader fit samples.
+Bearing pads, bolt seats, nut pockets, guide sliding feet, the 1.2 mm antenna window and contact slopes within the 100 mm spool width retain their functional faces. Narrow internal supports, clamp faces, cable-entry interfaces and mounting pads intentionally retain flat or sharp edges where a chamfer would weaken walls or alter fit. Circular bores and cable-bend surfaces remain functional curves. **Only individual edge treatments are removal-only**; the integrated front and cable channel add/remove geometry and are reported separately.
 
-The fascia is exported face-down. Its integrated mounting bridge is elevated in this orientation and **requires local slicer support**. The back is flat-down; inspect bridges and strip supports in the slicer. Ordinary PETG is a starting material, not a tested print profile. No current filament mass estimate is published.
+STEP/STL files are exported in their intended print poses. Print the base floor down, lid and carrier in their exported inverted poses, rails on their exported side, and NFC parts on the exported side faces. The cable cover opens the lower chute sideways, so any support in that gutter can be removed before assembly. Inspect support needs at the internal front gutter, OLED edge pads, cable channel bridges, hood and lower gutter. Do not assume support-free printing. Fit, stiffness, layer orientation and slicer settings need validation with the intended material.
 
-## Rounded geometry · v0.6
+Fit samples reuse production geometry: `fit_led_face`, `fit_led_carrier`, `fit_esp32`, `fit_cell`, `fit_nfc`, and `fit_oled_face`. The ESP32 sample does not reproduce the complete closed wall; test the real USB plug and BOOT approach in the assembled base. Do not print the complete assembly STEP: it includes hardware, cable and spool reference envelopes.
 
-The softer edges are real analytic CAD geometry in the STEP, FreeCAD and STL exports. No render-only smoothing is used as a substitute. All treatments remove material; they do not expand the old collision envelope. The generator selects edges by explicit geometric bounds and fails if a requested treatment is missing or invalid. The validation file records each selected edge, radius/chamfer and before/after volume.
+## Digital verification
 
-| Location | Treatment |
-| --- | --- |
-| Base lower / upper outer edges | R1.0 / R0.65 mm |
-| Cover upper outside edge / carrier aperture | R0.8 mm / 0.45 mm chamfer |
-| Carrier lower exposed edges | R0.6 mm |
-| Rim rail outer end perimeters | R1.2 mm, outside the 100 mm spool-width envelope |
-| Plain guide upper outside edge | R1.2 mm |
-| NFC mast outer long corners / top edges | R1.5 / R0.6 mm |
-| NFC pod and back cover outside corners | R2.2 mm |
-| NFC rear cover outside rim | R0.45 mm |
-| Indicator face outside corners / front rim | R3.0 / R0.7 mm |
-| LED and OLED opening front edges | 0.4 mm chamfer; original throat size retained |
-| Indicator back outside corners / rear rim | R1.0 / R0.4 mm |
+The nominal printed assembly occupies **170 × 160 × 187 mm**, before feet, or **188.4 mm with the nominal feet allowance**; the highest reader position reaches **198.4 mm** before feet. A 200 mm reference spool extends depth to 200 mm. These are geometry bounds, not tested stability or hardware fit.
 
-Load-cell bearing pads, bolt seats, nut pockets, sliding feet and the central 1.2 mm NFC antenna face remain unchanged. The [before/after geometry report](../../edge-finish-verification.json) confirms zero removed material in 26 protected regions for this variant, including the full PCB-sized antenna window, load-cell supports, sliding feet, clamp seats and indicator opening throats. Rail contact slopes remain unchanged within the intended spool width. Structural web edges, inner corners, screw bores and narrow wire passages deliberately remain sharp where rounding would weaken walls or alter fit. OLED support pads and the glass seat remain unchanged. Print profiles and physical stiffness are still untested.
+[validation.json](exports/validation.json) records valid single solids, closed meshes, detected self-intersections, assembly/component clearance, 27 spool cases, nine reader placements and BOOT access. The OLED variant also passes an exact 40 mm continuous vertical insertion sweep for its PCB, glass, components and headers with the main lid removed. The cable report additionally checks nine actual cable paths, conservative continuous reader-height envelopes, clamp-tool access and the full spool-width tail/outlet envelope. [export-verification.json](exports/export-verification.json) reopens every individual STEP/STL and the FreeCAD/assembly STEP. [The edge and integration report](../../edge-finish-verification.json) separates chamfer material removal from redesign changes and compares protected functional regions. Twelve simplified M3 clamp sets and four stop references are shown; remaining hardware and adhesives are not complete manufacturing models.
 
-Twelve simplified M3 clamp sets are now visible in the assembly: four cover joints, four rim-rail joints and four side-guide joints. They use the previously checked head/shaft/washer/nut dimensions; threads and screw drives are omitted. The four existing stop references remain. This is **partial hardware visualization**: load-cell, NFC, indicator rear fasteners, cable ties and adhesives are not included.
-
-## Generated geometry results
-
-The unloaded printed assembly occupies **170 × 201.48 × 184 mm**, before feet and reader-height adjustment. The main base remains 170 × 160 mm. A modeled 200 mm spool brings depth to **226.48 mm**. These are CAD envelopes, not verified hardware fit or tipping stability.
-
-The directory contains **16 individual STEP/STL pairs**: ten unique production parts and 6 fit samples. The current digital checks pass for valid single solids, closed meshes, no detected mesh self-intersections, no unintended printed/component collisions, 27 spool/reader combinations, nine reader placements and the dedicated BOOT tool path. The export verifier separately checks the two new front M3×16 clamp assemblies. Read the linked JSON reports for exact values; physical validation remains false.
-
-The total analytic solid volume including print quantities changed from **452,798.60 mm³** to **451,819.89 mm³**. This measures geometry only, not sliced filament or mass.
-
-## Reproduce and inspect
-
-Use a Python interpreter compatible with FreeCAD, as described in [the CAD guide](../../README.md):
+Physical fit, cable behavior, print strength, tipping stability, accuracy, electronics and electrical safety remain unverified.
 
 ```sh
 python3 cad/build.py --variant oled-led
 python3 cad/verify_exports.py --variant oled-led
 python3 cad/render.py --variant oled-led
 ```
-
-[validation.json](exports/validation.json) records the actual envelope, intersections and 27 modeled spool/reader combinations. [export-verification.json](exports/export-verification.json) reopens the individual STEP/STL files and assembled FreeCAD/STEP files. Digital geometry checks do not prove physical fit, stiffness, tipping stability, accuracy, electronics or electrical safety.

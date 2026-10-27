@@ -59,8 +59,8 @@ let loadNumber = 0;
 let data = null;
 let lastPointer = null;
 const initialSelection = $('selection').innerHTML;
-const categoryNames = { printed: 'Printed pieces', electronics: 'Hardware references', spool: 'Spool reference', clearance: 'Clearance spaces' };
-const housingIds = new Set(['base', 'top_cover']);
+const categoryNames = { printed: 'Printed pieces', electronics: 'Hardware references', spool: 'Spool reference', clearance: 'Routing & clearances' };
+const housingIds = new Set(['base', 'top_cover', 'nfc_pod', 'nfc_pod_cover', 'nfc_cable_cover']);
 
 function theme(value) {
   document.documentElement.dataset.theme = value;
@@ -105,7 +105,7 @@ function makePart(part, buffer) {
     object.receiveShadow = true;
     if (part.category === 'clearance') {
       material.transparent = true;
-      material.opacity = 0.17;
+      material.opacity = part.role === 'cable_route' ? 0.82 : 0.17;
       material.depthWrite = false;
       object.castShadow = false;
     }
@@ -173,7 +173,11 @@ function setSelectedDetails(part) {
   description.textContent = part.description;
   const note = document.createElement('p');
   note.className = 'selection-note';
-  note.textContent = part.provisional ? 'Reference geometry · verify the real component.' : 'Printable component · nominal CAD fit, not physically validated.';
+  note.textContent = part.pose === 'min' || part.pose === 'max'
+    ? state.isolated === part.id
+      ? 'Travel reference shown alone. Return to the assembly to see the nominal cable route.'
+      : 'Alternative route hidden in the assembly. Isolate it to inspect this height position.'
+    : part.provisional ? 'Reference geometry · verify the real component.' : 'Printable component · nominal CAD fit, not physically validated.';
   const actions = document.createElement('div');
   actions.className = 'selection-actions';
   for (const [text, action] of [
@@ -195,6 +199,7 @@ function selectPart(id) {
   if (part) {
     state.hidden.delete(id);
     if (state.isolated && state.isolated !== id) state.isolated = null;
+    if (part.pose === 'min' || part.pose === 'max') state.isolated = id;
     if (part.category !== 'printed') {
       state.visibility[part.category] = true;
       $(`show-${part.category === 'electronics' ? 'electronics' : part.category}`).checked = true;
@@ -246,7 +251,7 @@ function update() {
     group.traverse(object => {
       if (object.isMesh) {
         const xray = state.xray && housingIds.has(part.id) && !state.isolated;
-        object.material.opacity = part.category === 'clearance' ? 0.17 : xray ? 0.18 : 1;
+        object.material.opacity = part.category === 'clearance' ? (part.role === 'cable_route' ? 0.82 : 0.17) : xray ? 0.18 : 1;
         object.material.transparent = object.material.opacity < 1;
         object.material.depthWrite = object.material.opacity === 1;
         object.material.emissive.set(selected ? 0x2c6d57 : 0x000000);

@@ -20,7 +20,7 @@
         0,
         0
       ],
-      "description": "Fixed electronics housing with a closed USB wall and BOOT access bore. No DC-jack hole is modeled; drill it after checking the real jack and wiring.",
+      "description": "Fixed electronics housing with an integrated vertical front for five LEDs and optional OLED. Closed USB wall and BOOT access bore; drill the DC-jack hole after checking actual components.",
       "provisional": false
     },
     {
@@ -36,7 +36,7 @@
         0,
         62
       ],
-      "description": "Removable lid over the electronics. This fixed part does not carry spool weight.",
+      "description": "Removable lid for electronics and front indicator servicing. This fixed part does not carry spool weight.",
       "provisional": false
     },
     {
@@ -116,7 +116,7 @@
         0,
         175
       ],
-      "description": "Opposite guide supports the movable reader beside the spool flange.",
+      "description": "Width-adjustable guide with an integrated rear cable cassette. Supports the reader through its height adjustment; verify cable slack and non-contact routing before use.",
       "provisional": false
     },
     {
@@ -149,38 +149,6 @@
         175
       ],
       "description": "Removable rear cover for the PN532 board and its wiring.",
-      "provisional": false
-    },
-    {
-      "id": "indicator_fascia",
-      "number": "10",
-      "label": "Indicator front panel",
-      "category": "printed",
-      "meshes": [
-        "indicator_fascia"
-      ],
-      "explode": [
-        0,
-        -82,
-        8
-      ],
-      "description": "Fixed front panel with five light openings. OLED variant also has a display window.",
-      "provisional": false
-    },
-    {
-      "id": "indicator_back",
-      "number": "11",
-      "label": "Indicator rear cover",
-      "category": "printed",
-      "meshes": [
-        "indicator_back"
-      ],
-      "explode": [
-        0,
-        -45,
-        -90
-      ],
-      "description": "Supports the LED strip and optional OLED with insulating foam or adhesive.",
       "provisional": false
     },
     {
@@ -330,22 +298,6 @@
       "provisional": true
     },
     {
-      "id": "power_space",
-      "number": "20",
-      "label": "Unassigned power space",
-      "category": "clearance",
-      "meshes": [
-        "REF_power_conversion_space_unassigned"
-      ],
-      "explode": [
-        0,
-        0,
-        0
-      ],
-      "description": "Space reference only, not a converter or a mount. Glue an insulated 12 V-to-5 V converter to a suitable fixed wall after checking fit.",
-      "provisional": true
-    },
-    {
       "id": "usb_space",
       "number": "21",
       "label": "Internal USB plug space",
@@ -481,6 +433,94 @@
       ],
       "description": "Nominal M3 clamp screws, washers and nuts for width adjustment. Inspect the assembled view for their exact modeled locations.",
       "provisional": true
+    },
+    {
+      "id": "nfc_cable_cover",
+      "number": "29",
+      "label": "NFC cable channel cover",
+      "category": "printed",
+      "meshes": [
+        "nfc_cable_cover"
+      ],
+      "explode": [
+        110,
+        70,
+        190
+      ],
+      "description": "Removable cover over the cable cassette integrated into the NFC guide. Remove it for threading and service; check real cable clearance over the complete adjustment range.",
+      "provisional": false
+    },
+    {
+      "id": "nfc_cable_nominal",
+      "number": "30",
+      "label": "NFC cable \u00b7 nominal height",
+      "category": "clearance",
+      "meshes": [
+        "REF_NFC_cable_nominal"
+      ],
+      "explode": [
+        75,
+        0,
+        175
+      ],
+      "description": "Nominal-height routing reference behind the NFC guide, from the reader toward the lower chute. This is a dimensional path, not a qualified cable assembly.",
+      "provisional": true,
+      "role": "cable_route",
+      "pose": "nominal"
+    },
+    {
+      "id": "nfc_cable_low",
+      "number": "31",
+      "label": "NFC cable \u00b7 lowest height",
+      "category": "clearance",
+      "meshes": [
+        "REF_NFC_cable_low"
+      ],
+      "explode": [
+        75,
+        0,
+        175
+      ],
+      "description": "Routing reference at the lowest planned reader height. Shown separately from the nominal assembly; it represents the same cable at another position.",
+      "provisional": true,
+      "role": "cable_route",
+      "pose": "min"
+    },
+    {
+      "id": "nfc_cable_high",
+      "number": "32",
+      "label": "NFC cable \u00b7 highest height",
+      "category": "clearance",
+      "meshes": [
+        "REF_NFC_cable_high"
+      ],
+      "explode": [
+        75,
+        0,
+        175
+      ],
+      "description": "Routing reference at the highest planned reader height. Shown separately from the nominal assembly; it represents the same cable at another position.",
+      "provisional": true,
+      "role": "cable_route",
+      "pose": "max"
+    },
+    {
+      "id": "nfc_base_flex",
+      "number": "33",
+      "label": "Cable flex space inside base",
+      "category": "clearance",
+      "meshes": [
+        "REF_NFC_base_flex_nominal"
+      ],
+      "explode": [
+        0,
+        0,
+        0
+      ],
+      "description": "Nominal free-flex routing reference inside the fixed base after the non-contact passage. Check the actual wires through full width and height travel; cable drag and zero shift remain untested.",
+      "provisional": true,
+      "role": "cable_route",
+      "pose": "nominal"
     }
   ]
 }

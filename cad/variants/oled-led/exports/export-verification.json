@@ -1,5 +1,5 @@
 {
-  "revision": "v0.6-oled-led-rounded-dc-fit-prototype",
+  "revision": "v0.6-oled-led-integrated-chamfer-cable-fit-prototype",
   "physical_validation": false,
   "stl_files": {
     "base": {
@@ -46,9 +46,19 @@
       "reopened_closed_mesh": true,
       "self_intersections": false,
       "print_bounds_mm": [
-        134.0,
+        145.0,
         130.0,
-        16.0
+        32.9
+      ],
+      "bed_z_mm": 0.0
+    },
+    "nfc_cable_cover": {
+      "reopened_closed_mesh": true,
+      "self_intersections": false,
+      "print_bounds_mm": [
+        145.0,
+        38.0,
+        30.4
       ],
       "bed_z_mm": 0.0
     },
@@ -68,7 +78,7 @@
       "print_bounds_mm": [
         46.8,
         49.1,
-        1.6
+        10.4
       ],
       "bed_z_mm": 0.0
     },
@@ -79,26 +89,6 @@
         170.0,
         160.0,
         3.0
-      ],
-      "bed_z_mm": 0.0
-    },
-    "indicator_fascia": {
-      "reopened_closed_mesh": true,
-      "self_intersections": false,
-      "print_bounds_mm": [
-        168.0,
-        56.53,
-        40.11
-      ],
-      "bed_z_mm": 0.0
-    },
-    "indicator_back": {
-      "reopened_closed_mesh": true,
-      "self_intersections": false,
-      "print_bounds_mm": [
-        100.0,
-        46.0,
-        11.0
       ],
       "bed_z_mm": 0.0
     },
@@ -136,8 +126,8 @@
       "reopened_closed_mesh": true,
       "self_intersections": false,
       "print_bounds_mm": [
-        90.0,
-        13.0,
+        89.33,
+        12.5,
         2.0
       ],
       "bed_z_mm": 0.0
@@ -146,9 +136,9 @@
       "reopened_closed_mesh": true,
       "self_intersections": false,
       "print_bounds_mm": [
-        90.0,
-        12.0,
-        11.0
+        89.33,
+        12.5,
+        6.0
       ],
       "bed_z_mm": 0.0
     },
@@ -156,9 +146,9 @@
       "reopened_closed_mesh": true,
       "self_intersections": false,
       "print_bounds_mm": [
-        34.0,
-        32.0,
-        5.0
+        32.3,
+        30.35,
+        8.6
       ],
       "bed_z_mm": 0.0
     }
@@ -171,13 +161,13 @@
         160.0,
         35.0
       ],
-      "bed_z_mm": 0.0,
-      "volume_mm3": 142861.76964,
-      "stl_volume_mm3": 142842.390625,
-      "stl_volume_difference_percent": 0.013565,
+      "bed_z_mm": -0.0,
+      "volume_mm3": 143170.134147,
+      "stl_volume_mm3": 143154.640625,
+      "stl_volume_difference_percent": 0.010822,
       "max_design_bounds_difference_mm": 0.0,
       "max_stl_bounds_difference_mm": 0.0,
-      "sha256": "eccd122f675f5fe60342d73fa11856942ee20c96767fabfdf9814b8ef114d18a"
+      "sha256": "6ca4db1393f70c507c1db899b1f170a5e15b644cd75393b1064f20524f69afbb"
     },
     "carrier": {
       "reopened_valid_single_solid": true,
@@ -187,12 +177,12 @@
         25.3
       ],
       "bed_z_mm": -0.0,
-      "volume_mm3": 121375.987088,
-      "stl_volume_mm3": 121376.039062,
-      "stl_volume_difference_percent": 4.3e-05,
+      "volume_mm3": 121320.710853,
+      "stl_volume_mm3": 121320.882812,
+      "stl_volume_difference_percent": 0.000142,
       "max_design_bounds_difference_mm": 0.0,
       "max_stl_bounds_difference_mm": 1e-06,
-      "sha256": "dd34a08e405d661d99282107c41fb61719fef5eac9478c1e2e63e5893c0515d7"
+      "sha256": "e20cf0b6630db2589a86ae34defaa5c86a3dc7abe7fa278cd3ca6bd8964d188a"
     },
     "rim_rail": {
       "reopened_valid_single_solid": true,
@@ -202,12 +192,12 @@
         31.0
       ],
       "bed_z_mm": -0.0,
-      "volume_mm3": 41065.136482,
-      "stl_volume_mm3": 41066.269531,
-      "stl_volume_difference_percent": 0.002759,
+      "volume_mm3": 40983.228956,
+      "stl_volume_mm3": 40984.511719,
+      "stl_volume_difference_percent": 0.00313,
       "max_design_bounds_difference_mm": 0.0,
       "max_stl_bounds_difference_mm": 0.0,
-      "sha256": "7fc48b5c50752bec5a154973289d85a8b6d6e771777a38a0d47dc49bd57d56e3"
+      "sha256": "839ec8a6cfa0512d7e418397090360a327c3c80e546680c46a0b14f63a7d2304"
     },
     "side_guide": {
       "reopened_valid_single_solid": true,
@@ -217,27 +207,42 @@
         16.0
       ],
       "bed_z_mm": -0.0,
-      "volume_mm3": 17509.269517,
-      "stl_volume_mm3": 17509.201172,
-      "stl_volume_difference_percent": 0.00039,
+      "volume_mm3": 17458.720431,
+      "stl_volume_mm3": 17458.787109,
+      "stl_volume_difference_percent": 0.000382,
       "max_design_bounds_difference_mm": 0.0,
       "max_stl_bounds_difference_mm": 0.0,
-      "sha256": "c214ce974c07ca259b9bf7de46449c763b817f5e61b18f2813208e15352f3870"
+      "sha256": "2276fec0c5837a651bd3adb179ca22b058787101032bf023ea4217a0bd33518d"
     },
     "nfc_guide": {
       "reopened_valid_single_solid": true,
       "print_bounds_mm": [
-        134.0,
+        145.0,
         130.0,
-        16.0
+        32.9
       ],
       "bed_z_mm": -0.0,
-      "volume_mm3": 19651.350999,
-      "stl_volume_mm3": 19650.804688,
-      "stl_volume_difference_percent": 0.00278,
+      "volume_mm3": 28125.160949,
+      "stl_volume_mm3": 28125.865234,
+      "stl_volume_difference_percent": 0.002504,
       "max_design_bounds_difference_mm": 0.0,
-      "max_stl_bounds_difference_mm": 0.0,
-      "sha256": "a5af5e0c370850d73d3f785cb38b03b26a8ea07732185bcc073cfeecd1f9c7ba"
+      "max_stl_bounds_difference_mm": 1e-06,
+      "sha256": "94b6cabcdc2b1669c9d8a361f2bc0e15cd630ef6e1e82d9e413d52377080241d"
+    },
+    "nfc_cable_cover": {
+      "reopened_valid_single_solid": true,
+      "print_bounds_mm": [
+        145.0,
+        38.0,
+        30.4
+      ],
+      "bed_z_mm": -0.0,
+      "volume_mm3": 6624.468894,
+      "stl_volume_mm3": 6625.206543,
+      "stl_volume_difference_percent": 0.011135,
+      "max_design_bounds_difference_mm": 0.0,
+      "max_stl_bounds_difference_mm": 1.5e-05,
+      "sha256": "20309826ceb19de6b7553dda45499c73188b98597aedf8c5caad037438828fc9"
     },
     "nfc_pod": {
       "reopened_valid_single_solid": true,
@@ -247,27 +252,27 @@
         13.6
       ],
       "bed_z_mm": -0.0,
-      "volume_mm3": 7019.687026,
-      "stl_volume_mm3": 7019.450684,
-      "stl_volume_difference_percent": 0.003367,
+      "volume_mm3": 7128.862831,
+      "stl_volume_mm3": 7128.884277,
+      "stl_volume_difference_percent": 0.000301,
       "max_design_bounds_difference_mm": 0.0,
       "max_stl_bounds_difference_mm": 1e-06,
-      "sha256": "f88bc1524f9d6ecc5b57b2dac13f2ff942005d89d4b2ef59e24d01c178b4f718"
+      "sha256": "92f641035aa2c28368e32b3955d82705d8f9f9094e1acb1f424bc6e86b84eed0"
     },
     "nfc_pod_cover": {
       "reopened_valid_single_solid": true,
       "print_bounds_mm": [
         46.8,
         49.1,
-        1.6
+        10.4
       ],
-      "bed_z_mm": -0.0,
-      "volume_mm3": 3643.495279,
-      "stl_volume_mm3": 3643.454834,
-      "stl_volume_difference_percent": 0.00111,
+      "bed_z_mm": 0.0,
+      "volume_mm3": 3874.965354,
+      "stl_volume_mm3": 3875.244141,
+      "stl_volume_difference_percent": 0.007195,
       "max_design_bounds_difference_mm": 0.0,
       "max_stl_bounds_difference_mm": 2e-06,
-      "sha256": "0e870cf7428538814944c76f0986c98428952fd44627e0d3eb16810e3dfcec99"
+      "sha256": "f84d60816a42f40fac724b6f175c15806bab6ac4702de7aa49d10f84752a778a"
     },
     "top_cover": {
       "reopened_valid_single_solid": true,
@@ -277,42 +282,12 @@
         3.0
       ],
       "bed_z_mm": -0.0,
-      "volume_mm3": 22638.18865,
-      "stl_volume_mm3": 22637.757812,
-      "stl_volume_difference_percent": 0.001903,
+      "volume_mm3": 22426.641367,
+      "stl_volume_mm3": 22426.755859,
+      "stl_volume_difference_percent": 0.000511,
       "max_design_bounds_difference_mm": 0.0,
       "max_stl_bounds_difference_mm": 0.0,
-      "sha256": "aa7c3002782afeb73fa546431614291dc1028d9049e17afb6f270395eab7dd3c"
-    },
-    "indicator_fascia": {
-      "reopened_valid_single_solid": true,
-      "print_bounds_mm": [
-        168.0,
-        56.526279,
-        40.105118
-      ],
-      "bed_z_mm": -0.0,
-      "volume_mm3": 22125.592371,
-      "stl_volume_mm3": 22125.072266,
-      "stl_volume_difference_percent": 0.002351,
-      "max_design_bounds_difference_mm": 0.0,
-      "max_stl_bounds_difference_mm": 0.0,
-      "sha256": "e7812ba2513e922d1ceff48de3b1b5d4d24d4ddde4caa917232c0e750368920d"
-    },
-    "indicator_back": {
-      "reopened_valid_single_solid": true,
-      "print_bounds_mm": [
-        100.0,
-        46.0,
-        11.0
-      ],
-      "bed_z_mm": -0.0,
-      "volume_mm3": 12864.261706,
-      "stl_volume_mm3": 12864.290039,
-      "stl_volume_difference_percent": 0.00022,
-      "max_design_bounds_difference_mm": 0.0,
-      "max_stl_bounds_difference_mm": 0.0,
-      "sha256": "f5c118e5cea7ee5d43f602837ed54fdfa378b3f4480b06c8d8259650e95158ee"
+      "sha256": "1cc596c3f2cc2d2eb55bb26369fea147b4cd9bb868f6e873a42fb2a701631f46"
     },
     "fit_nfc": {
       "reopened_valid_single_solid": true,
@@ -322,12 +297,12 @@
         13.6
       ],
       "bed_z_mm": -0.0,
-      "volume_mm3": 7019.687026,
-      "stl_volume_mm3": 7019.450684,
-      "stl_volume_difference_percent": 0.003367,
+      "volume_mm3": 7128.862831,
+      "stl_volume_mm3": 7128.884277,
+      "stl_volume_difference_percent": 0.000301,
       "max_design_bounds_difference_mm": 0.0,
       "max_stl_bounds_difference_mm": 1e-06,
-      "sha256": "8ab5d3ec65032da7d769dcee654e826e4d3ee7aa6ccd59d2ad8fb2056f03f4d6"
+      "sha256": "c75530e8a36d429e587f22e8a9a0c9a3b0835b8ca81beb3ec0118a7c03a36d17"
     },
     "fit_esp32": {
       "reopened_valid_single_solid": true,
@@ -342,7 +317,7 @@
       "stl_volume_difference_percent": 0.007523,
       "max_design_bounds_difference_mm": 0.0,
       "max_stl_bounds_difference_mm": 0.0,
-      "sha256": "b7bdb77f987a64a16e8e6bf13ad592ac8a334196da3dd7839d7937fcd06882a9"
+      "sha256": "6eab605084a3bfbba8197b2fe9f01a9905dd26a65fa134f5c352767f89f1f5ec"
     },
     "fit_cell": {
       "reopened_valid_single_solid": true,
@@ -357,63 +332,64 @@
       "stl_volume_difference_percent": 0.004288,
       "max_design_bounds_difference_mm": 0.0,
       "max_stl_bounds_difference_mm": 0.0,
-      "sha256": "0502299feaa9499c4fc1e5d98f0cba5819df33b74e80223b9b4582df8215ff8e"
+      "sha256": "021d6b5baeb07e1f3e069001b2478db7da32e1d3b0414fe031eb989c730b6139"
     },
     "fit_led_face": {
       "reopened_valid_single_solid": true,
       "print_bounds_mm": [
-        90.0,
-        13.0,
+        89.333333,
+        12.5,
         2.0
       ],
       "bed_z_mm": -0.0,
-      "volume_mm3": 2009.923332,
-      "stl_volume_mm3": 2010.296509,
-      "stl_volume_difference_percent": 0.018567,
+      "volume_mm3": 1884.384999,
+      "stl_volume_mm3": 1884.755493,
+      "stl_volume_difference_percent": 0.019661,
       "max_design_bounds_difference_mm": 0.0,
-      "max_stl_bounds_difference_mm": 0.0,
-      "sha256": "5fb33202df607c7f82f3818b3a303e7240c32e1020decf445447d1ac84262cf9"
+      "max_stl_bounds_difference_mm": 3e-06,
+      "sha256": "2607c9dedf5fb13c8ec41c87f2b6b67887752c77b32cf7f0d2fdae4c4927f6b0"
     },
     "fit_led_carrier": {
       "reopened_valid_single_solid": true,
       "print_bounds_mm": [
-        90.0,
-        12.0,
-        11.0
+        89.333333,
+        12.5,
+        6.0
       ],
       "bed_z_mm": 0.0,
-      "volume_mm3": 5596.066667,
-      "stl_volume_mm3": 5596.067871,
-      "stl_volume_difference_percent": 2.2e-05,
+      "volume_mm3": 3712.651665,
+      "stl_volume_mm3": 3713.030029,
+      "stl_volume_difference_percent": 0.010191,
       "max_design_bounds_difference_mm": 0.0,
-      "max_stl_bounds_difference_mm": 0.0,
-      "sha256": "9375f4e38aaee3b5035874117cf0415ce24e63c99a14511041be9283a554eac4"
+      "max_stl_bounds_difference_mm": 3e-06,
+      "sha256": "086cbc8b459d56b355be56ae136886b037382dfe3d2f9066d7b430e25e0aa2ca"
     },
     "fit_oled_face": {
       "reopened_valid_single_solid": true,
       "print_bounds_mm": [
-        34.0,
-        32.0,
-        5.0
+        32.3,
+        30.35,
+        8.6
       ],
       "bed_z_mm": -0.0,
-      "volume_mm3": 1837.434667,
-      "stl_volume_mm3": 1837.435547,
-      "stl_volume_difference_percent": 4.8e-05,
+      "volume_mm3": 2651.905667,
+      "stl_volume_mm3": 2651.904541,
+      "stl_volume_difference_percent": 4.2e-05,
       "max_design_bounds_difference_mm": 0.0,
-      "max_stl_bounds_difference_mm": 0.0,
-      "sha256": "3a0487088316f8eee5162ff94e2ef003263473c70193354fbb211c367e85d447"
+      "max_stl_bounds_difference_mm": 1e-06,
+      "sha256": "11d8ec5c71fc3d5a9aad00cb474488794667e50fe20eab001c4c13578387eda7"
     }
   },
   "source_sha256": {
-    "indicators.py": "103cbf50a19124b4a0c401402dcd74bcf1c73e0fb34a9dfd541cfbdb2ccfc545",
+    "cable_route.py": "00daaa90077fdf45ef95e03d1dbc66ae9ae15daba86a002a4e38caf6055a7c37",
+    "indicators.py": "eb46f19a393c16d102c369fd7d901923aa209ff3edf88b969b332b51b48361da",
     "parameters.json": "f8dabba145b0cbe62ecde1e0d4ff5a9ca15db01fe16e8ca66024de3a90eacb9e",
-    "build.py": "02c782373b7a1015a60c4e800a06294b9b7f52f5f455380a1d537fc8807f3793",
+    "build.py": "9cd30702c9db68693e4392976f25f9c8519cabe4d4f7efec26bfef855b953009",
     "render.py": "66b50845a181c2c626449f64a270c6d405c9339b6c809f369539460e26edbbce",
-    "verify_exports.py": "c8138cf82b30203fb2e1c728e300332710a53b900ab92c2b158b06e22a6ff1a1",
-    "variants/oled-led/parameters.json": "d4b7228a8321aac1c78e4977396993cbab39c690b5b9d054336d9c8d59236b7d",
-    "exploded_render.py": "399dabdc9a04493acd46634f327bbdb07604292e99ff3656805d63b4cabf7daa",
-    "assembly-parts.json": "c2b69605714094cce6a2f2593856e3fa758a85dcdb4c4da2e6f0ce187a69bf03"
+    "verify_exports.py": "9b47ce607cbc906ec45cdb9c303fa95824399353f0479786beb75fb6efcef39a",
+    "variants/oled-led/parameters.json": "0d08950e2671c79d8aae20a0eee696395d03b7676d3d0400e5c987103db91a34",
+    "exploded_render.py": "07035c04900f0decf69d3dd599f593da864c4d4c8639818ca6f7513bdee15ea4",
+    "assembly-parts.json": "915192757b5f1e98a21af38b6f98b3a5fb429cb3b2653c94e61602c3f4a98ced"
   },
   "freecad_version": "1.1.4",
   "step_bounds_method": "optimalBoundingBox(useTriangulation=False, useShapeTolerance=False)",
@@ -424,28 +400,28 @@
     "step_vs_stl_relative_volume": 0.005
   },
   "freecad": {
-    "reopened_valid_shapes": 57,
-    "printed_instances": 11
+    "reopened_valid_shapes": 59,
+    "printed_instances": 10
   },
   "step": {
     "reopened_valid": true,
-    "solids": 79
+    "solids": 81
   },
   "indicator_front_clamp_checks": [
     {
-      "fastener": "front cover M3x16",
+      "fastener": "front cover M3x10",
       "x_mm": -78,
       "positive_volume_intersections": {}
     },
     {
-      "fastener": "front cover M3x16",
+      "fastener": "front cover M3x10",
       "x_mm": 78,
       "positive_volume_intersections": {}
     }
   ],
-  "indicator_rear_fastener_note": "M2.5x10 screws intentionally engage 2.1 mm plastic pilot holes; actual thread retention and screw head fit need physical checks.",
+  "nfc_cable_cover_fastener_note": "Two M2.5x10 prototype plastic-pilot screws; actual retention and screw head fit require physical checks. Front indicators use integrated slots and adhesive/foam, with no rear cover screws.",
   "edge_finishing": {
-    "verified_operation_count": 17,
+    "verified_operation_count": 20,
     "removal_only": true,
     "physical_validation": false
   },
@@ -453,5 +429,25 @@
     "spool_cases": 27,
     "dedicated_boot_bore_mm": 4.0,
     "physical_validation": false
-  }
+  },
+  "oled_insertion": {
+    "applicable": true,
+    "main_lid_removed": true,
+    "continuous_vertical_lift_mm": 40,
+    "reference_envelopes_checked": [
+      "OLED_PCB",
+      "OLED_glass",
+      "OLED_components",
+      "OLED_headers"
+    ],
+    "positive_volume_intersections": {
+      "OLED_PCB": {},
+      "OLED_glass": {},
+      "OLED_components": {},
+      "OLED_headers": {}
+    },
+    "physical_insertion_verified": false
+  },
+  "nfc_cable_route_digital_clearance_pass": true,
+  "nominal_unloaded_height_with_feet_mm": 188.4
 }

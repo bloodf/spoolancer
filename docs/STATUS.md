@@ -1,23 +1,26 @@
 # Spoolancer verification status
 
-## v0.6 rounded CAD and assembly viewer — 27 October 2026
+## v0.6 chamfered CAD and assembly viewer, 27 October 2026
 
-The LED-only and OLED-plus-LED CAD now include real rounds and chamfers, with matching interactive and static assembly views. **Physical fit, stiffness, tipping stability, cable forces and weighing accuracy remain unvalidated.** Firmware and the previous device-flash record are unchanged.
+The LED-only and OLED-plus-LED cases use integrated vertical front controls, a covered adjustable-reader cable route and actual exterior chamfers. Each has ten printed instances from nine production models. **Physical fit, stiffness, tipping stability, cable forces and weighing accuracy remain unvalidated.** Firmware and the previous device-flash record are unchanged.
 
 | Area | Evidence | Limit |
 | --- | --- | --- |
-| CAD edge treatment | 17 explicit operations per variant; all ten unique production models changed. Comparisons find no added volume and no removed material in 24 protected regions for LED-only and 26 for OLED | Digital shape comparisons do not establish strength or print quality |
-| STEP/STL/native exports | 15 LED-only and 16 OLED single-solid STEP/STL pairs reopened; native FreeCAD and complete STEP assemblies reopened; modeled collision, 27 spool cases, nine reader placements, BOOT approach and front clamp checks pass | Delivered component dimensions and real assembly remain provisional |
+| CAD edge treatment | 20 explicit chamfer operations per variant; each removes material only. Eighteen protected functional regions per variant remain unchanged. The report separates edge treatment from added/removed redesign geometry | Digital shape comparisons do not establish strength or print quality |
+| STEP/STL/native exports | 14 LED-only and 15 OLED single-solid STEP/STL pairs reopened, including fit samples; native FreeCAD and complete STEP assemblies reopened. Modeled collision, 27 spool cases, nine reader placements, BOOT approach, clamp checks and a continuous 40 mm OLED insertion sweep with the main lid removed pass | Delivered component dimensions and real assembly remain provisional |
+| Covered NFC cable route | Nine actual path cases per variant plus conservative continuous height, full-width tail/outlet and clamp-tool clearance checks pass. Moving reader route has a constant modeled centerline length and R10 bends | The internal base-tail drawing has an illustrative R5 arc and changing drawn lengths. Neither it nor the swept envelope proves real cable behavior, force or bend suitability |
 | Earlier CAD | 121 original headless/touch CAD/export/preview artifacts unchanged | Those models retain their earlier validation limits |
-| Assembly images | Seven views per new variant, rendered from final scene meshes; numbered leaders and metadata shared with viewer; scene/metadata/renderer/image hashes recorded | Wiring, converter, jack and some fasteners are omitted; exploded offsets are illustrative |
-| Interactive viewer | Exact regenerated mesh bytes checked against both CAD scenes; 28-group transform/visibility tests, JavaScript syntax and bundled library hashes pass | WebGL2 required; assets are for a computer/phone browser, not the ESP32 filesystem |
-| Browser behavior | In-app browser loaded final CAD; rotation, zoom, assembled/exploded states, spool hiding, transparent housing, part selection/isolation, light/dark themes and both variant selectors checked | Desktop browser observation; no physical hardware or mobile-device result |
+| Assembly images | Eight views per new variant, rendered from final scene meshes; numbered leaders and metadata shared with viewer; scene/metadata/renderer/image hashes recorded | Cable paths and electrical component bodies are nominal references; jack, converter, terminations and some fasteners are omitted |
+| Interactive viewer | Exact regenerated mesh bytes checked against both CAD scenes; 30-group transform/visibility tests, JavaScript syntax and bundled library hashes pass | WebGL2 required; assets are for a computer/phone browser, not the ESP32 filesystem |
+| Browser behavior | In-app desktop browser loaded final CAD; rotation, zoom, assembled/exploded states, spool hiding, transparent housing, part selection/isolation/focus, light/dark themes and both variant selectors checked. Alternate-height cable routes remain hidden in ordinary assembly views | Desktop browser observation; no physical hardware or mobile-device result |
 
-The viewer has eleven selectable printed instances per variant, 26 total labeled groups for LED-only and 28 for OLED. Twelve nominal M3 clamp sets and four stops are shown as simplified references. The converter volume is unassigned space; no jack hole or converter mounting location is implied. Parts 01–11 identify the printed assembly, including two copies of the same rim rail.
+The viewer has ten selectable printed instances per variant, 28 total labeled groups for LED-only and 30 for OLED. Printed parts 01–09 include two copies of the rim rail; part 29 is the new cable cover. Retired parts 10/11 and converter-space reference 20 are removed. Twelve nominal M3 clamp sets and four stops are simplified references. No jack hole or reserved converter mounting volume is implied.
+
+The printed footprint is 170 × 160 mm for both versions. Solid CAD volume, including production quantities, changes from 438,009.46 to 431,404.83 mm³ for LED-only and from 451,819.89 to 432,096.12 mm³ for OLED. These figures describe geometry; they do not predict sliced filament mass, support usage or print time.
 
 Sources: [edge and protected-region comparison](../cad/edge-finish-verification.json), [LED export checks](../cad/variants/headless-led/exports/export-verification.json), [OLED export checks](../cad/variants/oled-led/exports/export-verification.json), [LED render manifest](../cad/variants/headless-led/previews/render-manifest.json), [OLED render manifest](../cad/variants/oled-led/previews/render-manifest.json), [viewer tests and reproduction](../viewer/README.md) and [assembly guide](ASSEMBLY-VIEW.md).
 
-No device flash, print job, NFC operation or inventory write was performed for this update. No sliced material or print-time estimate is claimed for v0.6. The application still identifies itself as `0.5.0-prototype`.
+No device flash, print job, NFC operation or inventory write was performed for this update. The application still identifies itself as `0.5.0-prototype`.
 
 ## Historical v0.5 LED/OLED update — 27 October 2026
 

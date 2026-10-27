@@ -66,8 +66,10 @@ def build_variant(variant, metadata_bytes, scene_bytes):
         part['center'] = [(a + b) / 2 for a, b in zip(minimum, maximum)]
         parts.append(part)
     printed_count = sum(p['category'] == 'printed' for p in parts)
-    if printed_count != 11:
-        raise ValueError(f'Expected 11 printed instances, received {printed_count}')
+    cad_printed = {mesh_id for mesh_id in scene if not mesh_id.startswith('REF_')}
+    labeled_printed = {mesh['id'] for part in parts if part['category'] == 'printed' for mesh in part['meshes']}
+    if labeled_printed != cad_printed or printed_count != len(cad_printed):
+        raise ValueError('Every CAD printed instance must have its own selectable printed part')
     data = dict(schemaVersion=1, variant=variant, units='mm', coordinates=metadata['coordinates'],
                 source=f'cad/variants/{variant}/previews/scene.json',
                 sourceSha256=digest(scene_bytes), metadataSha256=digest(metadata_bytes),
@@ -96,7 +98,7 @@ def main():
                 path.write_bytes(content)
         decoded = json.loads(description)
         triangles = sum(m['triangleCount'] for p in decoded['parts'] for m in p['meshes'])
-        print(f'{variant}: {len(decoded["parts"])} labeled groups, 11 printed instances, {triangles:,} triangles, {len(mesh):,} bytes — {"verified" if args.check else "built"}')
+        print(f'{variant}: {len(decoded["parts"])} labeled groups, {decoded["printedInstances"]} printed instances, {triangles:,} triangles, {len(mesh):,} bytes — {"verified" if args.check else "built"}')
 
 
 if __name__ == '__main__':

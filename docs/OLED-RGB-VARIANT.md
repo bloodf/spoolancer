@@ -4,28 +4,28 @@ Two additional builds use the existing standalone ESP32-S3 N16R8, the upright cr
 
 | Build | Firmware environment | Printed footprint | STEP/STL pairs | Production pieces |
 | --- | --- | --- | ---: | ---: |
-| [Five LEDs](../cad/variants/headless-led/NOTES.md) | `spoolancer-headless-led` | 170 × 186.48 mm | 15, including five fit samples | 11 |
-| [OLED + five LEDs](../cad/variants/oled-led/NOTES.md) | `spoolancer-oled-led` | 170 × 201.48 mm | 16, including six fit samples | 11 |
+| [Five LEDs](../cad/variants/headless-led/NOTES.md) | `spoolancer-headless-led` | 170 × 160 mm | 14, including five fit samples | 10 |
+| [OLED + five LEDs](../cad/variants/oled-led/NOTES.md) | `spoolancer-oled-led` | 170 × 160 mm | 15, including six fit samples | 10 |
 
-The main base is still 170 × 160 mm; the inclined front pod adds depth. A nominal 200 mm spool gives a loaded depth of 211.48 mm or 226.48 mm respectively. These are CAD dimensions, not physical fit measurements. The original headless and integrated-touch CAD files are preserved.
+Both controls fit within the 170 × 160 mm base. The nominal printed assembly is 187 mm high before feet; the highest reader setting reaches 198.4 mm. A nominal 200 mm spool gives a loaded depth of 200 mm. These are CAD dimensions, not physical fit measurements. The original headless and integrated-touch CAD files are preserved.
 
 ![OLED and LED CAD prototype](../cad/variants/oled-led/previews/assembled.png)
 
-## Rounded cases and 3D guide
+## Chamfered enclosure and 3D guide
 
-The v0.6 STEP, STL and FreeCAD files include rounded guide tops, rail ends, NFC pod corners and front-panel edges. Smaller rounds and chamfers soften the main housing while preserving the checked mounting seats, sliding surfaces, antenna window and opening throats. Exact treatments and protected-region checks are in each variant's notes and [the geometry report](../cad/edge-finish-verification.json).
+The v0.6 STEP, STL and FreeCAD files use real chamfers on exposed corners and edges. The OLED sits vertically on the left of the front wall, with five LEDs to its right; the LED-only case uses the same front-wall approach. Their supports are integrated into the base and accessed through the main lid. The projecting tilted pod is removed.
+
+A covered cable channel behind the NFC reader stores slack as its height changes. Its body is part of the moving guide, with one removable printed cover. The remaining flexible route into the base must stay clear of the fixed housing and load-cell flexure. Exact cable allowances, fasteners and installation steps are recorded in each variant's notes.
 
 Use the **[interactive 3D viewer](https://bloodf.github.io/spoolancer/)** to rotate the assembly, select or hide individual parts, see inside the housing, and spread the parts apart. The [numbered exploded image](../cad/variants/oled-led/previews/exploded.png) and [component-location image](../cad/variants/oled-led/previews/component-locations.png) use the same part numbers. These are geometry guides; physical fit remains untested.
 
 ## Printing and assembly
 
-The new cases have closed USB walls, a dedicated 4 mm BOOT tool bore, no pre-cut jack hole and no converter mount. The builder drills the jack opening and fixes an insulated converter assembly to a fixed wall. **12 V must pass through a regulated 5 V buck converter** before reaching the ESP32 or strip. Follow the [DC wiring and programming guide](DC-POWER.md); open the main cover for programming.
+The cases have closed USB walls, a dedicated BOOT tool bore, no pre-cut jack hole and no converter mount. Drill the jack opening and fix an insulated converter assembly to a fixed wall after checking the real parts. **12 V must pass through a regulated 5 V buck converter** before reaching the ESP32 or strip. Follow the [DC wiring and programming guide](DC-POWER.md); open the main cover for programming.
 
-The removable front fascia and rear carrier mount on the fixed cover posts. Their wires pass through the fixed front wall and must stay clear of the moving load path. Five 6.4 mm light openings use the confirmed 60 LEDs/metre pitch: **16.667 mm between centres**, 66.667 mm from first to fifth centre.
+The OLED and strip belong to the fixed front wall. Their leads stay inside the base and clear of the moving load path. Five light openings use the confirmed 60 LEDs/metre pitch: **16.667 mm between centres**, 66.667 mm from first to fifth centre.
 
-Use the complete exports from the selected variant, especially its new base and top cover. Replace the two front M3×10 closure screws with **two M3×16** and add **four M2.5×10** rear-cover screws. Test the printed pilot threads and tighten lightly. Retain the strip with insulating adhesive and the OLED at its PCB edges with thin foam; do not clamp the glass. The fascia prints face-down and needs local support beneath its raised mounting bridge.
-
-Print `fit_led_face`, `fit_led_carrier`, `fit_esp32`, `fit_cell` and `fit_nfc` first; the OLED version adds `fit_oled_face`. The complete rear cover is also needed to check the OLED's pins and wire exit. See the [print manifest](PRINTING.md) and each variant's notes for quantities, mounting and exact provisional clearances.
+Use the complete exports and fastener list from the selected variant. Retain the strip with insulating adhesive and the OLED at its PCB edges with thin foam; do not clamp the glass. Follow the [print manifest](PRINTING.md) and each variant's notes for quantities, print orientation and the fit samples to check before printing the full enclosure.
 
 ## Component assumptions and wiring
 

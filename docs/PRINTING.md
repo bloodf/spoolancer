@@ -2,7 +2,7 @@
 
 Choose a variant and print its fit samples first. **The enclosure has CAD checks but no physical print or fit validation yet.** Use the [hardware report](HARDWARE-VALIDATION.md) to record your build.
 
-The LED/OLED v0.6 parts add actual CAD edge rounds and chamfers. Use a complete current set. [Interactive and numbered exploded views](ASSEMBLY-VIEW.md) identify the parts and component locations; the new print bundles include these images.
+The LED/OLED v0.6 parts use actual CAD chamfers, vertical front controls and a covered NFC cable route. Use a complete current set. [Interactive and numbered exploded views](ASSEMBLY-VIEW.md) identify the parts and component locations; the new print bundles include these images.
 
 Individual `.step` files contain editable solid parts for CAD tools and slicers that support STEP. Individual `.stl` files are the mesh alternative supported by most slicers. Each part uses its intended print orientation and millimetre dimensions. Import at 100% scale and check the bounds before slicing.
 
@@ -14,8 +14,8 @@ Assembly STEP files include simplified electronics and reference bodies. Use the
 | --- | ---: | ---: | ---: | --- |
 | Headless v0.4.1 | 8 STEP/STL pairs | 9, including two rim rails | 3 pairs | [headless exports](../cad/variants/headless/exports/) |
 | ESP-8048S043C-I touch | 11 STEP/STL pairs | 12, including two rim rails | 3 pairs | [touch exports](../cad/variants/touch-8048/exports/) |
-| Five LEDs, DC case | 10 STEP/STL pairs | 11, including two rim rails | 5 pairs | [LED exports](../cad/variants/headless-led/exports/) |
-| OLED + five LEDs, DC case | 10 STEP/STL pairs | 11, including two rim rails | 6 pairs | [OLED exports](../cad/variants/oled-led/exports/) |
+| Five LEDs, DC case | 9 STEP/STL pairs | 10, including two rim rails | 5 pairs | [LED exports](../cad/variants/headless-led/exports/) |
+| OLED + five LEDs, DC case | 9 STEP/STL pairs | 10, including two rim rails | 6 pairs | [OLED exports](../cad/variants/oled-led/exports/) |
 
 Download a complete [headless print pack](https://github.com/bloodf/spoolancer/releases/download/v0.6.0-alpha.1/spoolancer-v0.6.0-alpha.1-headless-print.zip), [touch print pack](https://github.com/bloodf/spoolancer/releases/download/v0.6.0-alpha.1/spoolancer-v0.6.0-alpha.1-touch-8048-print.zip), [LED print pack](https://github.com/bloodf/spoolancer/releases/download/v0.6.0-alpha.1/spoolancer-v0.6.0-alpha.1-headless-led-print.zip) or [OLED/LED print pack](https://github.com/bloodf/spoolancer/releases/download/v0.6.0-alpha.1/spoolancer-v0.6.0-alpha.1-oled-led-print.zip). The [release page](https://github.com/bloodf/spoolancer/releases/tag/v0.6.0-alpha.1) also supplies the full source package and checksums.
 
@@ -50,11 +50,11 @@ The touch build adds these parts to the shared nine pieces. Its controller mount
 
 ## LED and OLED production parts
 
-Use all files from [headless-led](../cad/variants/headless-led/exports/) or [oled-led](../cad/variants/oled-led/exports/). Each needs one `base`, `top_cover`, `carrier`, `side_guide`, `nfc_guide`, `nfc_pod`, `nfc_pod_cover`, `indicator_fascia` and `indicator_back`, plus **two** `rim_rail` copies. Do not substitute the original USB-opening base or cover.
+Use all files from [headless-led](../cad/variants/headless-led/exports/) or [oled-led](../cad/variants/oled-led/exports/). Each needs one `base`, `top_cover`, `carrier`, `side_guide`, `nfc_guide`, `nfc_pod`, `nfc_pod_cover` and `nfc_cable_cover`, plus **two** `rim_rail` copies. Do not substitute the original USB-opening base or cover.
 
-Print `indicator_fascia` face-down and `indicator_back` flat-down as exported. The fascia's elevated mounting bridge needs **local slicer support**. Add two M3×16 screws in place of the front M3×10 closure screws and four M2.5×10 screws for the rear cover's plastic pilot threads. The parts have no converter mount or jack hole; the builder drills after checking clearance. See [LED fit and assembly](../cad/variants/headless-led/NOTES.md) or [OLED fit and assembly](../cad/variants/oled-led/NOTES.md), and [12 V-to-5 V power wiring](DC-POWER.md).
+Keep the exported print poses. Inspect local support needs under the integrated LED gutter, OLED edge pads, cable hood and channel bridges. The removable cable cover opens the lower gutter for support removal. Use four M3×10 main-cover closure screws and two M2.5×10 screws for the cable cover's prototype plastic pilots. The parts have no converter mount or jack hole; the builder drills after checking clearance. See [LED fit and assembly](../cad/variants/headless-led/NOTES.md) or [OLED fit and assembly](../cad/variants/oled-led/NOTES.md), and [12 V-to-5 V power wiring](DC-POWER.md).
 
-Print each new build's `fit_led_face`, `fit_led_carrier`, `fit_esp32`, `fit_cell` and `fit_nfc` samples first. OLED adds `fit_oled_face`; also check its complete rear cover against the actual pins and wiring. Pitch is confirmed at 16.667 mm; strip width, OLED dimensions and internal plug clearance are provisional. Neither new variant has a measured or sliced filament-mass estimate.
+Print each new build's `fit_led_face`, `fit_led_carrier`, `fit_esp32`, `fit_cell` and `fit_nfc` samples first. OLED adds `fit_oled_face`, which includes the integrated PCB-edge supports. Check headers and wiring in the complete base as well. Pitch is confirmed at 16.667 mm; strip width, OLED dimensions and internal plug clearance are provisional. Neither new variant has a measured or sliced filament-mass estimate.
 
 ## Original headless and touch fit samples
 

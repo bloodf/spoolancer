@@ -6,7 +6,7 @@ Use the [rotatable assembly and numbered exploded views](ASSEMBLY-VIEW.md) to lo
 
 Use [SHOPPING.md](../SHOPPING.md) for electronics, [WIRING.md](../WIRING.md) for connections, [firmware/README.md](../firmware/README.md) for installation, and the [web-interface guide](WEB-INTERFACE.md) for operation. The current build has a side-mounted NFC pod; use the v0.4.1 headless exports or the touch variant, not the archived full-saddle design.
 
-The shared mechanism instructions below also apply to the new LED/OLED variants, but use their complete selected export set. Follow [LED-only notes](../cad/variants/headless-led/NOTES.md) or [OLED/LED notes](../cad/variants/oled-led/NOTES.md) for their changed base/cover, eleven-piece count, front pod and longer front screws. Their USB walls are closed and BOOT has a separate tool bore. Follow [DC power instructions](DC-POWER.md) before installing a converter or connecting USB.
+The shared mechanism instructions below also apply to the new LED/OLED variants, but use their complete selected export set. Follow [LED-only notes](../cad/variants/headless-led/NOTES.md) or [OLED/LED notes](../cad/variants/oled-led/NOTES.md) for their integrated vertical front controls, concealed reader cable route and current print quantities. Their USB walls are closed and BOOT has a separate tool bore. Follow [DC power instructions](DC-POWER.md) before installing a converter or connecting USB.
 
 ## Prints and tools
 
@@ -73,7 +73,19 @@ The 50–100 mm width range and 160–220 mm diameter range are modeled envelope
 3. Insert two M3 nylon nuts from the tops of the right guide's vertical channels. Attach the pod tabs with M3 × 8 mm nylon screws and 0.5 mm nylon washers. Check that loosening permits height adjustment and tightening clamps the pod. Keep antenna-adjacent hardware nonmetallic.
 4. With the spool seated, adjust the reader center within **90–175 mm** height and rotate the spool to align its tag with the antenna. The pod window is nominally 2 mm from the spool side. The 1.2 mm window and 0.8 mm board gap give about **4 mm antenna-to-spool separation**, before embedded-tag depth or board variation. Test the actual tag; this spacing is not a read-range guarantee.
 
-Run the reader wires along the moving guide, then form a **loose, flexible silicone cable loop to the fixed base**. Leave slack for the full height and width adjustment. Secure the loop so it cannot rub the spool, rails, cover, stops or cell flexure. A wire loop can exert force on the scale even without visible contact; it must be tested for zero shift.
+For the original headless and integrated-touch variants, run the reader wires along the moving guide, then form a **loose, flexible silicone cable loop to the fixed base**. The current LED/OLED variants instead use a covered channel behind the reader; follow their variant notes to place the height-adjustment slack and route the flexible tail into the base. Leave slack for the full height and width adjustment. Secure the loop so it cannot rub the spool, rails, cover, stops or cell flexure. A wire loop can exert force on the scale even without visible contact; it must be tested for zero shift.
+
+### Covered reader cable path: current LED/OLED cases
+
+The reader's rear cover opens into the channel behind the height-adjustable pod. The channel body is integrated into the NFC guide; a separate cover hides the wiring. Its lower chute turns inward and enters the base through an open region of the moving carrier. A free flexible tail then reaches the fixed controller inside the base.
+
+1. Open the channel cover and main lid before fitting the four flexible PN532 leads. Follow the selected variant's modeled cable-envelope and bend allowances.
+2. Retain the leads at the intended strain-relief points. Leave the height-adjustment loop inside the channel, clear of the clamping slots and cover screw seats. Do not pull it taut at either height limit.
+3. Route the tail through the lower chute into the base. Keep its internal loop clear of the load cell, carrier, stops, converter and fixed walls at both guide-width limits. Nothing should clamp the cable across the moving/fixed gap.
+4. Adjust the reader through its full height range with the channel open, then fit the cover and repeat. Check for rubbing, pinching and tension before calibration.
+5. Compare settled zero and known-mass readings at the reader/guide extremes. A concealed cable can still exert force; revise the slack if readings shift.
+
+The routing model establishes proposed space, not a measured cable stiffness, fatigue life or RF read range. Use thin flexible stranded wires and check the actual bundle before the full print. Keep the channel cover removable for inspection.
 
 ## Touch variant: fixed front panel
 

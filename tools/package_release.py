@@ -110,12 +110,12 @@ def main():
             contents["DC-POWER.md"] = bundled_guide("docs/DC-POWER.md")
             contents["INDICATOR-GUIDE.md"] = bundled_guide("docs/OLED-RGB-VARIANT.md")
             contents["ASSEMBLY-VIEW.md"] = bundled_guide("docs/ASSEMBLY-VIEW.md")
-            for preview in ("assembled", "exploded", "component-locations", "edge-detail"):
+            for preview in ("assembled", "exploded", "component-locations", "edge-detail", "cable-routing"):
                 path = folder + f"previews/{preview}.png"
                 if path in files:
                     contents[f"views/{preview}.png"] = files[path]
             indicator_note = """
-Read [variant fit and assembly notes](VARIANT-NOTES.md), [DC power instructions](DC-POWER.md) and [indicator behavior](INDICATOR-GUIDE.md) before printing. The fascia needs local support beneath its raised mounting bridge. Replace two front M3×10 screws with two M3×16 and add four M2.5×10 rear-cover screws. OLED/strip dimensions remain provisional.
+Read [variant fit and assembly notes](VARIANT-NOTES.md), [DC power instructions](DC-POWER.md) and [indicator behavior](INDICATOR-GUIDE.md) before printing. The OLED/LED supports are integrated into the vertical front wall and serviced through the main lid. Use the current variant notes for closure screws, removable cable-cover fasteners, fit samples and slicer support needs. OLED/strip and cable dimensions remain provisional.
 
 Use [the assembly-view guide](ASSEMBLY-VIEW.md) and the numbered images in `views/` to locate parts. The companion assembly-viewer ZIP provides a rotatable model and an exploded-view slider.
 

@@ -2,12 +2,14 @@
 
 ## 0.6.0-alpha.1
 
-Refines the two LED cases with actual CAD rounds and chamfers and adds a full interactive assembly guide. Upright spool support, side NFC placement, fixed indicator panels and 100 mm width adjustment remain. Physical fit remains unvalidated.
+Redesigns the two LED cases with integrated vertical front controls, a covered adjustable-reader cable route and chamfered exposed edges. Adds a full interactive assembly guide. Upright spool support and 100 mm width adjustment remain. Physical fit remains unvalidated.
 
-- Rounded guide and mast tops, cradle ends, NFC pod edges and front panels; smaller exposed enclosure edge treatments preserve mounting and load-bearing interfaces.
+- Vertical front-wall OLED and LED supports replace the tilted external pod and its separate rear cover. Components are serviced through the main lid.
+- A cable channel integrated into the NFC guide stores height-adjustment slack behind one removable cover.
+- Actual CAD chamfers give the exposed housing, cradle, guide and cover edges a consistent bevel; functional mounting and sliding surfaces retain their checked clearances.
 - Regenerated individual STEP/STL pairs, native FreeCAD files and complete assembly STEP for the LED-only and OLED-plus-LED cases. The original headless and integrated-touch CAD are unchanged.
 - Standalone 3D viewer with both variants, numbered selection, hide/isolate/focus controls, reference toggles, light/dark appearance and an exploded-view slider. Real CAD meshes and Three.js are bundled for offline use through a local static server.
-- Numbered exploded images, component-location and edge-detail views in the source and print downloads. Part numbers are shared with the viewer.
+- Numbered exploded images, component-location, cable-routing and edge-detail views in the source and print downloads. Part numbers are shared with the viewer.
 - Geometry/export checks, deterministic mesh rebuild checks, viewer behavior tests and GitHub Pages publishing workflow.
 - NFC tag guide distinguishing manufacturer-signed Bambu/Snapmaker tags from writable Spoolancer NTAG216 inventory.
 
