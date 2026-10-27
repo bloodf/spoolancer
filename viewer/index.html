@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f3f5ee">
+  <title>Spoolancer · Assembly explorer</title>
+  <link rel="icon" href="./assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+  <script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script>
+  <script type="module" src="./app.js"></script>
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="https://github.com/bloodf/spoolancer" aria-label="Spoolancer on GitHub"><img src="./assets/icon.svg" alt=""><span>spoolancer<small>Open hardware · Assembly explorer</small></span></a>
+  <div class="header-actions"><span class="prototype">CAD prototype</span><button id="theme" class="icon-button" aria-label="Switch to dark theme" title="Switch theme">◐</button><a class="source-link" href="https://github.com/bloodf/spoolancer">Source ↗</a></div>
+</header>
+<main>
+  <section class="intro"><div><p class="eyebrow">BUILD IT. UNDERSTAND IT.</p><h1>Every part, in place.</h1><p>Rotate the real CAD model. Open the assembly. Find what goes where.</p></div><label class="variant-label">Model<select id="variant"><option value="oled-led">OLED + five LEDs</option><option value="headless-led">Five LEDs · web controls</option></select></label></section>
+  <div class="workspace">
+    <section class="stage" aria-label="Interactive 3D assembly">
+      <div class="stage-top"><div class="view-badge"><span class="status-dot"></span><span id="mode-label">Assembled</span><span class="separator">/</span><span id="part-count">11 printed pieces</span></div><button class="plain-button" id="reset" title="Restore assembled model and camera">↺ Reset</button></div>
+      <div id="viewport"><canvas id="canvas" aria-label="3D assembly. Drag to orbit; scroll or pinch to zoom; right-drag or two-finger drag to pan." tabindex="0"></canvas><div id="labels" aria-label="Component labels"></div><div id="loading" role="status">Loading actual CAD geometry…</div></div>
+      <div class="camera-tools" aria-label="Camera views"><button data-view="iso" class="active">Perspective</button><button data-view="front">Front</button><button data-view="side">Side</button><button data-view="top">Top</button><button id="fit" title="Fit visible parts">Fit view</button></div>
+      <div class="stage-bottom"><span>Drag to rotate <i>·</i> Scroll to zoom <i>·</i> Right-drag to pan</span><span>Dimensions in mm</span></div>
+      <div class="explode-control"><div class="explode-heading"><label for="explode">Open the assembly</label><output for="explode" id="explode-value">0%</output></div><input type="range" id="explode" min="0" max="100" value="0" aria-label="Assembly explosion amount"><div class="range-captions"><button id="assemble">Assembled</button><button id="explode-all">Exploded</button></div></div>
+    </section>
+    <aside class="inspector" aria-label="Assembly parts and controls">
+      <div class="inspector-head"><h2>Inside Spoolancer</h2><p>Select a part in the model or the list.</p></div>
+      <div class="layer-controls"><label><input type="checkbox" id="show-spool" checked><span>Reference spool</span></label><label><input type="checkbox" id="show-electronics" checked><span>Hardware references</span></label><label><input type="checkbox" id="show-clearance"><span>Clearance spaces</span></label><label><input type="checkbox" id="show-labels" checked><span>Part numbers</span></label><label class="xray-label"><input type="checkbox" id="xray"><span>See inside housing</span></label></div>
+      <div class="parts-toolbar"><h3>Components <span id="group-count"></span></h3><button id="show-all" class="plain-button" hidden>Show all</button></div>
+      <div id="parts" class="parts-list"></div>
+      <section id="selection" class="selection" aria-live="polite"><p class="eyebrow">HOW IT WORKS</p><h3>One floating cradle</h3><p>The spool, guides and reader sit on the load-cell carrier. The base and front display stay fixed.</p><p class="selection-note">Models show nominal envelopes. Verify real parts before printing the complete enclosure.</p></section>
+    </aside>
+  </div>
+  <footer><p><strong>Actual CAD, not a concept render.</strong> Exploded positions are for identification, not an assembly-motion simulation. Wiring, most fasteners and the user-drilled jack are not modeled.</p><div><span id="build-info">Source verification loading…</span><a href="https://github.com/bloodf/spoolancer/tree/main/cad">STEP / STL / FreeCAD ↗</a></div></footer>
+</main>
+<noscript>This viewer needs JavaScript and a WebGL2-capable browser. STEP and FreeCAD files are available in the repository.</noscript>
+</body>
+</html>

@@ -24,9 +24,9 @@ The pod attaches to the **fixed front cover posts**. It does not attach to the f
 
 ## Prints and assembly
 
-Use the individual files in [exports](exports); do not print the complete assembly STEP. STEP/STL pairs share their intended print pose. The complete `spoolancer-v0.5-headless-led.FCStd` and `*-assembly.step` include reference bodies for editing and inspection.
+Use the individual files in [exports](exports); do not print the complete assembly STEP. STEP/STL pairs share their intended print pose. The complete `spoolancer-v0.6-headless-led.FCStd` and `*-assembly.step` include reference bodies for editing and inspection.
 
-Print the shared carrier, side guide, NFC guide, pod and pod cover once; print the rim rail twice. Print the new base, top cover, indicator fascia and indicator back once. This makes **eleven production pieces**, ten unique production models. Shared cradle geometry is unchanged.
+Print the shared carrier, side guide, NFC guide, pod and pod cover once; print the rim rail twice. Print the new base, top cover, indicator fascia and indicator back once. This makes **eleven production pieces**, ten unique production models. Shared cradle contact, sliding and mounting dimensions are retained; exposed edges now have modeled rounds and chamfers.
 
 Compared with the headless fastener list, replace the two front M3×10 closure screws with **two M3×16** screws because the bracket adds 3 mm. Use **four M2.5×10** screws for the indicator rear cover's pilot holes, designed as provisional plastic threads; tighten lightly and test retention in the intended print material. Existing rear closure screws remain M3×10. These modeled lengths still need a real assembly check.
 
@@ -39,11 +39,35 @@ Fit samples reuse the actual production geometry:
 
 The fascia is exported face-down. Its integrated mounting bridge is elevated in this orientation and **requires local slicer support**. The back is flat-down; inspect bridges and strip supports in the slicer. Ordinary PETG is a starting material, not a tested print profile. No current filament mass estimate is published.
 
+## Rounded geometry · v0.6
+
+The softer edges are real analytic CAD geometry in the STEP, FreeCAD and STL exports. No render-only smoothing is used as a substitute. All treatments remove material; they do not expand the old collision envelope. The generator selects edges by explicit geometric bounds and fails if a requested treatment is missing or invalid. The validation file records each selected edge, radius/chamfer and before/after volume.
+
+| Location | Treatment |
+| --- | --- |
+| Base lower / upper outer edges | R1.0 / R0.65 mm |
+| Cover upper outside edge / carrier aperture | R0.8 mm / 0.45 mm chamfer |
+| Carrier lower exposed edges | R0.6 mm |
+| Rim rail outer end perimeters | R1.2 mm, outside the 100 mm spool-width envelope |
+| Plain guide upper outside edge | R1.2 mm |
+| NFC mast outer long corners / top edges | R1.5 / R0.6 mm |
+| NFC pod and back cover outside corners | R2.2 mm |
+| NFC rear cover outside rim | R0.45 mm |
+| Indicator face outside corners / front rim | R3.0 / R0.7 mm |
+| LED and OLED opening front edges | 0.4 mm chamfer; original throat size retained |
+| Indicator back outside corners / rear rim | R1.0 / R0.4 mm |
+
+Load-cell bearing pads, bolt seats, nut pockets, sliding feet and the central 1.2 mm NFC antenna face remain unchanged. The [before/after geometry report](../../edge-finish-verification.json) confirms zero removed material in 24 protected regions for this variant, including the full PCB-sized antenna window, load-cell supports, sliding feet, clamp seats and indicator opening throats. Rail contact slopes remain unchanged within the intended spool width. Structural web edges, inner corners, screw bores and narrow wire passages deliberately remain sharp where rounding would weaken walls or alter fit. OLED support pads and the glass seat remain unchanged. Print profiles and physical stiffness are still untested.
+
+Twelve simplified M3 clamp sets are now visible in the assembly: four cover joints, four rim-rail joints and four side-guide joints. They use the previously checked head/shaft/washer/nut dimensions; threads and screw drives are omitted. The four existing stop references remain. This is **partial hardware visualization**: load-cell, NFC, indicator rear fasteners, cable ties and adhesives are not included.
+
 ## Generated geometry results
 
-The unloaded printed assembly occupies **170 × 186.73 × 184 mm**, before feet and reader-height adjustment. The main base remains 170 × 160 mm. A modeled 200 mm spool brings depth to **211.73 mm**. These are CAD envelopes, not verified hardware fit or tipping stability.
+The unloaded printed assembly occupies **170 × 186.48 × 184 mm**, before feet and reader-height adjustment. The main base remains 170 × 160 mm. A modeled 200 mm spool brings depth to **211.48 mm**. These are CAD envelopes, not verified hardware fit or tipping stability.
 
 The directory contains **15 individual STEP/STL pairs**: ten unique production parts and 5 fit samples. The current digital checks pass for valid single solids, closed meshes, no detected mesh self-intersections, no unintended printed/component collisions, 27 spool/reader combinations, nine reader placements and the dedicated BOOT tool path. The export verifier separately checks the two new front M3×16 clamp assemblies. Read the linked JSON reports for exact values; physical validation remains false.
+
+The total analytic solid volume including print quantities changed from **438,966.93 mm³** to **438,009.46 mm³**. This measures geometry only, not sliced filament or mass.
 
 ## Reproduce and inspect
 

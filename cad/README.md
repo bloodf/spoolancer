@@ -1,5 +1,8 @@
 # Spoolancer enclosure variants · headless v0.4.1
 
+**Current LED/OLED CAD:** [3D assembly viewer](https://bloodf.github.io/spoolancer/) · [numbered views and controls](../docs/ASSEMBLY-VIEW.md) · [print manifest](../docs/PRINTING.md). The v0.6 files under `variants/headless-led` and `variants/oled-led` include actual rounded edges and chamfers, with protected fit regions recorded in [edge-finish-verification.json](edge-finish-verification.json). Their per-variant notes describe every radius and retained interface. The original headless/touch models and the earlier material estimates below are unchanged.
+
+
 Print the small fit samples before the full enclosure. This editable prototype uses the selected ESP32-S3, PN532 and 80 mm load cell. CAD checks and firmware compilation have passed; physical fit, weighing accuracy and NFC performance remain untested. Build instructions are in [firmware/README.md](../firmware/README.md), with daily operation in the [web-interface guide](../docs/WEB-INTERFACE.md).
 
 The upright spool rests on two hollow rim rails. An open carrier supports both rails, two different sliding guides and the NFC reader. The reader sits in a pod on the right guide and adjusts vertically to face the seated spool's tag. A loose cable loop connects it to the fixed electronics. The intended spool range is 50–100 mm wide and 160–220 mm in diameter, subject to actual flange and tag fit. This is an occasional-weighing scale, without an axle or bearings.

@@ -2,7 +2,7 @@
 import math
 
 
-def make_indicators(p, app, part, box, cyl, union, cut, add):
+def make_indicators(p, app, part, box, cyl, union, cut, add,finish,near):
     v=app.Vector
     width,height=p['indicator_panel_width'],p['indicator_panel_height']
     depth=p['indicator_depth'];wall=p['indicator_wall'];row=p['indicator_led_y']
@@ -16,6 +16,10 @@ def make_indicators(p, app, part, box, cyl, union, cut, add):
     shell=box(width,height,depth-2,0,0,-depth+2).cut(box(width-4,height-4,depth,0,0,-depth+1))
     bosses=[cyl(3,depth-2,x,y,-depth+2) for x,y in screws]
     fascia=union([face,shell]+bosses)
+    fascia=finish('indicator_fascia_outer_corners',fascia,'fillet',p['finish_indicator_corner_radius'],
+        lambda b:near(b.XLength,0) and near(b.YLength,0) and near(abs(b.XMin),width/2) and near(abs(b.YMin),height/2))
+    fascia=finish('indicator_fascia_front_perimeter',fascia,'fillet',p['finish_indicator_front_radius'],
+        lambda b:near(b.ZMin,2) and near(b.ZMax,2))
     face_cuts=[cyl(p['led_opening_diameter']/2,4,x,row,-1) for x in pixel_x]
     face_cuts += [cyl(1.05,depth-2,x,y,-depth+1.9) for x,y in screws]
     if p['oled_enabled']:
@@ -29,6 +33,16 @@ def make_indicators(p, app, part, box, cyl, union, cut, add):
                             ox,side*(height/2+abs(oy+side*(bh/2-1)))/2,0))
         fascia=union([fascia]+pads)
     fascia=cut(fascia,face_cuts)
+    def opening_edge(b):
+        if not (near(b.ZMin,2) and near(b.ZMax,2)):
+            return False
+        if abs((b.YMin+b.YMax)/2-row)<.001 and any(abs((b.XMin+b.XMax)/2-x)<.001 for x in pixel_x):
+            return True
+        if p['oled_enabled']:
+            ox,oy=p['oled_center'];ww,wh=p['oled_window']
+            return b.XMin>=ox-ww/2-.001 and b.XMax<=ox+ww/2+.001 and b.YMin>=oy-wh/2-.001 and b.YMax<=oy+wh/2+.001
+        return False
+    fascia=finish('indicator_opening_face_bevels',fascia,'chamfer',p['finish_indicator_opening_chamfer'],opening_edge)
     # Two slim side arms and one bridge use the fixed front cover posts.
     # No contact is made with the floating carrier or spool rails.
     placed=pose(fascia)
@@ -42,6 +56,10 @@ def make_indicators(p, app, part, box, cyl, union, cut, add):
     add('indicator_fascia',placed,(.25,.43,.42))
 
     back=box(width-4,height-4,2,0,0,-depth)
+    back=finish('indicator_back_outer_corners',back,'fillet',p['finish_indicator_back_corner_radius'],
+        lambda b:near(b.XLength,0) and near(b.YLength,0) and near(abs(b.XMin),(width-4)/2) and near(abs(b.YMin),(height-4)/2))
+    back=finish('indicator_back_outer_rim',back,'fillet',p['finish_indicator_back_edge_radius'],
+        lambda b:near(b.ZMin,-depth) and near(b.ZMax,-depth))
     # Adhesive strip attaches to a narrow bridge, supported from the rear cover.
     strip_support=box(p['led_strip_length']+3,p['led_strip_width']+1,1.6,0,row,-3.6)
     supports=[box(p['led_strip_length']+3,1.5,depth-5.6,0,row+y,-depth+2)

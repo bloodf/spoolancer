@@ -1,5 +1,5 @@
 {
-  "revision": "v0.5-oled-led-dc-fit-prototype",
+  "revision": "v0.6-oled-led-rounded-dc-fit-prototype",
   "variant": "oled-led",
   "indicators_enabled": true,
   "oled_enabled": true,
@@ -84,5 +84,21 @@
   ],
   "esp_header_wire_length": 55.8,
   "esp_header_wire_x_offset": -1.0,
-  "esp_wire_envelope_evidence": "Provisional 22-pin 2.54 mm header-row length; route wires inside 55.8 mm length and 25 mm height. Exact board and wire fit require verification."
+  "esp_wire_envelope_evidence": "Provisional 22-pin 2.54 mm header-row length; route wires inside 55.8 mm length and 25 mm height. Exact board and wire fit require verification.",
+  "finish_base_bottom_radius": 1.0,
+  "finish_base_top_radius": 0.65,
+  "finish_cover_radius": 0.8,
+  "finish_cover_aperture_chamfer": 0.45,
+  "finish_carrier_radius": 0.6,
+  "finish_rail_end_radius": 1.2,
+  "finish_guide_top_radius": 1.2,
+  "finish_mast_corner_radius": 1.5,
+  "finish_mast_top_radius": 0.6,
+  "finish_nfc_corner_radius": 2.2,
+  "finish_nfc_back_edge_radius": 0.45,
+  "finish_indicator_corner_radius": 3.0,
+  "finish_indicator_front_radius": 0.7,
+  "finish_indicator_opening_chamfer": 0.4,
+  "finish_indicator_back_corner_radius": 1.0,
+  "finish_indicator_back_edge_radius": 0.4
 }

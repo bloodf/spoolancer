@@ -4,7 +4,7 @@ Start with the **headless build** if you have an ESP32-S3 N16R8 and PN532. It us
 
 This is a prototype release. CAD checks, firmware builds and software tests have passed; physical fit, calibrated accuracy, seated NFC operation and a real Spoolman connection still need testing. Record your results in the [hardware validation report](HARDWARE-VALIDATION.md).
 
-The [v0.5.0-alpha.1 release](https://github.com/bloodf/spoolancer/releases/tag/v0.5.0-alpha.1) provides the complete source package, separate print packs for each build and `SHA256SUMS.txt`. The print packs contain individual STEP/STL files; the source package also contains the firmware, web interface and editable CAD generator.
+The [v0.6.0-alpha.1 release](https://github.com/bloodf/spoolancer/releases/tag/v0.6.0-alpha.1) provides the complete source package, separate print packs for each build and `SHA256SUMS.txt`. The print packs contain individual STEP/STL files; the source package also contains the firmware, web interface and editable CAD generator.
 
 ## 1. Choose one controller
 

@@ -2,6 +2,8 @@
 
 Choose a variant and print its fit samples first. **The enclosure has CAD checks but no physical print or fit validation yet.** Use the [hardware report](HARDWARE-VALIDATION.md) to record your build.
 
+The LED/OLED v0.6 parts add actual CAD edge rounds and chamfers. Use a complete current set. [Interactive and numbered exploded views](ASSEMBLY-VIEW.md) identify the parts and component locations; the new print bundles include these images.
+
 Individual `.step` files contain editable solid parts for CAD tools and slicers that support STEP. Individual `.stl` files are the mesh alternative supported by most slicers. Each part uses its intended print orientation and millimetre dimensions. Import at 100% scale and check the bounds before slicing.
 
 Assembly STEP files include simplified electronics and reference bodies. Use the individual parts below for printing. No printer-specific G-code is supplied; slice for your printer, nozzle, material and build surface.
@@ -15,7 +17,7 @@ Assembly STEP files include simplified electronics and reference bodies. Use the
 | Five LEDs, DC case | 10 STEP/STL pairs | 11, including two rim rails | 5 pairs | [LED exports](../cad/variants/headless-led/exports/) |
 | OLED + five LEDs, DC case | 10 STEP/STL pairs | 11, including two rim rails | 6 pairs | [OLED exports](../cad/variants/oled-led/exports/) |
 
-Download a complete [headless print pack](https://github.com/bloodf/spoolancer/releases/download/v0.5.0-alpha.1/spoolancer-v0.5.0-alpha.1-headless-print.zip), [touch print pack](https://github.com/bloodf/spoolancer/releases/download/v0.5.0-alpha.1/spoolancer-v0.5.0-alpha.1-touch-8048-print.zip), [LED print pack](https://github.com/bloodf/spoolancer/releases/download/v0.5.0-alpha.1/spoolancer-v0.5.0-alpha.1-headless-led-print.zip) or [OLED/LED print pack](https://github.com/bloodf/spoolancer/releases/download/v0.5.0-alpha.1/spoolancer-v0.5.0-alpha.1-oled-led-print.zip). The [release page](https://github.com/bloodf/spoolancer/releases/tag/v0.5.0-alpha.1) also supplies the full source package and checksums.
+Download a complete [headless print pack](https://github.com/bloodf/spoolancer/releases/download/v0.6.0-alpha.1/spoolancer-v0.6.0-alpha.1-headless-print.zip), [touch print pack](https://github.com/bloodf/spoolancer/releases/download/v0.6.0-alpha.1/spoolancer-v0.6.0-alpha.1-touch-8048-print.zip), [LED print pack](https://github.com/bloodf/spoolancer/releases/download/v0.6.0-alpha.1/spoolancer-v0.6.0-alpha.1-headless-led-print.zip) or [OLED/LED print pack](https://github.com/bloodf/spoolancer/releases/download/v0.6.0-alpha.1/spoolancer-v0.6.0-alpha.1-oled-led-print.zip). The [release page](https://github.com/bloodf/spoolancer/releases/tag/v0.6.0-alpha.1) also supplies the full source package and checksums.
 
 Fit samples are additional to the production count, except a successful `fit_nfc` can be reused as the production `nfc_pod`. The headless model uses onboard BOOT and has no printed button cap. Historical `archive/` designs are separate revisions.
 
@@ -86,7 +88,7 @@ The old v0.4 headless estimate of 392.32 g includes removed button parts and is 
 | --- | --- | --- |
 | Headless | [spoolancer-v0.4.1-headless-assembly.step](../cad/variants/headless/exports/spoolancer-v0.4.1-headless-assembly.step) | [spoolancer-v0.4.1-headless.FCStd](../cad/variants/headless/exports/spoolancer-v0.4.1-headless.FCStd) |
 | Touch | [spoolancer-v0.4-touch-8048-assembly.step](../cad/variants/touch-8048/exports/spoolancer-v0.4-touch-8048-assembly.step) | [spoolancer-v0.4-touch-8048.FCStd](../cad/variants/touch-8048/exports/spoolancer-v0.4-touch-8048.FCStd) |
-| Five LEDs | [assembly STEP](../cad/variants/headless-led/exports/spoolancer-v0.5-headless-led-assembly.step) | [native FreeCAD](../cad/variants/headless-led/exports/spoolancer-v0.5-headless-led.FCStd) |
-| OLED + five LEDs | [assembly STEP](../cad/variants/oled-led/exports/spoolancer-v0.5-oled-led-assembly.step) | [native FreeCAD](../cad/variants/oled-led/exports/spoolancer-v0.5-oled-led.FCStd) |
+| Five LEDs | [assembly STEP](../cad/variants/headless-led/exports/spoolancer-v0.6-headless-led-assembly.step) | [native FreeCAD](../cad/variants/headless-led/exports/spoolancer-v0.6-headless-led.FCStd) |
+| OLED + five LEDs | [assembly STEP](../cad/variants/oled-led/exports/spoolancer-v0.6-oled-led-assembly.step) | [native FreeCAD](../cad/variants/oled-led/exports/spoolancer-v0.6-oled-led.FCStd) |
 
 The [CAD guide](../cad/README.md#edit-and-regenerate) explains regeneration from parameters. Record changes to clearances or fasteners with your print results so another builder can reproduce them.

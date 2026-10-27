@@ -1,0 +1,20 @@
+{
+  "variant": "headless-led",
+  "revision": "v0.6-headless-led-rounded-dc-fit-prototype",
+  "source": "actual CAD tessellation",
+  "scene_sha256": "e020768555231f3b4e8d3f13011756d8936496cc6c9a82d07849307f2cf84886",
+  "part_map_sha256": "c2b69605714094cce6a2f2593856e3fa758a85dcdb4c4da2e6f0ce187a69bf03",
+  "renderer_sha256": "399dabdc9a04493acd46634f327bbdb07604292e99ff3656805d63b4cabf7daa",
+  "numbered_printed_instances": 11,
+  "numbered_hardware_groups": 9,
+  "physical_validation": false,
+  "images": {
+    "assembled.png": "8903ec2bbf03e75311c03c6dbc03093886947b9c1005f4b04958f7390433367a",
+    "cradle.png": "c24c0c3ae139246fdc539b8ab1dd4f09dc35e4000a7c2076661c087e1dd59b69",
+    "exploded.png": "086d250ac47777507d394ff249a5962ffb1f5f454e87a3976558868a37fcb784",
+    "component-locations.png": "41dee8b0daf7653daa532be6a5b8aef9fba64aad8f6243007515ef6050b37f00",
+    "service-interior.png": "083a928266ea095b9aab24a1e505655970d55abc138be021d2e50488db783320",
+    "indicator-detail.png": "3d001724ee642be5eb60f5a13201341ca3899b8da6a8045e5d8a8bc695fd871f",
+    "edge-detail.png": "223570a3edd9cfdd1b0b585d290ef1d0b1ea42d722a2db2d5f880c24388903e4"
+  }
+}

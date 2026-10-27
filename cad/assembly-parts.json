@@ -1,0 +1,486 @@
+{
+  "schemaVersion": 1,
+  "units": "mm",
+  "coordinates": "CAD world coordinates: +Z up; front is -Y. Explode offsets are illustrative, not an assembly-motion simulation.",
+  "optionalParts": [
+    "oled",
+    "oled_pin_space"
+  ],
+  "parts": [
+    {
+      "id": "base",
+      "number": "01",
+      "label": "Base enclosure",
+      "category": "printed",
+      "meshes": [
+        "base"
+      ],
+      "explode": [
+        0,
+        0,
+        0
+      ],
+      "description": "Fixed electronics housing with a closed USB wall and BOOT access bore. No DC-jack hole is modeled; drill it after checking the real jack and wiring.",
+      "provisional": false
+    },
+    {
+      "id": "top_cover",
+      "number": "02",
+      "label": "Main lid",
+      "category": "printed",
+      "meshes": [
+        "top_cover"
+      ],
+      "explode": [
+        0,
+        0,
+        62
+      ],
+      "description": "Removable lid over the electronics. This fixed part does not carry spool weight.",
+      "provisional": false
+    },
+    {
+      "id": "carrier",
+      "number": "03",
+      "label": "Weighing carrier",
+      "category": "printed",
+      "meshes": [
+        "carrier"
+      ],
+      "explode": [
+        0,
+        0,
+        133
+      ],
+      "description": "Floating carrier attached to the load cell. Keep it clear of the fixed enclosure.",
+      "provisional": false
+    },
+    {
+      "id": "rim_rail",
+      "number": "04",
+      "label": "Rear cradle rail",
+      "category": "printed",
+      "meshes": [
+        "rim_rail"
+      ],
+      "explode": [
+        0,
+        38,
+        175
+      ],
+      "description": "One of two identical printed rails supporting the upright spool rims.",
+      "provisional": false
+    },
+    {
+      "id": "rim_rail_front",
+      "number": "05",
+      "label": "Front cradle rail",
+      "category": "printed",
+      "meshes": [
+        "rim_rail_front"
+      ],
+      "explode": [
+        0,
+        -38,
+        175
+      ],
+      "description": "Second instance of the same rail. Its placement is separate and selectable.",
+      "provisional": false
+    },
+    {
+      "id": "side_guide",
+      "number": "06",
+      "label": "Adjustable side guide",
+      "category": "printed",
+      "meshes": [
+        "side_guide"
+      ],
+      "explode": [
+        -82,
+        0,
+        175
+      ],
+      "description": "Adjusts to the spool width. Target range: 50\u2013100 mm.",
+      "provisional": false
+    },
+    {
+      "id": "nfc_guide",
+      "number": "07",
+      "label": "NFC side guide",
+      "category": "printed",
+      "meshes": [
+        "nfc_guide"
+      ],
+      "explode": [
+        75,
+        0,
+        175
+      ],
+      "description": "Opposite guide supports the movable reader beside the spool flange.",
+      "provisional": false
+    },
+    {
+      "id": "nfc_pod",
+      "number": "08",
+      "label": "NFC reader pod",
+      "category": "printed",
+      "meshes": [
+        "nfc_pod"
+      ],
+      "explode": [
+        142,
+        0,
+        175
+      ],
+      "description": "Printed reader housing. Rotate the seated spool to align its tag with the reader.",
+      "provisional": false
+    },
+    {
+      "id": "nfc_pod_cover",
+      "number": "09",
+      "label": "NFC pod cover",
+      "category": "printed",
+      "meshes": [
+        "nfc_pod_cover"
+      ],
+      "explode": [
+        226,
+        0,
+        175
+      ],
+      "description": "Removable rear cover for the PN532 board and its wiring.",
+      "provisional": false
+    },
+    {
+      "id": "indicator_fascia",
+      "number": "10",
+      "label": "Indicator front panel",
+      "category": "printed",
+      "meshes": [
+        "indicator_fascia"
+      ],
+      "explode": [
+        0,
+        -82,
+        8
+      ],
+      "description": "Fixed front panel with five light openings. OLED variant also has a display window.",
+      "provisional": false
+    },
+    {
+      "id": "indicator_back",
+      "number": "11",
+      "label": "Indicator rear cover",
+      "category": "printed",
+      "meshes": [
+        "indicator_back"
+      ],
+      "explode": [
+        0,
+        -45,
+        -90
+      ],
+      "description": "Supports the LED strip and optional OLED with insulating foam or adhesive.",
+      "provisional": false
+    },
+    {
+      "id": "load_cell",
+      "number": "12",
+      "label": "5 kg load cell",
+      "category": "electronics",
+      "meshes": [
+        "REF_load_cell"
+      ],
+      "explode": [
+        0,
+        0,
+        30
+      ],
+      "description": "Nominal 80 \u00d7 12.7 \u00d7 12.7 mm bar cell. Verify the delivered cell, threads and calibration.",
+      "provisional": true
+    },
+    {
+      "id": "esp32",
+      "number": "13",
+      "label": "ESP32-S3 controller",
+      "category": "electronics",
+      "meshes": [
+        "REF_ESP32_PCB_estimate",
+        "REF_ESP32_module_estimate",
+        "REF_USB_-6",
+        "REF_USB_6",
+        "REF_BOOT_body_estimate",
+        "REF_BOOT_actuator_estimate"
+      ],
+      "explode": [
+        -85,
+        -5,
+        15
+      ],
+      "description": "N16R8 development board reference. PCB, connectors and BOOT button are approximate; verify your board.",
+      "provisional": true
+    },
+    {
+      "id": "hx711",
+      "number": "14",
+      "label": "HX711 amplifier",
+      "category": "electronics",
+      "meshes": [
+        "REF_HX711_PCB"
+      ],
+      "explode": [
+        86,
+        -5,
+        15
+      ],
+      "description": "Nominal HX711 PCB envelope. Receives the load-cell signal; actual wiring is not modeled.",
+      "provisional": true
+    },
+    {
+      "id": "pn532",
+      "number": "15",
+      "label": "PN532 NFC reader",
+      "category": "electronics",
+      "meshes": [
+        "REF_PN532_PCB",
+        "REF_PN532_components"
+      ],
+      "explode": [
+        182,
+        0,
+        175
+      ],
+      "description": "PN532 module reference inside the side pod. Board and wire fit require a physical check.",
+      "provisional": true
+    },
+    {
+      "id": "leds",
+      "number": "16",
+      "label": "Five addressable LEDs",
+      "category": "electronics",
+      "meshes": [
+        "REF_LED_strip_provisional",
+        "REF_LED_pixel_0",
+        "REF_LED_pixel_1",
+        "REF_LED_pixel_2",
+        "REF_LED_pixel_3",
+        "REF_LED_pixel_4"
+      ],
+      "explode": [
+        -95,
+        -90,
+        -48
+      ],
+      "description": "5 V strip at 60 LEDs/metre, 16.67 mm centres. Strip width and package dimensions remain provisional.",
+      "provisional": true
+    },
+    {
+      "id": "oled",
+      "number": "17",
+      "label": "0.96-inch OLED",
+      "category": "electronics",
+      "meshes": [
+        "REF_OLED_PCB_provisional",
+        "REF_OLED_glass_provisional",
+        "REF_OLED_active_area_provisional",
+        "REF_OLED_components_provisional"
+      ],
+      "explode": [
+        0,
+        -65,
+        40
+      ],
+      "description": "Generic 128 \u00d7 64 OLED envelope. Controller, PCB size and pin order require identification.",
+      "provisional": true
+    },
+    {
+      "id": "stops",
+      "number": "18",
+      "label": "Four adjustable stops",
+      "category": "electronics",
+      "meshes": [
+        "REF_adjustable_stop_0",
+        "REF_adjustable_stop_1",
+        "REF_adjustable_stop_2",
+        "REF_adjustable_stop_3"
+      ],
+      "explode": [
+        0,
+        0,
+        15
+      ],
+      "description": "Reference screws for the overload stops. Other assembly fasteners are not modeled.",
+      "provisional": true
+    },
+    {
+      "id": "spool",
+      "number": "19",
+      "label": "Reference spool",
+      "category": "spool",
+      "meshes": [
+        "REF_upright_spool",
+        "REF_filament"
+      ],
+      "explode": [
+        0,
+        0,
+        275
+      ],
+      "description": "200 mm diameter \u00d7 80 mm wide reference spool. Design target: up to 100 mm wide; physical fit unverified.",
+      "provisional": true
+    },
+    {
+      "id": "power_space",
+      "number": "20",
+      "label": "Unassigned power space",
+      "category": "clearance",
+      "meshes": [
+        "REF_power_conversion_space_unassigned"
+      ],
+      "explode": [
+        0,
+        0,
+        0
+      ],
+      "description": "Space reference only, not a converter or a mount. Glue an insulated 12 V-to-5 V converter to a suitable fixed wall after checking fit.",
+      "provisional": true
+    },
+    {
+      "id": "usb_space",
+      "number": "21",
+      "label": "Internal USB plug space",
+      "category": "clearance",
+      "meshes": [
+        "REF_USB_internal_plug_allowance"
+      ],
+      "explode": [
+        -85,
+        -5,
+        15
+      ],
+      "description": "Provisional 10 \u00d7 22 \u00d7 12 mm angled-plug envelope. No external USB opening.",
+      "provisional": true
+    },
+    {
+      "id": "boot_space",
+      "number": "22",
+      "label": "BOOT tool approach",
+      "category": "clearance",
+      "meshes": [
+        "REF_BOOT_tool_approach_estimate"
+      ],
+      "explode": [
+        -85,
+        -5,
+        15
+      ],
+      "description": "Approximate access path to the onboard BOOT button; verify reach with the actual board.",
+      "provisional": true
+    },
+    {
+      "id": "pn532_wire_space",
+      "number": "23",
+      "label": "PN532 wire space",
+      "category": "clearance",
+      "meshes": [
+        "REF_PN532_wire_allowance"
+      ],
+      "explode": [
+        182,
+        0,
+        175
+      ],
+      "description": "Reserved connector clearance. No real wire routing or cable stiffness is represented.",
+      "provisional": true
+    },
+    {
+      "id": "cell_wire_space",
+      "number": "24",
+      "label": "Load-cell wire space",
+      "category": "clearance",
+      "meshes": [
+        "REF_load_cell_wire_allowance"
+      ],
+      "explode": [
+        0,
+        0,
+        30
+      ],
+      "description": "Reserved wire-exit clearance at the load cell, not a cable model.",
+      "provisional": true
+    },
+    {
+      "id": "oled_pin_space",
+      "number": "25",
+      "label": "OLED pin space",
+      "category": "clearance",
+      "meshes": [
+        "REF_OLED_pin_allowance_provisional"
+      ],
+      "explode": [
+        0,
+        -65,
+        40
+      ],
+      "description": "Provisional OLED header and connector allowance; check the supplied module.",
+      "provisional": true
+    },
+    {
+      "id": "cover_fasteners",
+      "number": "26",
+      "label": "Four lid fastener sets",
+      "category": "electronics",
+      "meshes": [
+        "REF_fastener_cover_-78_-76",
+        "REF_fastener_cover_-78_66",
+        "REF_fastener_cover_78_-76",
+        "REF_fastener_cover_78_66"
+      ],
+      "explode": [
+        0,
+        0,
+        95
+      ],
+      "description": "Four nominal M3 screws, washers and nuts for the main lid. Illustrated hardware envelopes; actual screw fit remains untested.",
+      "provisional": true
+    },
+    {
+      "id": "rail_fasteners",
+      "number": "27",
+      "label": "Four rail fastener sets",
+      "category": "electronics",
+      "meshes": [
+        "REF_fastener_rail_-64_-60",
+        "REF_fastener_rail_-64_60",
+        "REF_fastener_rail_64_-60",
+        "REF_fastener_rail_64_60"
+      ],
+      "explode": [
+        0,
+        0,
+        210
+      ],
+      "description": "Nominal M3 screws, washers and nuts at the two cradle rails. The exploded layout is illustrative, not an installation sequence.",
+      "provisional": true
+    },
+    {
+      "id": "guide_fasteners",
+      "number": "28",
+      "label": "Four guide clamp sets",
+      "category": "electronics",
+      "meshes": [
+        "REF_fastener_guide_-52.0_-15",
+        "REF_fastener_guide_-52.0_15",
+        "REF_fastener_guide_52.0_-15",
+        "REF_fastener_guide_52.0_15"
+      ],
+      "explode": [
+        0,
+        55,
+        175
+      ],
+      "description": "Nominal M3 clamp screws, washers and nuts for width adjustment. Inspect the assembled view for their exact modeled locations.",
+      "provisional": true
+    }
+  ]
+}

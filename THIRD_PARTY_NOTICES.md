@@ -4,10 +4,11 @@ The root MIT license applies to original Spoolancer code, CAD, documentation and
 
 ## Runtime and development dependencies
 
-Dependencies are downloaded by the build tools; their source and toolchain caches are not included in this repository or the source release. Preserve their upstream notices when redistributing a build. The direct dependency versions are in [firmware/platformio.ini](firmware/platformio.ini); this is not a complete transitive lockfile.
+Firmware dependencies are downloaded by the build tools; their source and toolchain caches are not included in this repository or the source release. The standalone assembly viewer bundles Three.js locally, as listed below. Preserve their upstream notices when redistributing a build. The direct dependency versions are in [firmware/platformio.ini](firmware/platformio.ini); this is not a complete transitive lockfile.
 
 | Component | Upstream and notice |
 | --- | --- |
+| Three.js 0.180.0 / r180 and OrbitControls | [mrdoob/three.js](https://github.com/mrdoob/three.js/tree/r180), MIT; bundled [license](viewer/vendor/THREE-LICENSE.txt) and [file hashes](viewer/vendor/SHA256SUMS.txt) |
 | ArduinoJson 7.4.2 | [bblanchon/ArduinoJson](https://github.com/bblanchon/ArduinoJson), MIT |
 | Adafruit NeoPixel 1.15.5, five-LED variants | [adafruit/Adafruit_NeoPixel](https://github.com/adafruit/Adafruit_NeoPixel), retain its LGPL and architecture-specific source notices |
 | U8g2 2.36.15, OLED variant | [olikraus/u8g2](https://github.com/olikraus/u8g2), retain its BSD and individual font notices |

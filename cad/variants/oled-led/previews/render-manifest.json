@@ -1,0 +1,20 @@
+{
+  "variant": "oled-led",
+  "revision": "v0.6-oled-led-rounded-dc-fit-prototype",
+  "source": "actual CAD tessellation",
+  "scene_sha256": "41ccf55b00522f91fd46f0f8bc9c208e41ef6f2dfbdbbdd0c805bff3c2a2ca05",
+  "part_map_sha256": "c2b69605714094cce6a2f2593856e3fa758a85dcdb4c4da2e6f0ce187a69bf03",
+  "renderer_sha256": "399dabdc9a04493acd46634f327bbdb07604292e99ff3656805d63b4cabf7daa",
+  "numbered_printed_instances": 11,
+  "numbered_hardware_groups": 10,
+  "physical_validation": false,
+  "images": {
+    "assembled.png": "00379b1fa5a6b204f5c4171fc42259e1483ba66acd64a15be2c7c0e0a18d35dc",
+    "cradle.png": "e0bda8da742ead4b21aa65f4440e09e625b350ca60702acd48371eaf80401766",
+    "exploded.png": "d385f4ed8b55c43ed2bfa8c2cc6568bba7c410ec41649e09e376c09cab085473",
+    "component-locations.png": "7eae3a8cd877d38d5621a62d684f7b610fcb2d9c03d32e1a0476b150fd875b10",
+    "service-interior.png": "083a928266ea095b9aab24a1e505655970d55abc138be021d2e50488db783320",
+    "indicator-detail.png": "5a9d38eac2ba044534cad0db930f5b010cd55aa631a06e8835bbfdd92724b7d9",
+    "edge-detail.png": "e9c9002d3aea028144842a71102dabb64364521df4316f7cf11fe3d1997dd7be"
+  }
+}

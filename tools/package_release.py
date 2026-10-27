@@ -78,6 +78,10 @@ def main():
         print(f"Verified {path.name}: {len(data)} files, {path.stat().st_size:,} bytes")
 
     write_bundle("source", files)
+    viewer_files = {name.removeprefix("viewer/"): data for name, data in files.items() if name.startswith("viewer/")}
+    if viewer_files:
+        viewer_files["LICENSE"] = files["LICENSE"]
+        write_bundle("assembly-viewer", viewer_files)
     for variant in ("headless", "touch-8048", "headless-led", "oled-led"):
         folder = f"cad/variants/{variant}/"
         report = json.loads(files[folder + "exports/validation.json"])
@@ -105,8 +109,15 @@ def main():
             contents["VARIANT-NOTES.md"] = bundled_guide(folder + "NOTES.md")
             contents["DC-POWER.md"] = bundled_guide("docs/DC-POWER.md")
             contents["INDICATOR-GUIDE.md"] = bundled_guide("docs/OLED-RGB-VARIANT.md")
+            contents["ASSEMBLY-VIEW.md"] = bundled_guide("docs/ASSEMBLY-VIEW.md")
+            for preview in ("assembled", "exploded", "component-locations", "edge-detail"):
+                path = folder + f"previews/{preview}.png"
+                if path in files:
+                    contents[f"views/{preview}.png"] = files[path]
             indicator_note = """
 Read [variant fit and assembly notes](VARIANT-NOTES.md), [DC power instructions](DC-POWER.md) and [indicator behavior](INDICATOR-GUIDE.md) before printing. The fascia needs local support beneath its raised mounting bridge. Replace two front M3×10 screws with two M3×16 and add four M2.5×10 rear-cover screws. OLED/strip dimensions remain provisional.
+
+Use [the assembly-view guide](ASSEMBLY-VIEW.md) and the numbered images in `views/` to locate parts. The companion assembly-viewer ZIP provides a rotatable model and an exploded-view slider.
 
 This case has closed USB walls, BOOT tool access, no jack hole and no converter mount. Drill only after checking the actual jack and wiring; mount an insulated converter on a fixed wall. A 12 V input must pass through a regulated 5 V converter. Open the lid and isolate the converter supply before computer USB programming.
 """

@@ -36,11 +36,38 @@ OUT.mkdir(parents=True,exist_ok=True);PREV.mkdir(parents=True,exist_ok=True)
 TOUCH=VARIANT=='touch-8048'
 INDICATORS=VARIANT in ('headless-led','oled-led')
 STEM='spoolancer-v0.4-touch-8048' if TOUCH else 'spoolancer-v0.4.1-headless'
-if INDICATORS: STEM='spoolancer-v0.5-'+VARIANT
+if INDICATORS: STEM='spoolancer-v0.6-'+VARIANT
 V = App.Vector
 PARTS = {}
 REFS = {}
 COLORS = {}
+FINISHES = {}
+
+
+def near(a,b):
+    return abs(a-b)<.001
+
+
+def finish(name,shape,operation,radius,predicate):
+    """Apply one deliberate edge treatment; missing/invalid geometry is an error."""
+    selected=[(i,e) for i,e in enumerate(shape.Edges,1) if predicate(e.BoundBox)]
+    if not selected:
+        raise RuntimeError('No edges selected for '+name)
+    edges=[e for _,e in selected]
+    result=(shape.makeFillet(radius,edges) if operation=='fillet' else shape.makeChamfer(radius,edges)).removeSplitter()
+    if not result.isValid() or len(result.Solids)!=1:
+        raise RuntimeError('Invalid finish for '+name)
+    added=result.cut(shape).Volume
+    removed=shape.Volume-result.Volume
+    if added>.001 or removed<=.001:
+        raise RuntimeError('Finish must remove material only: '+name)
+    if name not in FINISHES:
+        FINISHES[name]={'operation':operation,'radius_or_chamfer_mm':radius,'selected_edge_count':len(edges),
+            'selected_edges':[{'index':i,'bounds_mm':[round(n,5) for n in (e.BoundBox.XMin,e.BoundBox.YMin,e.BoundBox.ZMin,e.BoundBox.XMax,e.BoundBox.YMax,e.BoundBox.ZMax)]} for i,e in selected],
+            'before_volume_mm3':round(shape.Volume,6),'after_volume_mm3':round(result.Volume,6),
+            'removed_volume_mm3':round(removed,6),'added_volume_mm3':round(added,6),
+            'valid_single_solid':True,'selection_evidence':'Explicit geometric bounds; no fallback or silent edge skipping'}
+    return result
 
 
 def box(w, d, h, x=0, y=0, z=0):
@@ -169,6 +196,11 @@ feet=P['feet_positions']
 for x,y in feet:
     base_cut.append(cyl(6.2,0.6,x,y,0))
 base=cut(base,base_cut)
+if INDICATORS:
+    def base_outline(b,z):
+        return near(b.ZMin,z) and near(b.ZMax,z) and (near(b.XMin,-BW/2) or near(b.XMax,BW/2) or near(b.YMin,CY-BD/2) or near(b.YMax,CY+BD/2))
+    base=finish('base_bottom_perimeter',base,'fillet',P['finish_base_bottom_radius'],lambda b:base_outline(b,0))
+    base=finish('base_top_outer_perimeter',base,'fillet',P['finish_base_top_radius'],lambda b:base_outline(b,BT))
 add('base',base,(0.15,0.20,0.23))
 
 # All contact parts and the reader move with the cell. The carrier has open bays.
@@ -197,6 +229,9 @@ for x in (-49.5,49.5):
     for y in (-15,15):
         carrier_cut += [slot(x,y,37,3.4,28.4,15),box(38,5.8,2.6,math.copysign(52,x),y,44.4)]
 carrier=cut(carrier,carrier_cut)
+if INDICATORS:
+    carrier=finish('carrier_lower_outer_edges',carrier,'fillet',P['finish_carrier_radius'],
+        lambda b:near(b.ZMin,rib_bottom) and near(b.ZMax,rib_bottom) and (near(b.XMin,-cw/2) or near(b.XMax,cw/2) or near(b.YMin,-cd/2) or near(b.YMax,cd/2)))
 add('carrier',carrier,(0.67,0.77,0.74))
 
 slope=math.tan(math.radians(P['saddle_angle_deg']))
@@ -214,6 +249,8 @@ for x in (-64,64):
 for x in (-61,61):
     rail_cut.append(cyl(1.75,50,x,52,49))
 rail=cut(rail,rail_cut)
+if INDICATORS:
+    rail=finish('rim_rail_external_end_perimeters',rail,'fillet',P['finish_rail_end_radius'],lambda b:near(abs(b.XMin),cw/2) and near(b.XLength,0))
 add('rim_rail',rail,(0.77,0.84,0.82))
 front_rail=rail.copy();front_rail.rotate(V(0,0,0),V(0,0,1),180)
 
@@ -243,6 +280,15 @@ def guide_for_width(width,left=False,nfc=False):
             cutters += [x_slot(inner-.1,y,(P['nfc_height_min']+P['nfc_height_max'])/2,3.4,P['nfc_height_max']-P['nfc_height_min']+3.4,6.2),
                         box(2.6,5.8,P['nfc_mast_top']-P['nfc_height_min']+7,inner+3.3,y,P['nfc_height_min']-6)]
     guide=cut(guide,cutters)
+    if INDICATORS:
+        if nfc:
+            guide=finish('nfc_mast_external_vertical_corners',guide,'fillet',P['finish_mast_corner_radius'],
+                lambda b:near(b.XMin,inner+6) and near(b.XMax,inner+6) and b.ZLength>50 and near(b.YLength,0) and (near(abs(b.YMin),P['nfc_mast_y']+4) or near(abs(b.YMin),P['nfc_mast_y']-4)))
+            guide=finish('nfc_mast_top_outer_edges',guide,'fillet',P['finish_mast_top_radius'],
+                lambda b:near(b.ZMin,P['nfc_mast_top']) and near(b.ZMax,P['nfc_mast_top']) and (near(b.XMin,inner) or near(b.XMax,inner+6) or near(abs(b.YMin),P['nfc_mast_y']+4) or near(abs(b.YMax),P['nfc_mast_y']+4) or near(abs(b.YMin),P['nfc_mast_y']-4) or near(abs(b.YMax),P['nfc_mast_y']-4)))
+        else:
+            guide=finish('side_guide_top_outer_edge',guide,'fillet',P['finish_guide_top_radius'],
+                lambda b:near(b.ZMin,top) and near(b.ZMax,top) and near(b.XMin,inner+4) and near(b.XMax,inner+4))
     if left: guide.rotate(V(0,0,0),V(0,0,1),180)
     return guide
 
@@ -278,6 +324,12 @@ def pod_for_setting(width,height):
     pod=cut(pod,cuts)
     cover=box(P['nfc_back_thickness'],oy,oz,inner+depth+P['nfc_back_thickness']/2,0,height-oz/2)
     cover=cut(cover,[x_cylinder(1.35,4,inner+depth-1,y,height+dz) for y,dz in P['nfc_cover_screw_positions']])
+    if INDICATORS:
+        def corner(b):return near(b.YLength,0) and near(b.ZLength,0) and near(abs(b.YMin),oy/2) and (near(b.ZMin,height-oz/2) or near(b.ZMin,height+oz/2))
+        pod=finish('nfc_pod_external_corners',pod,'fillet',P['finish_nfc_corner_radius'],corner)
+        cover=finish('nfc_back_cover_corners',cover,'fillet',P['finish_nfc_corner_radius'],corner)
+        cover=finish('nfc_back_cover_outer_rim',cover,'fillet',P['finish_nfc_back_edge_radius'],
+            lambda b:near(b.XMin,inner+depth+P['nfc_back_thickness']) and near(b.XLength,0) and (near(b.YMin,-oy/2) or near(b.YMax,oy/2) or near(b.ZMin,height-oz/2) or near(b.ZMax,height+oz/2)))
     pcb=box(P['nfc_board'][2],P['nfc_board'][0],P['nfc_board'][1],inner+2+P['nfc_board'][2]/2,0,height-P['nfc_board'][1]/2)
     pcb=cut(pcb,[x_cylinder(1.524,4,inner+1,y,height+dz) for y,dz in [(-13.9,-12.6),(13.9,12.6)]])
     components=box(2.4,28,22,inner+4.8,0,height-11)
@@ -299,6 +351,10 @@ lid=lid.cut(box(20,36,P['esp_cover_relief_depth']+.1,-79,ey,BT-.1))
 # Recovery uses the controller's onboard BOOT switch through the USB service
 # opening. Both variants have a blank fixed cover without an added switch mount.
 lid=cut(lid,[cyl(1.7,12,x,y,BT-5) for x,y in lid_posts])
+if INDICATORS:
+    lid=finish('cover_top_outer_perimeter',lid,'fillet',P['finish_cover_radius'],lambda b:base_outline(b,BT+LT))
+    lid=finish('cover_top_carrier_aperture',lid,'chamfer',P['finish_cover_aperture_chamfer'],
+        lambda b:near(b.ZMin,BT+LT) and near(b.ZMax,BT+LT) and b.XMin>=-cw/2-P['cover_carrier_gap']-.001 and b.XMax<=cw/2+P['cover_carrier_gap']+.001 and b.YMin>=-cd/2-P['cover_carrier_gap']-.001 and b.YMax<=cd/2+P['cover_carrier_gap']+.001)
 add('top_cover',lid,(0.25,0.43,0.42))
 
 # Reference component envelopes: communicate placement without pretending to
@@ -385,7 +441,28 @@ if TOUCH:
 
 if INDICATORS:
     from indicators import make_indicators
-    indicator_data=make_indicators(P,App,Part,box,cyl,union,cut,add)
+    indicator_data=make_indicators(P,App,Part,box,cyl,union,cut,add,finish,near)
+
+    def clamp_envelope(x,y,seat,length,nut_z,nut_angle=30):
+        shaft=cyl(1.5,length,x,y,seat+.5-length)
+        head=cyl(2.75,3,x,y,seat+.5)
+        washer=cyl(3.5,.5,x,y,seat).cut(cyl(1.6,1,x,y,seat-.1))
+        nut=hex_pocket(x,y,nut_z,af=5.5,h=2.4).cut(cyl(1.5,3,x,y,nut_z-.1))
+        nut.rotate(V(x,y,0),V(0,0,1),nut_angle)
+        return Part.makeCompound([union([shaft,head]),washer,nut])
+
+    # Nominal hardware envelopes from the previously verified clamp stacks.
+    # Threads, screw drives and bought-part tolerances are intentionally absent.
+    for x,y in lid_posts:
+        front=y<0
+        add('REF_fastener_cover_'+str(x)+'_'+str(y),
+            clamp_envelope(x,y,41 if front else 38,16 if front else 10,29.4),(.55,.58,.60),True)
+    for x,y in P['saddle_bolt_positions']:
+        add('REF_fastener_rail_'+str(x)+'_'+str(y),clamp_envelope(x,y,54,12,44.4,0),(.55,.58,.60),True)
+    guide_x=(P['reference_spool_width']+P['guide_clearance_total'])/2+P['guide_bolt_offset']
+    for x in (-guide_x,guide_x):
+        for y in (-15,15):
+            add('REF_fastener_guide_'+str(x)+'_'+str(y),clamp_envelope(x,y,55,12,44.4),(.55,.58,.60),True)
 
 # Upright spool: flange disks, core and filament are separate references only.
 def spool_envelopes(diameter,width):
@@ -444,9 +521,9 @@ def print_orientation(name,shape):
     return s
 
 
-doc=App.newDocument('Spoolancer_'+('v0_5_' if INDICATORS else 'v0_4_' if TOUCH else 'v0_4_1_')+VARIANT.replace('-','_'))
+doc=App.newDocument('Spoolancer_'+('v0_6_' if INDICATORS else 'v0_4_' if TOUCH else 'v0_4_1_')+VARIANT.replace('-','_'))
 spread=doc.addObject('Spreadsheet::Sheet','Dimensions')
-spread.set('A1','Spoolancer '+('v0.5 ' if INDICATORS else 'v0.4 ' if TOUCH else 'v0.4.1 ')+VARIANT+' — millimetres — physical fit unverified')
+spread.set('A1','Spoolancer '+('v0.6 ' if INDICATORS else 'v0.4 ' if TOUCH else 'v0.4.1 ')+VARIANT+' — millimetres — physical fit unverified')
 spread.set('A2','Edit parameters.json and rerun cad/build.py to regenerate all outputs')
 for row,(key,value) in enumerate(P.items(),4):
     spread.set('A'+str(row),key)
@@ -471,6 +548,13 @@ doc.saveAs(str(OUT/(STEM+'.FCStd')))
 Part.export([o for o in g.Group+rg.Group],str(OUT/(STEM+'-assembly.step')))
 
 report={'revision':P['revision'],'units':'mm','physical_validation':False,'parts':{},'geometry_checks':{}}
+if INDICATORS:
+    report['edge_finishing']={'operations':FINISHES,'all_operations_remove_material_only':True,
+        'functional_exclusions':['Load-cell bearing pads and bolt seats','Rail slopes within the 100 mm spool width','Guide sliding feet and inner spool-facing planes','Nut pockets and fastener bores','Central NFC antenna face and 1.2 mm window','PCB support pads and OLED glass seat','Indicator opening throats; only front edges are beveled'],
+        'coordinate_note':'Selections are recorded in each construction frame before later mirror/rotation; repeated adjustment cases reuse the same predicates.'}
+    report['fastener_references']={'included':'Twelve nominal M3 cover/rail/guide clamp sets plus the four existing stop envelopes',
+        'not_complete':'Load-cell, NFC, indicator rear screws, threads, screw drives, cable ties and adhesive are not modeled',
+        'physical_fit_verified':False}
 scene={}
 for name,s in {**PARTS,**coupons}.items():
     oriented=print_orientation(name,s)

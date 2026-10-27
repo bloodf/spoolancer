@@ -33,6 +33,32 @@ jobs:
       - name: Test browser logic
         run: node --test web/tests/*.test.js
 
+  assembly-viewer:
+    name: Assembly viewer assets and behavior
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6.5.0
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - name: Check generated meshes against CAD scenes
+        run: python3 tools/build_viewer.py --check
+      - name: Check viewer syntax and component behavior
+        run: |
+          node --check viewer/app.js
+          node --check viewer/model.mjs
+          node viewer/model.test.mjs
+      - name: Verify bundled library hashes
+        working-directory: viewer/vendor
+        run: sha256sum --check SHA256SUMS.txt
+
   firmware:
     name: Firmware logic, builds and asset images
     runs-on: ubuntu-24.04

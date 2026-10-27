@@ -55,7 +55,7 @@ assert {p.stem for p in out.glob('*.stl')}==set(v['parts']),'Unlisted STL export
 assert {p.stem for p in out.glob('*.step') if not p.stem.endswith('-assembly')}==set(v['parts']),'Missing or unlisted individual STEP'
 
 stem='spoolancer-v0.4-touch-8048' if variant=='touch-8048' else 'spoolancer-v0.4.1-headless'
-if variant in ('headless-led','oled-led'): stem='spoolancer-v0.5-'+variant
+if variant in ('headless-led','oled-led'): stem='spoolancer-v0.6-'+variant
 doc=App.openDocument(str(out/(stem+'.FCStd')))
 shapes=[o for o in doc.Objects if hasattr(o,'Shape')]
 assert all(o.Shape.isValid() for o in shapes)
@@ -113,9 +113,15 @@ if variant in ('headless-led','oled-led'):
     r['indicator_rear_fastener_note']='M2.5x10 screws intentionally engage 2.1 mm plastic pilot holes; actual thread retention and screw head fit need physical checks.'
     assert v['power_fit']['external_usb_openings'] is False
     assert not v['boot_access']['tool_component_intersections']
+    assert v['edge_finishing']['all_operations_remove_material_only']
+    assert len(v['edge_finishing']['operations'])>=15
+    assert all(t['valid_single_solid'] and t['added_volume_mm3']<.001 and t['removed_volume_mm3']>.001 for t in v['edge_finishing']['operations'].values())
+    r['edge_finishing']={'verified_operation_count':len(v['edge_finishing']['operations']),'removal_only':True,'physical_validation':False}
     r['indicator_geometry_checks']={'spool_cases':len(v['spool_envelope_checks']),'dedicated_boot_bore_mm':v['boot_access']['bore_diameter_mm'],'physical_validation':False}
 
-for source in [root/'indicators.py',root/'parameters.json',root/'build.py',root/'render.py',root/'verify_exports.py']+([target/'parameters.json'] if variant!='headless' else []):
+sources=[root/'indicators.py',root/'parameters.json',root/'build.py',root/'render.py',root/'verify_exports.py']+([target/'parameters.json'] if variant!='headless' else [])
+sources += [path for path in [root/'exploded_render.py',root/'assembly-parts.json'] if path.exists()]
+for source in sources:
     r['source_sha256'][str(source.relative_to(root))]=hashlib.sha256(source.read_bytes()).hexdigest()
 App.closeDocument(doc.Name)
 (out/'export-verification.json').write_text(json.dumps(r,indent=2)+'\n');print(json.dumps(r,indent=2))

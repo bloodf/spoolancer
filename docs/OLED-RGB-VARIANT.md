@@ -4,12 +4,18 @@ Two additional builds use the existing standalone ESP32-S3 N16R8, the upright cr
 
 | Build | Firmware environment | Printed footprint | STEP/STL pairs | Production pieces |
 | --- | --- | --- | ---: | ---: |
-| [Five LEDs](../cad/variants/headless-led/NOTES.md) | `spoolancer-headless-led` | 170 × 186.73 mm | 15, including five fit samples | 11 |
+| [Five LEDs](../cad/variants/headless-led/NOTES.md) | `spoolancer-headless-led` | 170 × 186.48 mm | 15, including five fit samples | 11 |
 | [OLED + five LEDs](../cad/variants/oled-led/NOTES.md) | `spoolancer-oled-led` | 170 × 201.48 mm | 16, including six fit samples | 11 |
 
-The main base is still 170 × 160 mm; the inclined front pod adds depth. A nominal 200 mm spool gives a loaded depth of 211.73 mm or 226.48 mm respectively. These are CAD dimensions, not physical fit measurements. The original headless and integrated-touch CAD files are preserved.
+The main base is still 170 × 160 mm; the inclined front pod adds depth. A nominal 200 mm spool gives a loaded depth of 211.48 mm or 226.48 mm respectively. These are CAD dimensions, not physical fit measurements. The original headless and integrated-touch CAD files are preserved.
 
 ![OLED and LED CAD prototype](../cad/variants/oled-led/previews/assembled.png)
+
+## Rounded cases and 3D guide
+
+The v0.6 STEP, STL and FreeCAD files include rounded guide tops, rail ends, NFC pod corners and front-panel edges. Smaller rounds and chamfers soften the main housing while preserving the checked mounting seats, sliding surfaces, antenna window and opening throats. Exact treatments and protected-region checks are in each variant's notes and [the geometry report](../cad/edge-finish-verification.json).
+
+Use the **[interactive 3D viewer](https://bloodf.github.io/spoolancer/)** to rotate the assembly, select or hide individual parts, see inside the housing, and spread the parts apart. The [numbered exploded image](../cad/variants/oled-led/previews/exploded.png) and [component-location image](../cad/variants/oled-led/previews/component-locations.png) use the same part numbers. These are geometry guides; physical fit remains untested.
 
 ## Printing and assembly
 
