@@ -12,14 +12,16 @@ Assembly STEP files include simplified electronics and reference bodies. Use the
 | --- | ---: | ---: | ---: | --- |
 | Headless v0.4.1 | 8 STEP/STL pairs | 9, including two rim rails | 3 pairs | [headless exports](../cad/variants/headless/exports/) |
 | ESP-8048S043C-I touch | 11 STEP/STL pairs | 12, including two rim rails | 3 pairs | [touch exports](../cad/variants/touch-8048/exports/) |
+| Five LEDs, DC case | 10 STEP/STL pairs | 11, including two rim rails | 5 pairs | [LED exports](../cad/variants/headless-led/exports/) |
+| OLED + five LEDs, DC case | 10 STEP/STL pairs | 11, including two rim rails | 6 pairs | [OLED exports](../cad/variants/oled-led/exports/) |
 
-Download a complete [headless print pack](https://github.com/bloodf/spoolancer/releases/download/v0.4.1-alpha.1/spoolancer-v0.4.1-alpha.1-headless-print.zip) or [touch print pack](https://github.com/bloodf/spoolancer/releases/download/v0.4.1-alpha.1/spoolancer-v0.4.1-alpha.1-touch-8048-print.zip). The [release page](https://github.com/bloodf/spoolancer/releases/tag/v0.4.1-alpha.1) also supplies the full source package and checksums.
+Download a complete [headless print pack](https://github.com/bloodf/spoolancer/releases/download/v0.5.0-alpha.1/spoolancer-v0.5.0-alpha.1-headless-print.zip), [touch print pack](https://github.com/bloodf/spoolancer/releases/download/v0.5.0-alpha.1/spoolancer-v0.5.0-alpha.1-touch-8048-print.zip), [LED print pack](https://github.com/bloodf/spoolancer/releases/download/v0.5.0-alpha.1/spoolancer-v0.5.0-alpha.1-headless-led-print.zip) or [OLED/LED print pack](https://github.com/bloodf/spoolancer/releases/download/v0.5.0-alpha.1/spoolancer-v0.5.0-alpha.1-oled-led-print.zip). The [release page](https://github.com/bloodf/spoolancer/releases/tag/v0.5.0-alpha.1) also supplies the full source package and checksums.
 
 Fit samples are additional to the production count, except a successful `fit_nfc` can be reused as the production `nfc_pod`. The headless model uses onboard BOOT and has no printed button cap. Historical `archive/` designs are separate revisions.
 
 ## Shared production parts
 
-Use the files from your chosen variant's column. Quantities apply to either build.
+This table covers the original headless and touch builds. For the new LED/OLED builds, use the complete selected variant folder described below: its base and top cover differ.
 
 | Part | Qty | Print pose | Bounds, mm | Headless files | Touch files |
 | --- | ---: | --- | --- | --- | --- |
@@ -44,7 +46,15 @@ The touch build adds these parts to the shared nine pieces. Its controller mount
 | Touch stand | 1 | Connected feet down | 140 × 49 × 77.12 | [STEP](../cad/variants/touch-8048/exports/touch_stand.step) · [STL](../cad/variants/touch-8048/exports/touch_stand.stl) |
 | Touch bridge | 1 | Flat | 164 × 23 × 3 | [STEP](../cad/variants/touch-8048/exports/touch_bridge.step) · [STL](../cad/variants/touch-8048/exports/touch_bridge.stl) |
 
-## Fit samples
+## LED and OLED production parts
+
+Use all files from [headless-led](../cad/variants/headless-led/exports/) or [oled-led](../cad/variants/oled-led/exports/). Each needs one `base`, `top_cover`, `carrier`, `side_guide`, `nfc_guide`, `nfc_pod`, `nfc_pod_cover`, `indicator_fascia` and `indicator_back`, plus **two** `rim_rail` copies. Do not substitute the original USB-opening base or cover.
+
+Print `indicator_fascia` face-down and `indicator_back` flat-down as exported. The fascia's elevated mounting bridge needs **local slicer support**. Add two M3×16 screws in place of the front M3×10 closure screws and four M2.5×10 screws for the rear cover's plastic pilot threads. The parts have no converter mount or jack hole; the builder drills after checking clearance. See [LED fit and assembly](../cad/variants/headless-led/NOTES.md) or [OLED fit and assembly](../cad/variants/oled-led/NOTES.md), and [12 V-to-5 V power wiring](DC-POWER.md).
+
+Print each new build's `fit_led_face`, `fit_led_carrier`, `fit_esp32`, `fit_cell` and `fit_nfc` samples first. OLED adds `fit_oled_face`; also check its complete rear cover against the actual pins and wiring. Pitch is confirmed at 16.667 mm; strip width, OLED dimensions and internal plug clearance are provisional. Neither new variant has a measured or sliced filament-mass estimate.
+
+## Original headless and touch fit samples
 
 Print one of each sample for your chosen build before the full set.
 
@@ -76,5 +86,7 @@ The old v0.4 headless estimate of 392.32 g includes removed button parts and is 
 | --- | --- | --- |
 | Headless | [spoolancer-v0.4.1-headless-assembly.step](../cad/variants/headless/exports/spoolancer-v0.4.1-headless-assembly.step) | [spoolancer-v0.4.1-headless.FCStd](../cad/variants/headless/exports/spoolancer-v0.4.1-headless.FCStd) |
 | Touch | [spoolancer-v0.4-touch-8048-assembly.step](../cad/variants/touch-8048/exports/spoolancer-v0.4-touch-8048-assembly.step) | [spoolancer-v0.4-touch-8048.FCStd](../cad/variants/touch-8048/exports/spoolancer-v0.4-touch-8048.FCStd) |
+| Five LEDs | [assembly STEP](../cad/variants/headless-led/exports/spoolancer-v0.5-headless-led-assembly.step) | [native FreeCAD](../cad/variants/headless-led/exports/spoolancer-v0.5-headless-led.FCStd) |
+| OLED + five LEDs | [assembly STEP](../cad/variants/oled-led/exports/spoolancer-v0.5-oled-led-assembly.step) | [native FreeCAD](../cad/variants/oled-led/exports/spoolancer-v0.5-oled-led.FCStd) |
 
 The [CAD guide](../cad/README.md#edit-and-regenerate) explains regeneration from parameters. Record changes to clearances or fasteners with your print results so another builder can reproduce them.

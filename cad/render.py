@@ -11,14 +11,14 @@ from vtk.util.numpy_support import numpy_to_vtk, vtk_to_numpy
 
 HERE=Path(__file__).resolve().parent
 parser=argparse.ArgumentParser()
-parser.add_argument('--variant',choices=['headless','touch-8048'])
+parser.add_argument('--variant',choices=['headless','touch-8048','headless-led','oled-led'])
 ARGS=parser.parse_args()
 VARIANT=ARGS.variant or 'headless'
 TARGET=HERE/'variants'/VARIANT if ARGS.variant else HERE
 PREV=TARGET/'previews'
 S=json.loads((PREV/'scene.json').read_text())
 P=json.loads((HERE/'parameters.json').read_text())
-if VARIANT=='touch-8048': P.update(json.loads((TARGET/'parameters.json').read_text()))
+if VARIANT!='headless': P.update(json.loads((TARGET/'parameters.json').read_text()))
 BG='#f4f3ee'; INK='#213b3b'; MUTED='#5e706d'
 plt.rcParams.update({'font.family':'DejaVu Sans','text.color':INK})
 
@@ -78,6 +78,8 @@ def assembled(ax,spool=True):
         geometry(ax,name)
     for name in ['touch_bezel','touch_stand','touch_bridge','REF_touch_PCB','REF_touch_glass','REF_touch_active_area']:
         if name in S: geometry(ax,name)
+    for name in S:
+        if name in ('indicator_fascia','indicator_back') or name.startswith(('REF_LED_pixel_', 'REF_OLED_glass', 'REF_OLED_active')): geometry(ax,name)
     if spool:
         geometry(ax,'REF_upright_spool');geometry(ax,'REF_filament')
 
@@ -85,6 +87,51 @@ def assembled(ax,spool=True):
 def note(fig,y,title,body):
     fig.text(.755,y,title,fontsize=13,fontweight='bold')
     fig.text(.755,y-.04,body,fontsize=10.5,linespacing=1.5,color=MUTED,va='top')
+
+
+if VARIANT in ('headless-led','oled-led'):
+    label='OLED + five LEDs' if P['oled_enabled'] else 'Five LEDs + web controls'
+    validation=json.loads((TARGET/'exports/validation.json').read_text())
+    footprint=validation['geometry_checks']['assembled_printed_bounds_mm']
+    for filename,spool in [('assembled',True),('cradle',False)]:
+        fig=plt.figure(figsize=(12,9),facecolor=BG)
+        header(fig,'Spoolancer · '+label,'v0.5 DC input fit prototype · Actual CAD geometry · Hardware fit unverified')
+        ax=setup(fig,[.005,.08,.75,.80],zmax=260 if spool else 198)
+        ax._scale=180 if spool else 153;ax._center=[0,-25,115 if spool else 88];ax._view=np.array([340,-420,275])
+        assembled(ax,spool=spool)
+        note(fig,.77,'Five separate light openings','16.67 mm center spacing\nFixed front pod; 60 LEDs/metre')
+        note(fig,.59,'Compact shared base',f'{footprint[0]:.0f} × {footprint[1]:.2f} mm with pod\n170 × 160 mm main housing')
+        note(fig,.41,'DC power enclosure','Closed USB wall; BOOT tool bore\nDrill jack hole after checking fit')
+        note(fig,.23,'Check hardware first','Strip width and OLED board\nremain provisional; print samples')
+        fig.text(.055,.045,'12 V input requires a separate 5 V converter. Geometry checks do not prove fit, power safety or scale accuracy.',fontsize=9,color=MUTED)
+        finish(ax);fig.savefig(PREV/(filename+'.png'),dpi=180,facecolor=BG);plt.close(fig)
+    fig=plt.figure(figsize=(12,9),facecolor=BG)
+    header(fig,'Fixed indicator pod','Five separate light openings; rear cover supports the strip and optional OLED')
+    ax=setup(fig,[.005,.08,.75,.80],zmax=75)
+    ax._scale=95;ax._center=[0,-108,32];ax._view=np.array([120,-270,180])
+    for name in S:
+        if name.startswith(('indicator_', 'REF_LED_', 'REF_OLED_')): geometry(ax,name)
+    note(fig,.77,'OLED edge pads' if P['oled_enabled'] else 'Five status lights', 'PCB edges retained with foam\nNo guessed screw-hole pattern' if P['oled_enabled'] else 'One 60 LEDs/metre strip\nSeparate round face openings')
+    note(fig,.59,'Strip support','83.33 × 10 mm nominal strip\n5 × 5050 package envelopes')
+    note(fig,.41,'Assembly','Two longer front cover screws\nFour rear-cover plastic screws')
+    note(fig,.23,'Service access','Removable rear; fixed wire route\nOpen main lid for USB flashing')
+    fig.text(.055,.045,'All strip and OLED dimensions except LED pitch are fit assumptions. Screen remains optional.',fontsize=9,color=MUTED)
+    finish(ax);fig.savefig(PREV/'indicator-detail.png',dpi=180,facecolor=BG);plt.close(fig)
+    fig=plt.figure(figsize=(12,9),facecolor=BG)
+    header(fig,'Closed USB wall and BOOT access','New DC variants only · Internal USB plug and converter spaces are provisional references')
+    ax=setup(fig,[.005,.08,.75,.80],zmax=60)
+    ax._scale=115;ax._center=[0,-5,25];ax._view=np.array([-280,-320,300])
+    geometry(ax,'base',alpha=.40)
+    for name in S:
+        if name.startswith(('REF_ESP32','REF_USB','REF_BOOT','REF_HX711','REF_load_cell')): geometry(ax,name)
+    geometry(ax,'REF_power_conversion_space_unassigned',alpha=.25)
+    note(fig,.77,'BOOT tool bore','4 mm hole for 2.5 mm tool\nButton position is photo-derived')
+    note(fig,.59,'Removable USB power','10 × 22 × 12 mm plug allowance\nOpen lid to connect computer')
+    note(fig,.41,'User-drilled DC jack','Check jack body and wires first\nNo converter mount is imposed')
+    note(fig,.23,'Clearance reference','Purple volume is unassigned\nNo selected converter is modeled')
+    fig.text(.055,.045,'Disconnect converter power before computer USB. Real board, plug, wiring and BOOT actuation remain unverified.',fontsize=9,color=MUTED)
+    finish(ax);fig.savefig(PREV/'service-interior.png',dpi=180,facecolor=BG);plt.close(fig)
+    raise SystemExit(0)
 
 
 if VARIANT=='touch-8048':

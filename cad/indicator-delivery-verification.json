@@ -1,0 +1,33 @@
+{
+  "previous_artifact_count": 121,
+  "previous_artifacts_unchanged": true,
+  "physical_validation": false,
+  "variants": {
+    "headless-led": {
+      "revision": "v0.5-headless-led-dc-fit-prototype",
+      "step_stl_pairs": 15,
+      "production_instances": 11,
+      "assembled_printed_bounds_mm": [
+        170.0,
+        186.73,
+        184.0
+      ],
+      "reference_loaded_depth_mm": 211.73,
+      "digital_geometry_pass": true,
+      "hardware_dimensions_provisional": true
+    },
+    "oled-led": {
+      "revision": "v0.5-oled-led-dc-fit-prototype",
+      "step_stl_pairs": 16,
+      "production_instances": 11,
+      "assembled_printed_bounds_mm": [
+        170.0,
+        201.48,
+        184.0
+      ],
+      "reference_loaded_depth_mm": 226.48,
+      "digital_geometry_pass": true,
+      "hardware_dimensions_provisional": true
+    }
+  }
+}

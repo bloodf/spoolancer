@@ -1,0 +1,88 @@
+{
+  "revision": "v0.5-oled-led-dc-fit-prototype",
+  "variant": "oled-led",
+  "indicators_enabled": true,
+  "oled_enabled": true,
+  "external_usb_opening": false,
+  "esp_center": [
+    -40,
+    -29.5
+  ],
+  "boot_center_estimate": [
+    -43,
+    -23.5
+  ],
+  "boot_access_hole_diameter": 4.0,
+  "led_count": 5,
+  "led_pitch": 16.666666666666668,
+  "led_strip_length": 83.33333333333334,
+  "led_strip_width": 10.0,
+  "led_strip_thickness": 0.5,
+  "led_package": [
+    5.0,
+    5.0,
+    1.5
+  ],
+  "led_opening_diameter": 6.4,
+  "indicator_angle_deg": 60.0,
+  "indicator_panel_width": 104.0,
+  "indicator_panel_height": 50.0,
+  "indicator_origin": [
+    0,
+    -112,
+    30
+  ],
+  "indicator_depth": 13.0,
+  "indicator_led_y": -16.0,
+  "indicator_wall": 2.0,
+  "oled_board": [
+    27.3,
+    27.3,
+    1.6
+  ],
+  "oled_glass": [
+    26,
+    15,
+    3.0
+  ],
+  "oled_window": [
+    24,
+    14
+  ],
+  "oled_center": [
+    0,
+    5.0
+  ],
+  "oled_component_depth": 6.0,
+  "oled_fit_evidence": "Provisional generic envelope; actual PCB, glass, pins and controller not identified. Winstar WEA012864D-03 gives 27.3 mm square, Joy-IT SBC-OLED01 gives 27 mm square; neither identifies the user board. No board hole pitch assumed.",
+  "led_fit_evidence": "60 LEDs/m confirmed; 10 mm strip width and 5050 package provisional. Five-pixel cut length, coating and pads require measurement.",
+  "power_space": [
+    48,
+    40,
+    22.4
+  ],
+  "power_space_center": [
+    44,
+    20,
+    2.6
+  ],
+  "usb_plug_space": [
+    10,
+    22,
+    12
+  ],
+  "usb_plug_space_center": [
+    -77,
+    -29.5,
+    10.5
+  ],
+  "power_note": "12 V jack hole user-drilled after checking jack body and wire clearance. Reserve is not a buck mount; 12 V must convert to 5 V before electronics.",
+  "boot_tool_entry": [
+    -94,
+    -23.5,
+    33
+  ],
+  "esp_header_wire_length": 55.8,
+  "esp_header_wire_x_offset": -1.0,
+  "esp_wire_envelope_evidence": "Provisional 22-pin 2.54 mm header-row length; route wires inside 55.8 mm length and 25 mm height. Exact board and wire fit require verification."
+}

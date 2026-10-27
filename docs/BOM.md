@@ -65,3 +65,13 @@ Use the headless fastener list with these changes. The [touch holder notes](../c
 | Add matching rubber feet | 2 | Stand support; included in the six-foot total above |
 
 The touch model uses approximately 0.5 mm thick, 6.4 mm outside-diameter washers and 5.5 mm socket heads. Nylon PCB-clamp hardware can be used if its dimensions fit. Do not buy the old external setup switch, its two M2 screws, or the legacy ST7789 screen and navigation buttons for either current build.
+
+## LED and OLED additions
+
+For the `headless-led` and `oled-led` variants, reuse the shared scale electronics above. The owner has a 5 V three-wire addressable RGB strip at 60 LEDs/metre and a 0.96-inch OLED. Use five pixels, nominal pitch 16.667 mm. The exact LED chip/color order and OLED controller/PCB dimensions remain unverified.
+
+The owner chose a 12 V DC jack and glued wall mounting for the converter. Add a regulated 12 V-to-5 V converter rated for at least 2 A continuous, a suitable 3.3 V-to-5 V LED data buffer such as a preassembled 74AHCT125 module, a 330–470 ohm data resistor and a 500–1000 µF capacitor rated at least 6.3 V on the **5 V** rail. The buffer also needs local bypass capacitance. No perfboard or external reset button is required if using wired modules. Check actual module dimensions and wiring before glue or drilling. See [DC power and programming isolation](DC-POWER.md).
+
+For either new front pod, replace two front M3×10 closure screws with **two M3×16** and add **four M2.5×10** rear-cover screws. The latter use printed plastic pilot threads; test retention and tighten lightly. Add thin insulating adhesive for the strip and compressible foam for OLED PCB edge retention. Use [the selected variant's fit notes](OLED-RGB-VARIANT.md#printing-and-assembly) before committing to a full print.
+
+These cases omit USB cutouts and dedicated converter mounts. The jack opening is user-drilled. The original USB-powered variants and their parts remain listed above.

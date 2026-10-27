@@ -24,17 +24,19 @@ import Part
 import MeshPart
 
 parser=argparse.ArgumentParser()
-parser.add_argument('--variant',choices=['headless','touch-8048'])
+parser.add_argument('--variant',choices=['headless','touch-8048','headless-led','oled-led'])
 ARGS=parser.parse_args()
 VARIANT=ARGS.variant or 'headless'
 TARGET=HERE/'variants'/VARIANT if ARGS.variant else HERE
 P=json.loads((HERE/'parameters.json').read_text())
-if VARIANT=='touch-8048':
+if VARIANT!='headless':
     P.update(json.loads((TARGET/'parameters.json').read_text()))
 OUT=TARGET/'exports';PREV=TARGET/'previews'
 OUT.mkdir(parents=True,exist_ok=True);PREV.mkdir(parents=True,exist_ok=True)
 TOUCH=VARIANT=='touch-8048'
+INDICATORS=VARIANT in ('headless-led','oled-led')
 STEM='spoolancer-v0.4-touch-8048' if TOUCH else 'spoolancer-v0.4.1-headless'
+if INDICATORS: STEM='spoolancer-v0.5-'+VARIANT
 V = App.Vector
 PARTS = {}
 REFS = {}
@@ -148,8 +150,16 @@ for x,y in lid_posts:
     base_cut += [cyl(1.7,BT,x,y,4),box(14,5.8,2.6,x-math.copysign(3,x),y,BT-5.6)]
 for x,y in stop_positions:
     base_cut += [cyl(1.7,35,x,y,3),hex_pocket(x,y,P['stop_post_top']-P['stop_nut_height'],h=P['stop_nut_height'])]
-# A broad side opening fits either USB-C port and typical cable overmoulds.
-base_cut.append(box(12,36,BT-6,-BW/2,ey,7))
+# Older variants retain their USB service opening. DC variants expose only BOOT.
+if not INDICATORS:
+    base_cut.append(box(12,36,BT-6,-BW/2,ey,7))
+else:
+    bx,by=P['boot_center_estimate']
+    boot_top=P['esp_pcb_bottom']+P['esp_envelope'][2]+P['boot_body_height_estimate']+P['boot_actuator_height_estimate']
+    entry=V(*P['boot_tool_entry']);direction=V(bx,by,boot_top+1.5)-entry
+    base_cut.append(Part.makeCylinder(P['boot_access_hole_diameter']/2,direction.Length,entry,direction))
+    # Fixed indicator wiring exits clear of the load cell's centered lead space.
+    base_cut.append(Part.makeCylinder(3,8,V(40,CY-BD/2-2,26),V(0,1,0)))
 tie_locations=[(ex-18,ey,ew+9),(ex+17,ey,ew+9),(hx,hy,hw+9)]
 for x,y,span in tie_locations:
     for side in (-1,1):
@@ -304,6 +314,9 @@ if not TOUCH:
     for dy in (-6,6):
         add('REF_USB_'+str(dy),box(8,9,3.3,ex-P['esp_envelope'][0]/2+3,ey+dy,P['esp_pcb_bottom']+1.6),(0.60,0.64,0.66),True)
 add('REF_HX711_PCB',box(*P['hx_board'],hx,hy,P['hx_pcb_bottom']),(0.16,0.40,0.23),True)
+if INDICATORS:
+    add('REF_power_conversion_space_unassigned',box(*P['power_space'],*P['power_space_center']),(.45,.44,.56),True)
+    add('REF_USB_internal_plug_allowance',box(*P['usb_plug_space'],*P['usb_plug_space_center']),(.45,.48,.5),True)
 if not TOUCH:
     bx,by=P['boot_center_estimate']
     boot_bottom=P['esp_pcb_bottom']+P['esp_envelope'][2]
@@ -370,6 +383,10 @@ if TOUCH:
     add('REF_touch_USB_allowance',touch_pose(box(26,16,8,65,4,-13.4)),(.48,.50,.52),True)
     add('REF_touch_left_controls_allowance',touch_pose(box(12,40,6,-57,0,-11.4)),(.48,.50,.52),True)
 
+if INDICATORS:
+    from indicators import make_indicators
+    indicator_data=make_indicators(P,App,Part,box,cyl,union,cut,add)
+
 # Upright spool: flange disks, core and filament are separate references only.
 def spool_envelopes(diameter,width):
     r=diameter/2
@@ -397,10 +414,18 @@ coupons={
 if TOUCH:
     coupons.pop('fit_esp32')
     coupons['fit_touch_mount']=bezel.common(box(20,24,10,tx,ty,-5)).removeSplitter()
+if INDICATORS:
+    coupons.update(indicator_data['coupons'])
 
 
 def print_orientation(name,shape):
     s=shape.copy()
+    if name in ('indicator_fascia','indicator_back'):
+        s.translate(V(*[-n for n in P['indicator_origin']]))
+        s.rotate(V(0,0,0),V(1,0,0),-P['indicator_angle_deg'])
+        if name=='indicator_fascia': s.rotate(V(0,0,0),V(1,0,0),180)
+    if name in ('fit_led_face','fit_oled_face'):
+        s.rotate(V(0,0,0),V(1,0,0),180)
     if name=='touch_bezel':
         s.translate(V(*[-n for n in P['touch_origin']]))
         s.rotate(V(0,0,0),V(1,0,0),180-P['touch_angle_deg'])
@@ -419,9 +444,9 @@ def print_orientation(name,shape):
     return s
 
 
-doc=App.newDocument('Spoolancer_'+('v0_4_' if TOUCH else 'v0_4_1_')+VARIANT.replace('-','_'))
+doc=App.newDocument('Spoolancer_'+('v0_5_' if INDICATORS else 'v0_4_' if TOUCH else 'v0_4_1_')+VARIANT.replace('-','_'))
 spread=doc.addObject('Spreadsheet::Sheet','Dimensions')
-spread.set('A1','Spoolancer '+('v0.4 ' if TOUCH else 'v0.4.1 ')+VARIANT+' — millimetres — physical fit unverified')
+spread.set('A1','Spoolancer '+('v0.5 ' if INDICATORS else 'v0.4 ' if TOUCH else 'v0.4.1 ')+VARIANT+' — millimetres — physical fit unverified')
 spread.set('A2','Edit parameters.json and rerun cad/build.py to regenerate all outputs')
 for row,(key,value) in enumerate(P.items(),4):
     spread.set('A'+str(row),key)
@@ -510,6 +535,10 @@ if not TOUCH:
       'tool_component_intersections':{name:overlap(boot_tool,shape) for name,shape in REFS.items()
           if name!='REF_BOOT_tool_approach_estimate' and overlap(boot_tool,shape)>.01},
       'physical_access_and_operation_verified':False}
+    if INDICATORS:
+        report['boot_access']['opening']='Dedicated angled BOOT bore in the closed USB wall; relocated board estimate'
+        report['boot_access'].pop('opening_width_height_mm')
+        report['boot_access']['bore_diameter_mm']=P['boot_access_hole_diameter']
 report['printed_part_intersections']={}
 names=list(assembly_parts)
 for i,a in enumerate(names):
@@ -523,7 +552,7 @@ for name,shape in REFS.items():
         continue
     volumes={part:overlap(shape,s) for part,s in assembly_parts.items()}
     report['component_intersections'][name]={k:v for k,v in volumes.items() if v>0.01}
-wires=box(P['esp_envelope'][0],P['esp_envelope'][1],P['esp_header_wire_height'],ex,ey,P['esp_pcb_bottom']+P['esp_envelope'][2])
+wires=box(P.get('esp_header_wire_length',P['esp_envelope'][0]),P['esp_envelope'][1],P['esp_header_wire_height'],ex+P.get('esp_header_wire_x_offset',0),ey,P['esp_pcb_bottom']+P['esp_envelope'][2])
 report['esp_wire_envelope_intersections']={} if TOUCH else {name:overlap(wires,shape) for name,shape in assembly_parts.items() if overlap(wires,shape)>0.01}
 report['spool_envelope_checks']=[]
 report['pod_adjustment_checks']=[]
@@ -554,16 +583,23 @@ for diameter in [P['spool_diameter_min'],200,P['spool_diameter_max']]:
                         val=overlap(sh,ps)
                         if val>.01: moving_checks[n+' / '+pn]=val
                 report['pod_adjustment_checks'].append({'width_mm':width,'height_mm':height,'positive_volume_intersections':moving_checks})
-if TOUCH:
+if TOUCH or INDICATORS:
     bounds=Part.makeCompound(list(assembly_parts.values())).BoundBox
     report['geometry_checks']['assembled_printed_bounds_mm']=[round(bounds.XLength,2),round(bounds.YLength,2),round(bounds.ZLength,2)]
     report['geometry_checks']['maximum_adjusted_assembly_bounds_mm']=[round(bounds.XLength,2),round(bounds.YLength,2),198.4]
-    report['geometry_checks']['touch_mount_evidence']='Manufacturer family outline; exact received-board fit unverified'
-    report['geometry_checks']['touch_angle_from_horizontal_deg']=P['touch_angle_deg']
+    if TOUCH:
+        report['geometry_checks']['touch_mount_evidence']='Manufacturer family outline; exact received-board fit unverified'
+        report['geometry_checks']['touch_angle_from_horizontal_deg']=P['touch_angle_deg']
     report['geometry_checks']['reference_loaded_depth_mm']=round(max(bounds.YMax,100)-min(bounds.YMin,-100),2)
     for item in report['spool_envelope_checks']:
         r=item['diameter_mm']/2
         item['loaded_depth_mm']=round(max(bounds.YMax,r)-min(bounds.YMin,-r),2)
+if INDICATORS:
+    report['indicator_fit']=indicator_data['notes']
+    report['power_fit']={'external_usb_openings':False,'jack_hole':'User drilled; none modeled',
+        'unassigned_converter_space_mm':P['power_space'],'actual_converter_fit_verified':False,
+        'internal_usb_plug_envelope_mm':P['usb_plug_space'],'actual_usb_plug_fit_verified':False,
+        'pcb_edge_to_closed_inner_wall_mm':round(ex-P['esp_envelope'][0]/2-(-BW/2+W),2)}
 report['cad_solid_volume_mm3_with_quantities']=round(sum(p['volume_mm3']*p['quantity'] for n,p in report['parts'].items() if not n.startswith('fit_')),2)
 old_path=HERE.parent/'archive/v0.2-upright/cad/exports/validation.json'
 if old_path.exists():

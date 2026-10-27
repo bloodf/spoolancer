@@ -16,6 +16,7 @@
 #include "Domain.h"
 #include "Scale.h"
 #include "Nfc.h"
+#include "StatusUi.h"
 #ifdef SPOOLANCER_HEADLESS
 #include "Setup.h"
 #endif
@@ -26,6 +27,17 @@
 namespace {
 constexpr size_t maxSpools = 100, maxRequest = 4096;
 constexpr uint32_t sessionMs = 2UL * 60 * 60 * 1000;
+#if defined(SPOOLANCER_TOUCH)
+constexpr const char *deviceVariant = "touch-8048";
+#elif defined(SPOOLANCER_OLED)
+constexpr const char *deviceVariant = "oled-led";
+#elif defined(SPOOLANCER_STATUS_LEDS)
+constexpr const char *deviceVariant = "headless-led";
+#elif defined(SPOOLANCER_HEADLESS)
+constexpr const char *deviceVariant = "headless";
+#else
+constexpr const char *deviceVariant = "st7789";
+#endif
 struct Spool {
   String id, name, brand, material, color, tagUid;
   double empty = NAN, initial = 1000, density = 1.24, diameter = 1.75;
@@ -91,6 +103,28 @@ void generatePin() { char out[9]; snprintf(out, sizeof(out), "%08lu", (unsigned 
 Spool *findSpool(const String &id) {
   for (auto &spool : spools) if (spool.id == id) return &spool;
   return nullptr;
+}
+void renderStatusUi(bool force = false) {
+#ifdef SPOOLANCER_STATUS_LEDS
+  StatusUi::Snapshot state;
+  state.gross = scale.gross(); state.calibrated = scale.calibrated();
+  state.fresh = scale.fresh(); state.stable = scale.stable(); state.setup = apActive;
+  const Spool *spool = findSpool(activeId);
+  if (spool) {
+    state.selected = true; state.empty = spool->empty; state.initial = spool->initial;
+    state.material = spool->material.c_str();
+  }
+  const String ip = WiFi.status() == WL_CONNECTED ? WiFi.localIP().toString() :
+                    (apActive ? WiFi.softAPIP().toString() : "");
+  state.ip = ip.c_str();
+  StatusUi::render(state, millis(), force);
+#endif
+}
+void startStatusOperation(StatusModel::Operation operation) {
+  StatusUi::start(operation, millis()); renderStatusUi(true);
+}
+void finishStatusOperation(bool success) {
+  StatusUi::finish(success, millis()); renderStatusUi(true);
 }
 void numberOrNull(JsonVariant field, double value) { if (std::isfinite(value)) field.set(value); else field.set(nullptr); }
 void spoolJson(JsonObject obj, const Spool &s, bool persisted = false) {
@@ -220,10 +254,13 @@ bool validMeasurement(const Spool &s) {
   error(409, problem); return false;
 }
 bool recordMeasurement(Spool &s) {
+  const double gross = scale.gross();
+  startStatusOperation(StatusModel::Operation::Save);
   Spool previous = s;
-  s.lastGross = scale.gross(); s.lastRemaining = s.lastGross - s.empty; ++s.measurement;
-  if (saveInventory()) return true;
-  s = previous; return false;
+  s.lastGross = gross; s.lastRemaining = s.lastGross - s.empty; ++s.measurement;
+  const bool saved = saveInventory();
+  if (!saved) s = previous;
+  finishStatusOperation(saved); return saved;
 }
 void chooseSpool(const String &id) {
   activeId = id; activeHadLoad = scale.calibrated() && scale.fresh() && scale.gross() >= 20;
@@ -235,7 +272,7 @@ void nfcJson(JsonObject obj) {
   if (nfcSpoolId.isEmpty()) obj["spool_id"] = nullptr; else obj["spool_id"] = nfcSpoolId;
   if (!nfcMetadata.isNull()) obj["metadata"].set(nfcMetadata);
 }
-void readNfc(bool explicitRead = false) {
+void readNfcImpl(bool explicitRead) {
   const String previousUid = nfc.uid;
   nfcSpoolId = ""; nfcMetadata.clear();
   const bool scanned = nfc.scan(true);
@@ -259,7 +296,12 @@ void readNfc(bool explicitRead = false) {
   if (nfcSpoolId.isEmpty()) for (const auto &s : spools) if (!s.tagUid.isEmpty() && s.tagUid == nfc.uid) nfcSpoolId = s.id;
   if (!nfcSpoolId.isEmpty() && (!scale.calibrated() || scale.gross() >= 20)) chooseSpool(nfcSpoolId);
 }
-String writeSpoolTag(Spool &s, const String &expectedUid) {
+void readNfc(bool explicitRead = false) {
+  if (explicitRead) startStatusOperation(StatusModel::Operation::Nfc);
+  readNfcImpl(explicitRead);
+  if (explicitRead) finishStatusOperation(StatusModel::nfcReadSucceeded(nfc.present, nfc.targets, !nfc.lastError.isEmpty()));
+}
+String writeSpoolTagImpl(Spool &s, const String &expectedUid) {
   if (expectedUid.isEmpty()) return "Scan and confirm the target tag UID first.";
   for (const auto &other : spools) if (other.id != s.id && other.tagUid == expectedUid)
     return "This UID is already linked to another local spool. Unlink it before rewriting this inventory tag.";
@@ -277,15 +319,25 @@ String writeSpoolTag(Spool &s, const String &expectedUid) {
   nfcSpoolId = s.id; chooseSpool(s.id); nextNfc = millis() + 2000;
   return "";
 }
+String writeSpoolTag(Spool &s, const String &expectedUid) {
+  startStatusOperation(StatusModel::Operation::Nfc);
+  const String problem = writeSpoolTagImpl(s, expectedUid);
+  finishStatusOperation(problem.isEmpty()); return problem;
+}
 void statusRoute() {
   JsonDocument doc; doc["mode"] = "device"; doc["device"]["name"] = config.name;
-  doc["device"]["firmware"] = "0.4.1-prototype"; doc["device"]["storage_ready"] = storeReady;
+  doc["device"]["firmware"] = "0.5.0-prototype"; doc["device"]["storage_ready"] = storeReady;
+  doc["device"]["variant"] = deviceVariant;
 #ifdef SPOOLANCER_HEADLESS
 #ifdef SPOOLANCER_TOUCH
-  doc["device"]["headless"] = false; doc["device"]["variant"] = "touch-8048";
+  doc["device"]["headless"] = false;
+#elif defined(SPOOLANCER_OLED)
+  doc["device"]["headless"] = false;
+  doc["device"]["oled_available"] = StatusUi::oledAvailable();
+#elif defined(SPOOLANCER_STATUS_LEDS)
+  doc["device"]["headless"] = true;
 #else
   doc["device"]["headless"] = true;
-  doc["device"]["variant"] = "headless";
 #endif
   JsonObject setup = doc["setup"].to<JsonObject>();
   setup["ap_active"] = apActive; setup["open_network"] = apActive;
@@ -295,7 +347,7 @@ void statusRoute() {
   setup["ap_seconds"] = (setupWindow.apRemaining(millis()) + 999) / 1000;
   setup["warning"] = "Temporary setup network has no password; use it in a trusted location. Wi-Fi credentials are sent over local HTTP.";
 #else
-  doc["device"]["headless"] = false; doc["device"]["variant"] = "st7789";
+  doc["device"]["headless"] = false;
 #endif
   JsonObject weight = doc["scale"].to<JsonObject>();
   numberOrNull(weight["gross_g"], scale.gross()); weight["calibrated"] = scale.calibrated();
@@ -404,7 +456,7 @@ bool createRemote(Spool &s, const char *kind, JsonDocument &request, int &id) {
   }
   return false;
 }
-bool syncSpool(Spool &s) {
+bool syncSpoolImpl(Spool &s) {
   syncError = ""; syncMessage = "";
   if (!s.pending.isEmpty()) { syncError = "A prior creation is unresolved. Check Spoolman and link its existing spool ID before retrying."; return false; }
   if (!s.remoteId) {
@@ -453,6 +505,11 @@ bool syncSpool(Spool &s) {
     syncError = "Spoolman did not confirm the requested remaining weight."; return false;
   }
   syncMessage = "Spoolman remaining weight updated."; return true;
+}
+bool syncSpool(Spool &s) {
+  startStatusOperation(StatusModel::Operation::Sync);
+  const bool synced = syncSpoolImpl(s);
+  finishStatusOperation(synced); return synced;
 }
 #ifdef SPOOLANCER_TOUCH
 void renderTouch() {
@@ -713,7 +770,10 @@ void setupRoutes() {
     if (!authorized()) return;
     JsonDocument input; if (!body(input)) return;
     JsonDocument output; int code; syncError = "";
-    if (!remoteRequest("GET", "/spool?limit=1", nullptr, output, code) || !output.is<JsonArray>()) { error(502, syncError.isEmpty() ? "Unexpected Spoolman API response." : syncError); return; }
+    startStatusOperation(StatusModel::Operation::Sync);
+    const bool reached = remoteRequest("GET", "/spool?limit=1", nullptr, output, code) && output.is<JsonArray>();
+    finishStatusOperation(reached);
+    if (!reached) { error(502, syncError.isEmpty() ? "Unexpected Spoolman API response." : syncError); return; }
     syncMessage = "Spoolman API is reachable."; ok(syncMessage);
   });
   server.on("/api/spoolman/sync", HTTP_POST, [] {
@@ -880,8 +940,9 @@ void setup() {
   if (pin.isEmpty()) startAp();
 #endif
   connectWifi(); setupRoutes();
+  StatusUi::begin(); renderStatusUi(true);
   if (MDNS.begin("spoolancer")) MDNS.addService("http", "tcp", 80);
-  nfc.begin([] { scale.tick(); });
+  nfc.begin([] { scale.tick(); renderStatusUi(); });
 #ifdef SPOOLANCER_TOUCH
   if (!TouchUi::begin()) appMessage = "Touchscreen initialization failed. Use the browser and check the board revision.";
   else renderTouch();
@@ -890,6 +951,11 @@ void setup() {
   displayStatus(); nextDisplay = millis() + 1000;
 #endif
   nextNfc = millis() + 1500;
+  const String address = WiFi.status() == WL_CONNECTED ? WiFi.localIP().toString() :
+                         (apActive ? WiFi.softAPIP().toString() : "not connected");
+  Serial.printf("Spoolancer ready. Variant: %s; assets: %s; inventory: %s; setup AP: %s; address: %s\n",
+                deviceVariant, assetsReady ? "ready" : "missing", storeReady ? "ready" : "unavailable",
+                apActive ? apName.c_str() : "off", address.c_str());
 }
 
 void loop() {
@@ -926,6 +992,9 @@ void loop() {
 #endif
 #ifdef SPOOLANCER_TOUCH
   if (int32_t(now - nextDisplay) >= 0) { renderTouch(); nextDisplay = millis() + 500; }
+#endif
+#ifdef SPOOLANCER_STATUS_LEDS
+  if (int32_t(now - nextDisplay) >= 0) { renderStatusUi(); nextDisplay = millis() + 50; }
 #endif
   delay(1);
 }

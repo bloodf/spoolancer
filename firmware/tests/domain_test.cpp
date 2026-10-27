@@ -85,7 +85,8 @@ static void records() {
 
 void scaleDriverTests();
 void setupTests();
+void statusTests();
 int main() {
-  measurements(); tagProtection(); records(); scaleDriverTests(); setupTests();
-  std::cout << "PASS: measurement/NDEF/tag safeguards, mocked HX711 calibration/freshness, physical setup timing and enrollment guards\n";
+  measurements(); tagProtection(); records(); scaleDriverTests(); setupTests(); statusTests();
+  std::cout << "PASS: measurement/NDEF/tag safeguards, mocked HX711 calibration/freshness, physical setup guards, LED/OLED validity and event expiry\n";
 }

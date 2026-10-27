@@ -237,13 +237,17 @@ test('demo physical enrollment window expires without silently renewing', async 
   assert.equal(state.setup.enrollment_armed, false);
 });
 
-test('integrated touchscreen uses physical PIN enrollment without claiming to be headless', () => {
-  const touch = { ...setupStatus, device: { headless: false, variant: 'touch-8048' } };
-  assert.equal(pairingState(touch, true).eligible, true);
-  assert.deepEqual(sessionBody(touch, true, '23456789'), { pin: '23456789', setup: true });
-  const unarmed = { ...touch, setup: { ...touch.setup, enrollment_armed: false } };
-  assert.equal(pairingState(unarmed, true).canSubmit, false);
-  assert.throws(() => sessionBody(unarmed, true, '23456789'), /physical BOOT button/);
+test('touchscreen and OLED builds require physical PIN enrollment despite having a display', () => {
+  for (const variant of ['touch-8048', 'oled-led']) {
+    const screen = { ...setupStatus, device: { headless: false, variant } };
+    assert.equal(pairingState(screen, true).eligible, true);
+    assert.deepEqual(sessionBody(screen, true, '23456789'), { pin: '23456789', setup: true });
+    const unarmed = { ...screen, setup: { ...screen.setup, enrollment_armed: false } };
+    assert.equal(pairingState(unarmed, true).canSubmit, false);
+    assert.throws(() => sessionBody(unarmed, true, '23456789'), /physical BOOT button/);
+    const outsideSetup = { ...screen, setup: { ...screen.setup, via_ap: false } };
+    assert.throws(() => sessionBody(outsideSetup, true, '23456789'), /temporary setup Wi-Fi/);
+  }
   const legacy = { ...setupStatus, device: { headless: false, variant: 'st7789' } };
   assert.deepEqual(sessionBody(legacy, true, '12345678'), { pin: '12345678' });
 });

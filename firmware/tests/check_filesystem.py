@@ -11,7 +11,8 @@ parser.add_argument("--env", action="append")
 parser.add_argument("--tool", type=Path, default=Path.home() / ".platformio/packages/tool-mklittlefs/mklittlefs")
 args = parser.parse_args()
 root = Path(__file__).resolve().parents[1]
-environments = args.env or ["spoolancer-s3", "spoolancer-headless", "spoolancer-touch-8048"]
+environments = args.env or ["spoolancer-s3", "spoolancer-headless", "spoolancer-touch-8048",
+                           "spoolancer-headless-led", "spoolancer-oled-led"]
 names = {"index.html", "styles.css", "app.js", "logic.js", "favicon.svg"}
 for environment in environments:
     build = root / ".pio/build" / environment

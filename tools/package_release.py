@@ -5,6 +5,7 @@ import hashlib
 import io
 import json
 from pathlib import Path
+import posixpath
 import re
 import subprocess
 import time
@@ -39,6 +40,17 @@ def main():
     output.mkdir(parents=True, exist_ok=True)
     written = []
 
+    def bundled_guide(source):
+        # Keep guide text available offline and resolve repo-relative links at this release.
+        def link(match):
+            target = match.group(2)
+            if target.startswith(("http:", "https:", "#", "mailto:")):
+                return match.group(0)
+            resolved = posixpath.normpath(posixpath.join(posixpath.dirname(source), target))
+            base = f"https://raw.githubusercontent.com/bloodf/spoolancer/v{version}" if match.group(1).startswith("!") else f"https://github.com/bloodf/spoolancer/blob/v{version}"
+            return f"{match.group(1)}{base}/{resolved})"
+        return re.sub(r"(!?\[[^\]]*\]\()([^\s)]+)\)", link, files[source].decode()).encode()
+
     def write_bundle(suffix, contents):
         name = prefix + "-" + suffix
         path = output / (name + ".zip")
@@ -66,7 +78,7 @@ def main():
         print(f"Verified {path.name}: {len(data)} files, {path.stat().st_size:,} bytes")
 
     write_bundle("source", files)
-    for variant in ("headless", "touch-8048"):
+    for variant in ("headless", "touch-8048", "headless-led", "oled-led"):
         folder = f"cad/variants/{variant}/"
         report = json.loads(files[folder + "exports/validation.json"])
         parts = report["parts"]
@@ -88,6 +100,16 @@ def main():
             elif short.endswith(".json"):
                 contents["checks/" + short] = data
         production = sum(part["quantity"] for name, part in parts.items() if not name.startswith("fit_"))
+        indicator_note = ""
+        if variant in ("headless-led", "oled-led"):
+            contents["VARIANT-NOTES.md"] = bundled_guide(folder + "NOTES.md")
+            contents["DC-POWER.md"] = bundled_guide("docs/DC-POWER.md")
+            contents["INDICATOR-GUIDE.md"] = bundled_guide("docs/OLED-RGB-VARIANT.md")
+            indicator_note = """
+Read [variant fit and assembly notes](VARIANT-NOTES.md), [DC power instructions](DC-POWER.md) and [indicator behavior](INDICATOR-GUIDE.md) before printing. The fascia needs local support beneath its raised mounting bridge. Replace two front M3×10 screws with two M3×16 and add four M2.5×10 rear-cover screws. OLED/strip dimensions remain provisional.
+
+This case has closed USB walls, BOOT tool access, no jack hole and no converter mount. Drill only after checking the actual jack and wiring; mount an insulated converter on a fixed wall. A 12 V input must pass through a regulated 5 V converter. Open the lid and isolate the converter supply before computer USB programming.
+"""
         readme = f"""# Spoolancer {version}: {variant}
 
 Prototype print bundle, generated from commit `{commit}`. Physical fit, strength and weighing have not been validated.
@@ -101,6 +123,7 @@ There are {len(parts)} STEP/STL pairs including fit samples, and {production} pr
 Use individual files in `parts/` with a slicer that supports their format. `assembly/` contains editable FreeCAD and complete STEP reference assemblies, including electronics/reference bodies. Do not send the complete assembly directly to a slicer.
 
 Initial print settings: unfilled PETG, 0.2 mm layers, four walls, five top/bottom layers and 20–25% infill. Inspect bridges and support needs in your printer's slicer. No G-code is included. Shared CAD defaults are in `parameters.json`; apply `variant-parameters.json` over those defaults for this variant. The source bundle contains the generator.
+{indicator_note}
 
 Follow the [print guide](https://github.com/bloodf/spoolancer/blob/v{version}/docs/PRINTING.md), [BOM](https://github.com/bloodf/spoolancer/blob/v{version}/docs/BOM.md) and [assembly guide](https://github.com/bloodf/spoolancer/blob/v{version}/docs/ASSEMBLY.md). Editable generators, firmware, web UI and full docs are in the companion source ZIP and [repository](https://github.com/bloodf/spoolancer/tree/v{version}).
 

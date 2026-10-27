@@ -9,6 +9,8 @@ Dependencies are downloaded by the build tools; their source and toolchain cache
 | Component | Upstream and notice |
 | --- | --- |
 | ArduinoJson 7.4.2 | [bblanchon/ArduinoJson](https://github.com/bblanchon/ArduinoJson), MIT |
+| Adafruit NeoPixel 1.15.5, five-LED variants | [adafruit/Adafruit_NeoPixel](https://github.com/adafruit/Adafruit_NeoPixel), retain its LGPL and architecture-specific source notices |
+| U8g2 2.36.15, OLED variant | [olikraus/u8g2](https://github.com/olikraus/u8g2), retain its BSD and individual font notices |
 | Adafruit ST7735/ST7789 library 1.11.0, legacy display | [adafruit/Adafruit-ST7735-Library](https://github.com/adafruit/Adafruit-ST7735-Library), retain its license and attribution |
 | Adafruit GFX / BusIO and other transitives | [Adafruit GFX](https://github.com/adafruit/Adafruit-GFX-Library) carries BSD notices; [BusIO](https://github.com/adafruit/Adafruit_BusIO) carries MIT notices; inspect the resolved packages |
 | Arduino_GFX 1.4.9, touch display | [moononournation/Arduino_GFX](https://github.com/moononournation/Arduino_GFX); the installed package lacks a top-level license file and cites reused sources including Adafruit GFX and LovyanGFX. Do not assume the project MIT license covers it |

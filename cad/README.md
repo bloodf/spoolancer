@@ -6,6 +6,14 @@ The upright spool rests on two hollow rim rails. An open carrier supports both r
 
 See the [assembled](previews/assembled.png), [exploded](previews/exploded.png), [interior](previews/interior.png), [cradle](previews/cradle.png), [NFC detail](previews/nfc-detail.png) and [load-path](previews/load-path.png) views. The previous upright design is preserved in [archive/v0.2-upright](../archive/v0.2-upright/cad/README.md).
 
+## New DC-powered indicator variants
+
+The additive **[headless + five LEDs](variants/headless-led/NOTES.md)** and **[0.96-inch OLED + five LEDs](variants/oled-led/NOTES.md)** prototypes use five round openings at 16.6667 mm centers. Their fixed front pods share the upright cradle. These variants close the USB wall, provide a separate BOOT access bore, and leave the DC jack opening for the user to drill. A separate 12 V-to-5 V converter is required; no converter mount is assumed.
+
+The new [headless LED](variants/headless-led/exports) and [OLED LED](variants/oled-led/exports) directories contain individual STEP/STL files, full FreeCAD/STEP assemblies, fit samples, validation reports and [previews](variants/oled-led/previews/assembled.png). Existing release files below are preserved. OLED board dimensions, strip width, USB plug and power converter fit remain unverified. Read each variant's notes before printing.
+
+Regenerate with `--variant headless-led` or `--variant oled-led` on `build.py`, `verify_exports.py` and `render.py`. Their parameter files override the shared baseline; `indicators.py` contains the front pod geometry. The new fascia has an elevated integrated mounting bridge and needs local slicer support in its exported face-down pose.
+
 ## Choose a variant
 
 - **Headless:** the files in `exports/` and the independent copy under [variants/headless](variants/headless/HEADLESS-NOTES.md). Use the existing N16R8 controller and its onboard BOOT switch; no separate switch, perfboard or printed cap.

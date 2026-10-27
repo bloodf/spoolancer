@@ -4,16 +4,20 @@ Start with the **headless build** if you have an ESP32-S3 N16R8 and PN532. It us
 
 This is a prototype release. CAD checks, firmware builds and software tests have passed; physical fit, calibrated accuracy, seated NFC operation and a real Spoolman connection still need testing. Record your results in the [hardware validation report](HARDWARE-VALIDATION.md).
 
-The [v0.4.1-alpha.1 release](https://github.com/bloodf/spoolancer/releases/tag/v0.4.1-alpha.1) provides the complete source package, separate print packs for each build and `SHA256SUMS.txt`. The print packs contain individual STEP/STL files; the source package also contains the firmware, web interface and editable CAD generator.
+The [v0.5.0-alpha.1 release](https://github.com/bloodf/spoolancer/releases/tag/v0.5.0-alpha.1) provides the complete source package, separate print packs for each build and `SHA256SUMS.txt`. The print packs contain individual STEP/STL files; the source package also contains the firmware, web interface and editable CAD generator.
 
 ## 1. Choose one controller
 
 | Build | Controller | CAD folder | Firmware environment |
 | --- | --- | --- | --- |
 | Headless, v0.4.1 | ESP32-S3 N16R8 development board matching the documented V6.0.0 board | [headless](../cad/variants/headless/) | `spoolancer-headless` |
+| Five LEDs | Same standalone N16R8 board, five 5 V addressable pixels | [headless-led](../cad/variants/headless-led/) | `spoolancer-headless-led` |
+| OLED + five LEDs | Same N16R8, 0.96-inch I²C OLED and five pixels | [oled-led](../cad/variants/oled-led/) | `spoolancer-oled-led` |
 | Integrated touch | ESP-8048S043C-I, 4.3-inch 800 × 480 capacitive | [touch-8048](../cad/variants/touch-8048/) | `spoolancer-touch-8048` |
 
-Use only one controller. Both builds share the 5 kg bar load cell, HX711 and PN532. Neither needs a separate setup button or perfboard. The touchscreen pin map differs from the headless map, and its microSD slot must remain empty.
+The LED cases have no external USB cutouts. The user drills the DC jack opening and glues an insulated converter assembly to a fixed wall. A 12 V input must be converted to regulated 5 V; follow [the DC power guide](DC-POWER.md) and disconnect the converter before USB programming. Print the new strip/display fit samples before the full case.
+
+Use only one controller. All builds share the 5 kg bar load cell, HX711 and PN532. Neither needs a separate setup button or perfboard. The touchscreen pin map differs from the headless map, and its microSD slot must remain empty.
 
 Gather the [bill of materials](BOM.md), calipers, a multimeter, soldering tools and known calibration masses. The intended spool envelope is 50–100 mm wide and 160–220 mm in diameter. The firmware's weighing target is 20–2,000 g gross spool weight; the 5 kg cell also supports the moving mechanism.
 

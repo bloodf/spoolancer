@@ -110,7 +110,7 @@ export function saveThemePreference(storage, preference) {
   return theme;
 }
 
-export const usesOpenSetup = status => status?.device?.headless === true || status?.device?.variant === 'touch-8048';
+export const usesOpenSetup = status => status?.device?.headless === true || ['touch-8048', 'oled-led'].includes(status?.device?.variant);
 
 export function pairingState(status, fresh) {
   const setup = status?.setup || {};

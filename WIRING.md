@@ -1,4 +1,4 @@
-# Spoolancer v0.4.1 wiring
+# Spoolancer v0.5 wiring
 
 Prototype wiring updated 27 October 2026. Choose the firmware environment and pin column for your controller. The screenless and integrated-touch peripheral pin maps are different; both use onboard BOOT for setup. Compilation does not verify physical wiring, regulator capacity, display or NFC operation.
 
@@ -7,6 +7,8 @@ Prototype wiring updated 27 October 2026. Choose the firmware environment and pi
 | Build | Controller | Firmware environment |
 | --- | --- | --- |
 | Screenless | Owned ESP32-S3 N16R8 development board | `spoolancer-headless` |
+| Five status LEDs | Same standalone N16R8 board | `spoolancer-headless-led` |
+| 0.96-inch OLED + five LEDs | Same standalone N16R8 board | `spoolancer-oled-led` |
 | Touchscreen | Confirmed ESP-8048S043C-I integrated 4.3-inch capacitive board | `spoolancer-touch-8048` |
 | Archived small display | Owned ESP32-S3 plus Waveshare ST7789 and three buttons | `spoolancer-s3` |
 
@@ -51,6 +53,10 @@ For both current builds, hold and release **BOOT** for **2 seconds** to arm one 
 Hold **BOOT for 8 seconds while running** to clear Wi-Fi credentials and pairing, close existing sessions and reopen setup. Release it afterward. The firmware handles this without rebooting. Inventory, calibration and Spoolman settings/links remain stored. The temporary AP has no password, closes after ten minutes or 60 seconds after LAN connection, and does not automatically reopen after a configured Wi-Fi failure. Use a trusted location: PIN and Wi-Fi credentials travel over local HTTP. See [first-use instructions](firmware/README.md#headless-first-use).
 
 ## Power and bring-up
+
+The new LED cases have no external USB openings. Their user-drilled 12 V DC jack must feed a **regulated 5 V buck converter**, not the ESP32 or LED strip directly. The owner will glue an insulated converter assembly to a fixed wall, so no dedicated mount is supplied. Follow [DC-POWER.md](docs/DC-POWER.md) for supply isolation before programming, the LED level shifter/resistor/capacitor, and mounting clearance. USB remains accessible with the cover removed. These DC power arrangements have not been physically tested.
+
+The standalone LED profiles use GPIO6 for the five-pixel data signal. The OLED profile uses SDA GPIO4 and SCL GPIO5. These are separate from the legacy ST7789 button profile. SSD1306 at address `0x3c` and WS2812-style GRB/800 kHz are provisional defaults; see [firmware options](firmware/README.md#five-leds-and-optional-096-inch-oled) before wiring an unidentified module.
 
 Use one regulated USB supply through the controller's programming/power port. On the owned development board, use COM for programming; leave power-selection solder pads unchanged. Verify 16 MB flash and 8 MB PSRAM on the actual controller. Check each peripheral separately, then the 3.3 V rail and reliable boot with NFC, Wi-Fi and the chosen display active together. The photos do not establish spare regulator current.
 

@@ -60,8 +60,8 @@ jobs:
             firmware/.pio/libdeps
           key: ${{ runner.os }}-${{ runner.arch }}-pio-${{ env.PLATFORMIO_CORE_VERSION }}-${{ hashFiles('firmware/platformio.ini', '.github/workflows/ci.yml') }}
       - name: Compile all board variants
-        run: pio run -d firmware -e spoolancer-headless -e spoolancer-touch-8048 -e spoolancer-s3
+        run: pio run -d firmware -e spoolancer-headless -e spoolancer-touch-8048 -e spoolancer-s3 -e spoolancer-headless-led -e spoolancer-oled-led
       - name: Build all asset images
-        run: pio run -d firmware -e spoolancer-headless -e spoolancer-touch-8048 -e spoolancer-s3 -t buildfs
+        run: pio run -d firmware -e spoolancer-headless -e spoolancer-touch-8048 -e spoolancer-s3 -e spoolancer-headless-led -e spoolancer-oled-led -t buildfs
       - name: Verify partitions and packaged assets
         run: python3 firmware/tests/check_filesystem.py

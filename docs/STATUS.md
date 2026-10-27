@@ -1,8 +1,29 @@
-# v0.4.1 onboard BOOT status
+# Spoolancer verification status
+
+## v0.5 LED/OLED update — 27 October 2026
+
+Both new cases and firmware profiles are implemented. One owned ESP32-S3 has been flashed and reached its ready state over USB. **Physical enclosure fit, weighing, peripheral operation and real Spoolman integration remain unvalidated.** The older v0.4.1 record below is retained as historical evidence; its no-flash statements describe that earlier checkpoint.
+
+| Area | Current evidence | Limit |
+| --- | --- | --- |
+| LED/OLED CAD | 15 and 16 STEP/STL pairs reopened; editable FreeCAD/assembly STEP reopened; valid solids/meshes; modeled clearances, 27 spool cases, nine reader placements, BOOT approach and two new front clamps pass | Provisional OLED/strip/plug dimensions; no real print, fit, strength or power assessment |
+| Existing CAD | 121 earlier CAD/export/preview artifacts unchanged | Earlier physical-fit limits remain |
+| Firmware | All five environments compile; alternate SH1106/GRBW build compiles; native ASan/UBSan tests pass | Compilation and simulated logic are not peripheral validation |
+| Web | 26 logic tests pass; OLED variant uses the same physical open-AP enrollment path | No real-device browser session checked |
+| Asset images | Both new LittleFS images unpack to the current five web files and pass partition guards | Does not establish upgrade retention from an existing inventory |
+| Physical controller | Application and assets flashed with verified upload hashes; USB boot reports 16 MB flash, approximately 8 MB PSRAM, ready assets/inventory and setup AP/address | One board and short serial captures only; no HTTP, button gesture or Wi-Fi association test |
+| OLED | No acknowledgement at configured `0x3c` during startup | Controller, address, wiring and image remain unverified |
+| DC supply and other peripherals | Wiring and assembly documented; no hardware result claimed | 12 V conversion, LEDs, HX711, PN532 and Spoolman remain untested |
+
+Sources: [CAD delivery report](../cad/indicator-delivery-verification.json), [LED export checks](../cad/variants/headless-led/exports/export-verification.json), [OLED export checks](../cad/variants/oled-led/exports/export-verification.json), [USB boot record and artifact hashes](DEVICE-BOOT.md), [firmware checks](../firmware/README.md) and [variant instructions](OLED-RGB-VARIANT.md).
+
+The full pre-flash backup remains private outside the repository. No purchases, print jobs, Wi-Fi credentials or real external inventory writes were performed. The new cases have no external USB cutouts or converter mount; the builder drills the jack opening. USB startup does not validate the proposed 12 V-to-5 V power path.
+
+## Historical v0.4.1 onboard BOOT record
 
 Recorded 27 October 2026. The package contains a compact screenless CAD prototype, a provisional integrated-touch enclosure, a local web interface and ESP32-S3 firmware. No board has been flashed, assembled, physically measured or connected to a real Spoolman server.
 
-## Checked evidence
+### Checked evidence
 
 | Area | Evidence | Limit |
 | --- | --- | --- |
@@ -29,7 +50,7 @@ Final compiled application/static-RAM sizes:
 
 Sources: [per-part STEP delivery checks](../cad/step-delivery-verification.json), [touch CAD checks](../cad/variants/touch-8048/exports/validation.json), [touch reopen/fastener report](../cad/variants/touch-8048/exports/export-verification.json), [touch slicing](../analysis/material-comparison/v0.4-touch.json), [headless CAD checks](../cad/variants/headless/exports/validation.json), [export reopen report](../cad/variants/headless/exports/export-verification.json), [headless slicing report](../analysis/material-comparison/v0.4-headless.json) and [firmware build guide](../firmware/README.md). Browser screenshots show [dark sample data](web-preview-dark.png), [the editor](web-editor-dark.png) and [simulated setup](web-setup.png), not device readings.
 
-## Current behavior and boundaries
+### Behavior and boundaries at that revision
 
 - Screenless uses the existing N16R8 board; touch uses the integrated ESP32 on the ESP-8048S043C-I. Both now use onboard BOOT on GPIO0. The headless external switch, perfboard, button wiring, cap and two M2 screws are removed. The old ST7789 build remains a separate firmware environment and archived enclosure.
 - Both current builds use an open setup AP, chosen eight-digit PIN and physical 2-second arm/60-second one-attempt enrollment. The AP closes after ten minutes or 60 seconds after LAN connection. A configured Wi-Fi failure does not open it automatically. While firmware is running, an 8-second BOOT hold clears Wi-Fi/pairing and reopens setup without rebooting; inventory, calibration and Spoolman settings/links remain. Release BOOT before another gesture. Holding BOOT at power-on or during RST enters the programming bootloader instead; release BOOT and tap RST to run normally.
@@ -41,7 +62,7 @@ Sources: [per-part STEP delivery checks](../cad/step-delivery-verification.json)
 - NTAG216 writes use Spoolancer schema 1 and read-back verification. Original Bambu/Snapmaker tags are UID-only/read-only; proprietary decoding and OpenSpool interoperability remain unimplemented.
 - Spoolman uses optional HTTP/numeric-IPv4 setup and explicit absolute-weight updates. Uncertain creates must be reconciled; no automatic retry queue exists. Local metadata edits do not rewrite remote filament records.
 
-## Remaining physical checks
+### Remaining physical checks at that revision
 
 1. Measure the received boards, holes, glass/connector projections and cell thread depths. Print the selected variant's fit samples before its full enclosure.
 2. Verify controller memory, 3.3 V power, raw HX711 readings, PN532 HSU and actual BOOT timing and press/release access with cables fitted. For touch, check RGB timing, GT911 coordinates and BOOT access; leave SD empty.

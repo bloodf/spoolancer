@@ -1,8 +1,10 @@
-# Assemble Spoolancer v0.4.1
+# Assemble Spoolancer
 
-Start with the [fit samples](../cad/README.md#fit-samples-first) and check them against the actual boards and load cell. The enclosure is a CAD-checked prototype. Firmware compiles, but no assembled hardware has been flashed or physically validated for this implementation.
+Start with the [fit samples](../cad/README.md#fit-samples-first) and check them against the actual boards and load cell. The enclosure is a CAD-checked prototype. One standalone ESP32-S3 has been flashed and booted over USB; the assembled scale and its peripherals remain unvalidated.
 
 Use [SHOPPING.md](../SHOPPING.md) for electronics, [WIRING.md](../WIRING.md) for connections, [firmware/README.md](../firmware/README.md) for installation, and the [web-interface guide](WEB-INTERFACE.md) for operation. The current build has a side-mounted NFC pod; use the v0.4.1 headless exports or the touch variant, not the archived full-saddle design.
+
+The shared mechanism instructions below also apply to the new LED/OLED variants, but use their complete selected export set. Follow [LED-only notes](../cad/variants/headless-led/NOTES.md) or [OLED/LED notes](../cad/variants/oled-led/NOTES.md) for their changed base/cover, eleven-piece count, front pod and longer front screws. Their USB walls are closed and BOOT has a separate tool bore. Follow [DC power instructions](DC-POWER.md) before installing a converter or connecting USB.
 
 ## Prints and tools
 

@@ -1,10 +1,12 @@
 # Spoolancer device firmware
 
-This is an Arduino/PlatformIO implementation for ESP32-S3 N16R8 hardware. The builds use 16 MB flash and octal PSRAM, read the HX711, communicate with the PN532 over HSU, and serve the local web interface. **Compilation and native logic tests are not physical validation. No board has been flashed or tested for this implementation.**
+This is an Arduino/PlatformIO implementation for ESP32-S3 N16R8 hardware. The builds use 16 MB flash and octal PSRAM, read the HX711, communicate with the PN532 over HSU, and serve the local web interface. One `spoolancer-oled-led` board was flashed on 27 October 2026 and reported successful USB startup, detected memory and mounted storage. **OLED/LED operation, weighing, NFC and real Spoolman behavior remain unvalidated.** See the [boot record](../docs/DEVICE-BOOT.md) and [full evidence record](../docs/STATUS.md).
 
 | Build environment | Controls |
 |---|---|
 | `spoolancer-headless` | Phone/browser interface and the existing onboard BOOT button; no extra button or display |
+| `spoolancer-headless-led` | Same browser/BOOT controls, plus five addressable status LEDs |
+| `spoolancer-oled-led` | Same browser/BOOT controls, five LEDs and a 128×64 I2C OLED |
 | `spoolancer-s3` | Existing ST7789 screen and Previous/Next/Select buttons |
 | `spoolancer-touch-8048` | Experimental ESP-8048S043C-I integrated 800×480 capacitive touchscreen; native actions and browser editor |
 
@@ -30,13 +32,34 @@ pio run -d firmware -e spoolancer-headless -t uploadfs --upload-port YOUR_SERIAL
 pio device monitor -d firmware -e spoolancer-headless --port YOUR_SERIAL_PORT
 ```
 
-These installation commands have not been run. Replace `spoolancer-headless` with `spoolancer-s3` for the screen version. Verify 16 MB flash / 8 MB PSRAM on the actual module before installation. PlatformIO's inherited board description still says N8; `platformio.ini` overrides its flash size, memory type and partition table. The generated bootloader header is 16 MB. The firmware reports detected flash and PSRAM on the serial console. USB CDC is disabled so the programming bridge supplies serial output.
+Both upload commands were run successfully for `spoolancer-oled-led`; other profiles have compilation evidence only. Replace `spoolancer-headless` with the environment for your hardware. For the new DC-powered cases, remove the cover and follow [power isolation instructions](../docs/DC-POWER.md#power-connection-and-programming) before attaching computer USB. Verify 16 MB flash / 8 MB PSRAM on your actual module before installation. PlatformIO's inherited board description still says N8; `platformio.ini` overrides its flash size, memory type and partition table. The generated bootloader header is 16 MB. The firmware reports detected flash and PSRAM on the serial console. USB CDC is disabled so the programming bridge supplies serial output.
 
 For the integrated touchscreen, use `-e spoolancer-touch-8048` for build, filesystem and upload commands. It pins Arduino_GFX 1.4.9 and uses the reference RGB panel/GT911 layout described below. Treat it as experimental until the exact purchased board revision has been checked and tested.
 
 The `spiffs` partition contains LittleFS web assets at `0x810000`, size `0x6f0000` (7,274,496 bytes). A separate 1 MB `inventory` partition at `0xf00000` stores local spools and the remote-operation journal. Its CSV subtype is written numerically as `0x82`, the same ESP32 SPIFFS subtype, so PlatformIO 6.12 does not mistake the last private filesystem for the asset-upload target. A post-build configuration guard refuses filesystem build/upload targets with the wrong address or size. Configuration, PIN and calibration use NVS. Uploading assets leaves inventory separate; erasing the whole flash destroys all three. Inventory initializes once; a later mount or parsing failure disables writes and preserves data for recovery.
 
-After building firmware and filesystems, `python3 firmware/tests/check_filesystem.py --env spoolancer-headless` checks the generated binary partition table, image size, and unpacked contents against the five current web files. Omit `--env` to inspect all three built variants. It does not upload anything.
+After building firmware and filesystems, `python3 firmware/tests/check_filesystem.py --env spoolancer-headless` checks the generated binary partition table, image size, and unpacked contents against the five current web files. Omit `--env` to inspect all five built variants. It does not upload anything.
+
+## Five LEDs and optional 0.96-inch OLED
+
+Use `-e spoolancer-headless-led` or `-e spoolancer-oled-led` in the build, asset and upload commands. These profiles use the separate ESP32-S3 N16R8 and keep the headless BOOT setup gestures and browser editor. They do not use the ST7789 buttons or integrated touchscreen pin map. Connect OLED SDA to GPIO4, OLED SCK/SCL to GPIO5 and the LED data signal to GPIO6 through the level shifter described in [OLED-RGB-VARIANT.md](../docs/OLED-RGB-VARIANT.md).
+
+The LED driver defaults to five 5 V WS2812-style **GRB / 800 kHz** pixels at brightness **51/255 (20%)**. The user's strip chip and color order are not yet confirmed. `SPOOLANCER_LED_ORDER=NEO_RGB` changes the order; `SPOOLANCER_LED_ORDER=NEO_GRBW` supports compatible RGBW strips while leaving white off. Add these definitions to the selected environment's `build_flags` with `-D`; `SPOOLANCER_LED_BRIGHTNESS` is also configurable from 0 to 255. A firmware brightness limit is not an electrical current limiter.
+
+| LED appearance | Meaning |
+|---|---|
+| Cyan bar, each complete LED representing 20% | Valid remaining filament fraction; next LED dims for a partial segment |
+| Blue pulse | Temporary Wi-Fi setup network active |
+| Amber | Measurement unavailable, unstable or missing required spool information |
+| Purple | Explicit NFC read/write in progress |
+| Blue/cyan | Local save or Spoolman operation in progress |
+| Green or red for 2.5 seconds | Operation succeeded or failed; then the current measurement/setup state returns |
+
+Routine background tag scans do not flash the strip. The PN532 wait callback samples the scale and refreshes the status UI, so a scan cannot leave a stale remaining display frozen. Explicit NFC and HTTP operations show a steady busy indicator. Results are driven by operation outcomes and expire; saved error/message strings cannot keep the LEDs green or red indefinitely. NFC read success requires exactly one target without an error.
+
+The OLED shows material, valid remaining grams, gross grams, status and IP address. Unknown empty weight, stale/unstable data, missing calibration, out-of-range gross or impossible remaining weights suppress remaining grams. Busy operations also hide remaining grams because the screen cannot refresh during blocking work. The OLED is an indicator; editing and confirmation stay in the browser.
+
+**SSD1306 at I2C address 0x3c is provisional**, not identified from screen size alone. Add `-DSPOOLANCER_OLED_SH1106=1` if the delivered controller is SH1106; use `-DSPOOLANCER_OLED_ADDRESS=0x3d` if its address differs. U8g2 supports both controllers; acknowledging an I2C address does not identify the controller. An absent OLED is skipped, and a later I2C failure disables display updates without stopping the browser. Repair the wiring and restart to enable it again. LED signaling, OLED rendering and fit still need checks on the actual hardware.
 
 ## Headless first use
 
