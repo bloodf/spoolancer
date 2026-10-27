@@ -35,7 +35,9 @@ Use the available 3V3/GND headers or insulated soldered branches to power PN532 
 
 ## Current LED/OLED fasteners
 
-Use this list for the **v0.7 `headless-led` and `oled-led` builds**. Both use 20 screws in three dimensional sizes, compared with 28 screws in nine sizes in v0.6. There are four purchasing lines because metal and nylon M3 × 12 screws serve different joints. The original headless and touch builds retain the separate lists below.
+Use this list for the **v0.7 `headless-led` and `oled-led` builds**. The removable assembly uses 20 screws in three dimensional sizes, compared with 28 screws in nine sizes in v0.6. The [glued-rail option](GLUE-ASSEMBLY.md) uses the same prints with **18 screws, 14 nuts and 14 washers**. Both options have four purchasing lines because metal and nylon M3 × 12 screws serve different joints. The original headless and touch builds retain the separate lists below.
+
+**For glued rails, buy 10 instead of 12 metal M3 × 12 screws, 6 instead of 8 standard metal M3 nuts, and 6 instead of 8 metal M3 washers.** All other quantities below stay the same. Use a compatible CA superglue and follow the bonding guide before mounting the load cell or electronics. Bond strength remains untested.
 
 | Quantity | Screw to buy | Locations |
 | ---: | --- | --- |
@@ -98,6 +100,6 @@ For the `headless-led` and `oled-led` variants, reuse the shared scale electroni
 
 The owner chose a 12 V DC jack and glued wall mounting for the converter. Add a regulated 12 V-to-5 V converter rated for at least 2 A continuous, a suitable 3.3 V-to-5 V LED data buffer such as a preassembled 74AHCT125 module, a 330–470 ohm data resistor and a 500–1000 µF capacitor rated at least 6.3 V on the **5 V** rail. The buffer also needs local bypass capacitance. No perfboard or external reset button is required if using wired modules. Check actual module dimensions and wiring before glue or drilling. See [DC power and programming isolation](DC-POWER.md).
 
-The current LED/OLED controls are integrated into the vertical front wall. Use the [20-screw list above](#current-ledoled-fasteners), insulating adhesive for the strip and compressible foam for PCB-edge retention. Use [the selected variant's fit notes](OLED-RGB-VARIANT.md#printing-and-assembly) before committing to a full print.
+The current LED/OLED controls are integrated into the vertical front wall. Use the [fastener list above](#current-ledoled-fasteners), with its 18-screw glued-rail option or 20-screw removable option, insulating adhesive for the strip and compressible foam for PCB-edge retention. Use [the selected variant's fit notes](OLED-RGB-VARIANT.md#printing-and-assembly) before committing to a full print.
 
 These cases omit USB cutouts and dedicated converter mounts. The jack opening is user-drilled. The original USB-powered variants and their parts remain listed above.

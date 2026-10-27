@@ -13,7 +13,7 @@ Both controls fit within the 170 × 160 mm base. The nominal printed assembly is
 
 ## Chamfered enclosure and 3D guide
 
-The v0.7 STEP, STL and FreeCAD files use real chamfers on exposed corners and edges. The OLED sits vertically on the left of the front wall, with five LEDs to its right; the LED-only case uses the same front-wall approach. Their supports are integrated into the base and accessed through the main lid. Both builds use 20 screws in three sizes, with separate metal and nylon M3 × 12 purchasing lines. The main lid uses rigid rear hooks and two front screws; each rail uses locating keys and one central screw. The PN532 has PCB-edge retention, and each NFC cover uses a rigid tongue and one screw.
+The v0.7 STEP, STL and FreeCAD files use real chamfers on exposed corners and edges. The OLED sits vertically on the left of the front wall, with five LEDs to its right; the LED-only case uses the same front-wall approach. Their supports are integrated into the base and accessed through the main lid. The removable CAD reference assemblies use 20 screws in three sizes, with separate metal and nylon M3 × 12 purchasing lines. The main lid uses rigid rear hooks and two front screws; each rail uses locating keys and one central screw. The PN532 has PCB-edge retention, and each NFC cover uses a rigid tongue and one screw.
 
 A covered cable channel behind the NFC reader stores slack as its height changes. Its body is part of the moving guide, with one removable printed cover. The remaining flexible route into the base must stay clear of the fixed housing and load-cell flexure. Exact cable allowances, fasteners and installation steps are recorded in each variant's notes.
 
@@ -25,7 +25,7 @@ The cases have closed USB walls, a dedicated BOOT tool bore, no pre-cut jack hol
 
 The OLED and strip belong to the fixed front wall. Their leads stay inside the base and clear of the moving load path. Five light openings use the confirmed 60 LEDs/metre pitch: **16.667 mm between centres**, 66.667 mm from first to fifth centre.
 
-Use the complete v0.7 export set and [20-screw fastener list](BOM.md#current-ledoled-fasteners). Do not mix the revised joints with v0.6 parts. Retain the strip with insulating adhesive and the OLED at its PCB edges with thin foam; do not clamp the glass. Follow the [print manifest](PRINTING.md) and each variant's notes for quantities, print orientation and the fit samples to check before printing the full enclosure.
+Use the complete v0.7 export set and [current fastener list](BOM.md#current-ledoled-fasteners): 20 screws with removable rails or [18 screws with glued rails](GLUE-ASSEMBLY.md). Both use the same prints; glue strength remains untested. Do not mix the revised joints with v0.6 parts. Retain the strip with insulating adhesive and the OLED at its PCB edges with thin foam; do not clamp the glass. Follow the [print manifest](PRINTING.md) and each variant's notes for quantities, print orientation and the fit samples to check before printing the full enclosure.
 
 ## Component assumptions and wiring
 

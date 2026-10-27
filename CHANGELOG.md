@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased documentation
+
+- Add an 18-screw glued-rail assembly option for the existing v0.7 LED/OLED prints, saving two metal M3 × 12 screws, two nuts and two washers. Document bonding locations, preparation, permanent-rail service and the remaining mechanical fasteners.
+- Keep all CAD files, the 20-screw reference assemblies and existing release ZIPs unchanged. Adhesive strength and physical assembly remain untested.
+
 ## 0.7.0-alpha.1
 
 Simplifies assembly of the current LED-only and OLED-plus-LED cases. Screw count falls from 28 to 20, and dimensional sizes fall from nine to three. Metal and nylon M3 × 12 screws are separate purchasing lines. The original headless and integrated-touch designs are unchanged.

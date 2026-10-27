@@ -15,7 +15,7 @@ The [v0.7.0-alpha.1 release](https://github.com/bloodf/spoolancer/releases/tag/v
 | OLED + five LEDs | Same N16R8, 0.96-inch I²C OLED and five pixels | [oled-led](../cad/variants/oled-led/) | `spoolancer-oled-led` |
 | Integrated touch | ESP-8048S043C-I, 4.3-inch 800 × 480 capacitive | [touch-8048](../cad/variants/touch-8048/) | `spoolancer-touch-8048` |
 
-The LED cases have no external USB cutouts. The user drills the DC jack opening and glues an insulated converter assembly to a fixed wall. A 12 V input must be converted to regulated 5 V; follow [the DC power guide](DC-POWER.md) and disconnect the converter before USB programming. Print the strip/display and NFC fit samples before the full case. Current v0.7 LED/OLED builds use the [20-screw fastener list](BOM.md#current-ledoled-fasteners); the original USB-powered builds retain their earlier joints.
+The LED cases have no external USB cutouts. The user drills the DC jack opening and glues an insulated converter assembly to a fixed wall. A 12 V input must be converted to regulated 5 V; follow [the DC power guide](DC-POWER.md) and disconnect the converter before USB programming. Print the strip/display and NFC fit samples before the full case. Current v0.7 LED/OLED builds use [18 screws with glued rails or 20 with removable rails](BOM.md#current-ledoled-fasteners). For glue assembly, [bond and cure the bare rail/carrier subassembly](GLUE-ASSEMBLY.md) before installing the load cell or electronics. The original USB-powered builds retain their earlier joints.
 
 Use only one controller. All builds share the 5 kg bar load cell, HX711 and PN532. Neither needs a separate setup button or perfboard. The touchscreen pin map differs from the headless map, and its microSD slot must remain empty.
 

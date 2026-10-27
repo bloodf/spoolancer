@@ -29,7 +29,7 @@ All four use one 5 kg bar load cell, an HX711 and a PN532. The side reader moves
 
 ![OLED and five-LED upright CAD prototype with a reference spool](cad/variants/oled-led/previews/assembled.png)
 
-This is a CAD view, not a photograph of a tested build. The current LED/OLED parts have chamfered exposed edges, integrated vertical front controls and a covered NFC cable route. Their simplified joints use **20 screws in three sizes**, with metal and nylon M3 × 12 bought separately. See the [current fastener list](docs/BOM.md#current-ledoled-fasteners). Confirm the actual board, load-cell threads and spool fit before printing a full set.
+This is a CAD view, not a photograph of a tested build. The current LED/OLED parts have chamfered exposed edges, integrated vertical front controls and a covered NFC cable route. Use **18 screws with glued rails**, or **20 screws with removable rails**, in three sizes. Metal and nylon M3 × 12 are bought separately. The [glue assembly guide](docs/GLUE-ASSEMBLY.md) uses the existing v0.7 print files; CAD views still show the removable 20-screw build. Bond strength is untested. See the [current fastener list](docs/BOM.md#current-ledoled-fasteners). Confirm the actual board, load-cell threads and spool fit before printing a full set.
 
 ## Explore the assembly
 

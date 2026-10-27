@@ -1,5 +1,11 @@
 # Spoolancer verification status
 
+## Glued-rail assembly option, 27 October 2026
+
+The [glue assembly guide](GLUE-ASSEMBLY.md) documents an 18-screw option for the existing v0.7 LED/OLED print sets. It omits two rail screws, two ordinary nuts and two washers; the other joints remain mechanically fastened. The 20-screw CAD reference assemblies and their existing validation reports are unchanged. Published v0.7.0 ZIPs predate this supplementary guide.
+
+Read-only inspection of the shared rail/carrier geometry confirmed flat mating faces and two 30 × 6 mm placement regions per rail, clear of the key pockets and holes. Permanent rails preserve guide-nut loading, carrier-to-cell screw access and the existing lid service path. Individual rail removal is no longer a service operation. This is geometric evidence only: **no glue, printed bond, cure time, joint strength or weighing performance has been physically tested**. No CAD geometry, firmware or device state changed for this documentation update.
+
 ## v0.7 simplified fasteners, 27 October 2026
 
 The current LED-only and OLED-plus-LED models reduce the screw count from 28 to 20. They use three dimensional sizes and four purchasing lines: 12 metal M3 × 12, four nylon M3 × 12, two M4 × 25 and two M5 × 12. The matching lists contain 16 nuts and 16 washers. The original headless/touch models keep their previous hardware.

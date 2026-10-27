@@ -20,7 +20,7 @@ Have calipers, screwdrivers/hex keys, a 2.5 mm hex key for the stops, a solderin
 
 ### Current LED/OLED hardware
 
-The current LED-only and OLED-plus-LED cases use **20 screws in three sizes**. Buy metal and nylon M3 × 12 separately. The [BOM](BOM.md#current-ledoled-fasteners) lists all quantities, including 16 nuts and 16 washers.
+The current LED-only and OLED-plus-LED cases use **20 screws in three sizes** for the removable assembly below. The [glued-rail option](GLUE-ASSEMBLY.md) uses the same print files with **18 screws, 14 nuts and 14 washers**. It bonds only the two fixed rim rails to the carrier. Complete that bond on the bench before mounting the load cell or electronics. Buy metal and nylon M3 × 12 separately. The [BOM](BOM.md#current-ledoled-fasteners) lists both purchasing options.
 
 | Joint | Hardware | How the printed joint works |
 | --- | --- | --- |
@@ -72,6 +72,8 @@ If a fit differs, adjust [parameters.json](../cad/parameters.json), [regenerate]
 
 ## 2. Assemble the base and load cell
 
+If using glued rails, complete and cure the [rail/carrier subassembly](GLUE-ASSEMBLY.md#glue-before-installing-the-mechanism) first. Omit the two rail nuts and rail fasteners in the following steps; keep all four guide nuts. Never apply rail adhesive with the carrier mounted on the load cell.
+
 1. Fit two ordinary M3 lid nuts for current LED/OLED builds, or four for the original headless/touch builds, before lowering the lid. Fit the four stop locknuts in their separate pockets with metal thread entry up and nylon ring down. Current LED/OLED raised posts use M3 × 12 stop screws; original builds use M3 × 20. Insert the stop screws from above, keeping their heads clear of normal carrier movement.
 2. Confirm the actual cell's thread sizes and mounting orientation. Fit its M5 end to the fixed supports from the base underside, using the M5 screws and washers. Keep the central sensing section free.
 3. For headless, secure ESP32 and HX711 to their rails with the three cable ties, just tight enough to retain them. Route fixed wiring without pressing on pins, components or the antenna overhang.
@@ -82,12 +84,14 @@ The load cell must be the only intended load path from the moving assembly to th
 
 ## 3. Fit the rails and width guides
 
+For the glued-rail option, the rails are already bonded and cured. Start at step 3 below, fit the guide nuts if needed, and check the bonds as well as guide clamping. The first two steps describe the removable option.
+
 1. Fit the rails before the width guides. Nuts may be loaded in advance: four ordinary M3 guide nuts enter from the carrier's left/right edges, two per side. Current LED/OLED builds use one ordinary M3 nut per rail; original builds use two per rail.
 2. For current LED/OLED builds, seat each rail's two locating keys in the matching carrier recesses, then retain the rail with one central M3 × 12 screw and 0.5 mm washer. Each key has 0.2 mm nominal side and floor clearance and a 45-degree ramp at its bed-leading edge. Tighten only when the bearing faces sit flat; the keys must not prop a rail above its support. Original builds use two M3 × 12 screws and washers per rail. Rotate the second rail 180 degrees so the slopes face each other.
 3. Fit the plain left guide and the taller right NFC guide, using two M3 × 12 screws and 0.5 mm washers per guide. Start the screws loosely, then check screw tips and free movement against the selected variant's fastener report. Actual washer thickness, screw length and print error can change the modeled clearances. Confirm neither rail twists or lifts when pressed gently at each end.
 4. Measure the spool width and set the guides symmetrically to **width plus 4 mm**. A 100 mm spool needs a 104 mm inner gap. Adjust with the spool removed, then tighten the guides and place the spool gently on the rails. Do not squeeze the flanges.
 
-For rail service on current LED/OLED builds, remove the width guides first. Do not try to pull a keyed rail past an installed guide.
+For separate rail service on the screw-mounted LED/OLED build, remove the width guides first. Do not try to pull a keyed rail past an installed guide. Glued rails stay with the carrier as one permanent subassembly; follow the [bonded assembly service notes](GLUE-ASSEMBLY.md#service-and-tradeoff) instead of prying them loose.
 
 The 50–100 mm width range and 160–220 mm diameter range are modeled envelopes. Check actual flange shapes, rail contact and upright stability. This mechanism is for occasional weighing, not feeding filament during printing.
 
