@@ -36,7 +36,7 @@
         0,
         62
       ],
-      "description": "Removable lid for electronics and front indicator servicing. This fixed part does not carry spool weight.",
+      "description": "Removable fixed lid with two rear hooks and two front M3x12 fastener sets. Remove the screws, slide the lid forward to disengage its hooks, then lift for service. This part does not carry spool weight.",
       "provisional": false
     },
     {
@@ -68,7 +68,7 @@
         38,
         175
       ],
-      "description": "One of two identical printed rails supporting the upright spool rims.",
+      "description": "One of two identical keyed rails supporting the upright spool rims. Two locating keys resist rotation; one central M3x12 fastener secures each rail. Remove the side guides before lifting the rail for service.",
       "provisional": false
     },
     {
@@ -84,7 +84,7 @@
         -38,
         175
       ],
-      "description": "Second instance of the same rail. Its placement is separate and selectable.",
+      "description": "Second instance of the same keyed rail, secured by one central M3x12 fastener. Its placement is separate and selectable. Remove the side guides before lifting the rail for service.",
       "provisional": false
     },
     {
@@ -116,7 +116,7 @@
         0,
         175
       ],
-      "description": "Width-adjustable guide with an integrated rear cable cassette. Supports the reader through its height adjustment; verify cable slack and non-contact routing before use.",
+      "description": "Width-adjustable guide with an integrated rear cable cassette. Two nylon M3x12 clamps set the reader height. Verify cable slack and non-contact routing before use.",
       "provisional": false
     },
     {
@@ -132,7 +132,7 @@
         0,
         175
       ],
-      "description": "Printed reader housing. Rotate the seated spool to align its tag with the reader.",
+      "description": "Reader housing with four PCB edge seats; the board is captured by the rear cover fingers without PCB screws. Rotate the seated spool to align its tag. Delivered board margins and foam pressure require checking.",
       "provisional": false
     },
     {
@@ -148,7 +148,7 @@
         0,
         175
       ],
-      "description": "Removable rear cover for the PN532 board and its wiring.",
+      "description": "PN532 rear cover with PCB edge-capture fingers, a rigid upper tongue and one nylon M3x12 clamp. Service on the bench: first remove both height-clamp screws and washers, leave the unthreaded nuts in the mast, and unplug or free the cable. Lift the complete pod from its nominal 155 mm centre height to a 215 mm centre height above the guide, then withdraw it 20 mm outward. On the bench, release the cover clamp, slide the cover 4 mm down, then 20 mm outward.",
       "provisional": false
     },
     {
@@ -164,7 +164,7 @@
         0,
         30
       ],
-      "description": "Nominal 80 \u00d7 12.7 \u00d7 12.7 mm bar cell. Verify the delivered cell, threads and calibration.",
+      "description": "Nominal 80 \u00d7 12.7 \u00d7 12.7 mm bar cell. Two M4x25 and two M5x12 mounting screws are included in the purchase list but omitted from the model. Verify the delivered cell, threads and calibration.",
       "provisional": true
     },
     {
@@ -218,7 +218,7 @@
         0,
         175
       ],
-      "description": "PN532 module reference inside the side pod. Board and wire fit require a physical check.",
+      "description": "PN532 module captured at its edges inside the side pod. No PCB screws are required; delivered board margins, components, foam allowance and wire fit require a physical check.",
       "provisional": true
     },
     {
@@ -264,7 +264,7 @@
     {
       "id": "stops",
       "number": "18",
-      "label": "Four adjustable stops",
+      "label": "Four adjustable stop sets",
       "category": "electronics",
       "meshes": [
         "REF_adjustable_stop_0",
@@ -277,7 +277,7 @@
         0,
         15
       ],
-      "description": "Reference screws for the overload stops. Other assembly fasteners are not modeled.",
+      "description": "Four M3x12 metal stop screws with M3 nylon-insert locknuts. Set a clearance below the floating carrier, then lock the adjustment; actual overload behavior remains untested.",
       "provisional": true
     },
     {
@@ -380,39 +380,35 @@
     {
       "id": "cover_fasteners",
       "number": "26",
-      "label": "Four lid fastener sets",
+      "label": "Two lid fastener sets",
       "category": "electronics",
       "meshes": [
         "REF_fastener_cover_-78_-76",
-        "REF_fastener_cover_-78_66",
-        "REF_fastener_cover_78_-76",
-        "REF_fastener_cover_78_66"
+        "REF_fastener_cover_78_-76"
       ],
       "explode": [
         0,
         0,
         95
       ],
-      "description": "Four nominal M3 screws, washers and nuts for the main lid. Illustrated hardware envelopes; actual screw fit remains untested.",
+      "description": "Two nominal metal M3x12 screws with washers and captive nuts secure the front of the main lid; rigid rear hooks retain the other end. Illustrated hardware envelopes; actual fit remains untested.",
       "provisional": true
     },
     {
       "id": "rail_fasteners",
       "number": "27",
-      "label": "Four rail fastener sets",
+      "label": "Two rail fastener sets",
       "category": "electronics",
       "meshes": [
-        "REF_fastener_rail_-64_-60",
-        "REF_fastener_rail_-64_60",
-        "REF_fastener_rail_64_-60",
-        "REF_fastener_rail_64_60"
+        "REF_fastener_rail_0_-60",
+        "REF_fastener_rail_0_60"
       ],
       "explode": [
         0,
         0,
         210
       ],
-      "description": "Nominal M3 screws, washers and nuts at the two cradle rails. The exploded layout is illustrative, not an installation sequence.",
+      "description": "Two nominal metal M3x12 screws with washers and captive nuts, one centred on each keyed cradle rail. The exploded layout is illustrative, not an installation sequence.",
       "provisional": true
     },
     {
@@ -431,7 +427,7 @@
         55,
         175
       ],
-      "description": "Nominal M3 clamp screws, washers and nuts for width adjustment. Inspect the assembled view for their exact modeled locations.",
+      "description": "Four nominal metal M3x12 clamp screws with washers and captive nuts for spool-width adjustment. Inspect the assembled view for their exact modeled locations.",
       "provisional": true
     },
     {
@@ -447,7 +443,7 @@
         70,
         190
       ],
-      "description": "Removable cover over the cable cassette integrated into the NFC guide. Remove it for threading and service; check real cable clearance over the complete adjustment range.",
+      "description": "Removable cable-cassette cover retained by one rigid upper tongue and one nylon M3x12 clamp. Remove the screw, slide the cover 3.5 mm in +Y, then 20 mm outward in +X for service; verify actual cable clearance throughout adjustment.",
       "provisional": false
     },
     {
@@ -521,6 +517,25 @@
       "provisional": true,
       "role": "cable_route",
       "pose": "nominal"
+    },
+    {
+      "id": "nfc_fasteners",
+      "number": "34",
+      "label": "Four nylon NFC fastener sets",
+      "category": "electronics",
+      "meshes": [
+        "REF_fastener_nfc_height_minus",
+        "REF_fastener_nfc_height_plus",
+        "REF_fastener_nfc_pod_cover",
+        "REF_fastener_nfc_cable_cover"
+      ],
+      "explode": [
+        220,
+        -120,
+        140
+      ],
+      "description": "Four nylon M3x12 screws, washers and nuts: two reader-height clamps, one pod-cover clamp and one cable-cover clamp. Nylon hardware limits metal near the antenna; NFC performance and clamp strength require physical checks.",
+      "provisional": true
     }
   ]
 }

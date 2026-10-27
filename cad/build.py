@@ -36,7 +36,7 @@ OUT.mkdir(parents=True,exist_ok=True);PREV.mkdir(parents=True,exist_ok=True)
 TOUCH=VARIANT=='touch-8048'
 INDICATORS=VARIANT in ('headless-led','oled-led')
 STEM='spoolancer-v0.4-touch-8048' if TOUCH else 'spoolancer-v0.4.1-headless'
-if INDICATORS: STEM='spoolancer-v0.6-'+VARIANT
+if INDICATORS: STEM='spoolancer-v0.7-'+VARIANT
 V = App.Vector
 PARTS = {}
 REFS = {}
@@ -163,6 +163,11 @@ base_add=[box(24,28,P['cell_bottom']-P['floor'],0,fixed_y,P['floor'])]
 base_add += [box(134,4,5,0,fixed_y,P['floor']),
              box(4,P['fixed_spine_length'],5,0,P['fixed_spine_center_y'],P['floor'])]
 lid_posts=P['lid_posts']
+closure_posts=[(x,y) for x,y in lid_posts if not INDICATORS or y<0]
+if INDICATORS:
+    from simple_fasteners import lid_hooks,rail_locators,schedule,verify_service,stop_hardware,verify_structural_joints
+    lid_hook_shapes,lid_hook_sockets=lid_hooks(box)
+    rail_keys,rail_key_pockets=rail_locators(App,Part,box,finish,near)
 stop_positions=P['stop_positions']
 for x,y in lid_posts:
     base_add.append(cyl(6,BT-P['floor'],x,y,P['floor']))
@@ -179,7 +184,8 @@ base_cut=[]
 for y in holes[:2]:
     base_cut += [cyl(P['fixed_clearance_diameter']/2,30,0,y,-1),
                  cyl(5.4,P['fixed_head_seat_z']+1,0,y,-1)]
-for x,y in lid_posts:
+if INDICATORS:base_cut += lid_hook_sockets
+for x,y in closure_posts:
     base_cut += [cyl(1.7,BT,x,y,4),box(14,5.8,2.6,x-math.copysign(3,x),y,BT-5.6)]
 for x,y in stop_positions:
     base_cut += [cyl(1.7,35,x,y,3),hex_pocket(x,y,P['stop_post_top']-P['stop_nut_height'],h=P['stop_nut_height'])]
@@ -246,6 +252,7 @@ for x,y in P['saddle_bolt_positions']:
 for x in (-49.5,49.5):
     for y in (-15,15):
         carrier_cut += [slot(x,y,37,3.4,28.4,15),box(38,5.8,2.6,math.copysign(52,x),y,44.4)]
+if INDICATORS:carrier_cut += rail_key_pockets
 carrier=cut(carrier,carrier_cut)
 if INDICATORS:
     carrier=finish('carrier_lower_outer_edges',carrier,'chamfer',P['finish_carrier_chamfer'],
@@ -259,14 +266,15 @@ ri,ro=P['rim_inner_y'],P['rim_outer_y']
 rail=yz_profile([(ri,50),(ro,50),(ro,surface(ro)),(ri,surface(ri))],-cw/2,cw)
 rail_cut=[]
 # Open bays between webs; roof and bottom flange remain continuous.
-for x0,x1 in [(-58,-34),(-30,-2.5),(2.5,30),(34,58)]:
+for x0,x1 in ([(-58,-34),(-30,-6),(6,30),(34,58)] if INDICATORS else [(-58,-34),(-30,-2.5),(2.5,30),(34,58)]):
     rail_cut.append(yz_profile([(ri-1,53),(ro+1,53),
         (ro+1,surface(ro+1)-P['rim_roof']),(ri-1,surface(ri-1)-P['rim_roof'])],x0,x1-x0))
-for x in (-64,64):
+for x in ([0] if INDICATORS else [-64,64]):
     rail_cut += [cyl(1.7,50,x,60,49),cyl(4,50,x,60,54)]
 for x in (-61,61):
     rail_cut.append(cyl(1.75,50,x,52,49))
 rail=cut(rail,rail_cut)
+if INDICATORS:rail=union([rail]+rail_keys)
 if INDICATORS:
     rail=finish('rim_rail_external_end_perimeters',rail,'chamfer',P['finish_rail_end_chamfer'],lambda b:near(abs(b.XMin),cw/2) and near(b.XLength,0))
 add('rim_rail',rail,(0.77,0.84,0.82))
@@ -326,6 +334,9 @@ def x_cylinder(radius,length,x,y,z):
 
 
 def pod_for_setting(width,height):
+    if INDICATORS:
+        from nfc_mount import make_pod
+        return make_pod(P,App,Part,box,cyl,union,cut,finish,near,CABLE,width,height)
     inner=(width+P['guide_clearance_total'])/2
     oy,oz=P['nfc_pod_outer'];depth=P['nfc_pod_depth'];wall=1.6
     pod=box(depth,oy,oz,inner+depth/2,0,height-oz/2)
@@ -378,12 +389,13 @@ if INDICATORS:
 
 # Full fixed cover, with a 2 mm plan gap around the floating carrier.
 lid=extrusion(front_face,LT,BT).cut(extrusion(outline(
-    cw+2*P['cover_carrier_gap'],cd+2*P['cover_carrier_gap'],6),LT+2,BT-1))
+    cw+2*P['cover_carrier_gap'],cd+2*P['cover_carrier_gap'],2 if INDICATORS else 6),LT+2,BT-1))
 # The USB-side GPIO wires extend under the fixed cover, outside its aperture.
 lid=lid.cut(box(20,36,P['esp_cover_relief_depth']+.1,-79,ey,BT-.1))
 # Recovery uses the controller's onboard BOOT switch through the USB service
 # opening. Both variants have a blank fixed cover without an added switch mount.
-lid=cut(lid,[cyl(1.7,12,x,y,BT-5) for x,y in lid_posts])
+lid=cut(lid,[cyl(1.7,12,x,y,BT-5) for x,y in closure_posts])
+if INDICATORS:lid=union([lid]+lid_hook_shapes)
 if INDICATORS:
     lid=finish('cover_top_outer_perimeter',lid,'chamfer',P['finish_cover_chamfer'],lambda b:base_outline(b,BT+LT))
     lid=finish('cover_top_carrier_aperture',lid,'chamfer',P['finish_cover_aperture_chamfer'],
@@ -420,8 +432,9 @@ if not TOUCH:
     add('REF_BOOT_tool_approach_estimate',boot_tool,(.92,.68,.31),True)
 for i,(x,y) in enumerate(stop_positions):
     head_top=rib_bottom-P['stop_initial_gap']
-    add('REF_adjustable_stop_'+str(i),union([cyl(2.75,3,x,y,head_top-3),
-        cyl(1.5,20,x,y,head_top-23)]),(0.62,0.65,0.68),True)
+    stop=stop_hardware(P,Part,cyl,hex_pocket,x,y,head_top) if INDICATORS else union([
+        cyl(2.75,3,x,y,head_top-3),cyl(1.5,20,x,y,head_top-23)])
+    add('REF_adjustable_stop_'+str(i),stop,(0.62,0.65,0.68),True)
 
 # The alternate controller sits entirely on the fixed base. This is an open-back
 # holder based on the manufacturer's family outline, not received-board CAD.
@@ -482,16 +495,20 @@ if INDICATORS:
 
     # Nominal hardware envelopes from the previously verified clamp stacks.
     # Threads, screw drives and bought-part tolerances are intentionally absent.
-    for x,y in lid_posts:
+    for x,y in closure_posts:
         front=y<0
         add('REF_fastener_cover_'+str(x)+'_'+str(y),
-            clamp_envelope(x,y,38,10,29.4),(.55,.58,.60),True)
+            clamp_envelope(x,y,38,12,29.4),(.55,.58,.60),True)
     for x,y in P['saddle_bolt_positions']:
         add('REF_fastener_rail_'+str(x)+'_'+str(y),clamp_envelope(x,y,54,12,44.4,0),(.55,.58,.60),True)
     guide_x=(P['reference_spool_width']+P['guide_clearance_total'])/2+P['guide_bolt_offset']
     for x in (-guide_x,guide_x):
         for y in (-15,15):
             add('REF_fastener_guide_'+str(x)+'_'+str(y),clamp_envelope(x,y,55,12,44.4),(.55,.58,.60),True)
+    from nfc_mount import hardware_for_setting,verify_mounts
+    for name,hardware in hardware_for_setting(P,App,Part,box,union,P['reference_spool_width'],P['nfc_height_reference']).items():
+        add('REF_fastener_nfc_'+name,Part.makeCompound(hardware),(.83,.81,.71),True)
+    add('REF_fastener_nfc_cable_cover',Part.makeCompound(CABLE['hardware'](P['reference_spool_width'])),(.83,.81,.71),True)
 
 # Upright spool: flange disks, core and filament are separate references only.
 def spool_envelopes(diameter,width):
@@ -541,8 +558,10 @@ def print_orientation(name,shape):
         s.rotate(V(0,0,0),V(1,0,0),180)
     if name=='side_guide':
         s.rotate(V(0,0,0),V(0,1,0),90)
-    if name in ('nfc_guide','nfc_pod','nfc_pod_cover','nfc_cable_cover','fit_nfc'):
-        s.rotate(V(0,0,0),V(0,1,0),-90)
+    if INDICATORS and name=='nfc_pod_cover':
+        s.rotate(V(0,0,0),V(1,0,0),-90)
+    elif name in ('nfc_guide','nfc_pod','nfc_pod_cover','nfc_cable_cover','fit_nfc'):
+        s.rotate(V(0,0,0),V(0,1,0),90 if INDICATORS and name=='nfc_cable_cover' else -90)
     if name=='rim_rail':
         s.rotate(V(0,0,0),V(1,0,0),-90)
     b=s.BoundBox
@@ -550,9 +569,9 @@ def print_orientation(name,shape):
     return s
 
 
-doc=App.newDocument('Spoolancer_'+('v0_6_' if INDICATORS else 'v0_4_' if TOUCH else 'v0_4_1_')+VARIANT.replace('-','_'))
+doc=App.newDocument('Spoolancer_'+('v0_7_' if INDICATORS else 'v0_4_' if TOUCH else 'v0_4_1_')+VARIANT.replace('-','_'))
 spread=doc.addObject('Spreadsheet::Sheet','Dimensions')
-spread.set('A1','Spoolancer '+('v0.6 ' if INDICATORS else 'v0.4 ' if TOUCH else 'v0.4.1 ')+VARIANT+' — millimetres — physical fit unverified')
+spread.set('A1','Spoolancer '+('v0.7 ' if INDICATORS else 'v0.4 ' if TOUCH else 'v0.4.1 ')+VARIANT+' — millimetres — physical fit unverified')
 spread.set('A2','Edit parameters.json and rerun cad/build.py to regenerate all outputs')
 for row,(key,value) in enumerate(P.items(),4):
     spread.set('A'+str(row),key)
@@ -582,8 +601,8 @@ if INDICATORS:
     report['edge_finishing']={'operations':FINISHES,'all_operations_remove_material_only':True,
         'functional_exclusions':['Load-cell bearing pads and bolt seats','Rail slopes within the 100 mm spool width','Guide sliding feet and inner spool-facing planes','Nut pockets and fastener bores','Central NFC antenna face and 1.2 mm window','PCB support pads and OLED glass seat','Indicator opening throats; only front edges are beveled'],
         'coordinate_note':'Selections are recorded in each construction frame before later mirror/rotation; repeated adjustment cases reuse the same predicates.'}
-    report['fastener_references']={'included':'Twelve nominal M3 cover/rail/guide clamp sets plus the four existing stop envelopes',
-        'not_complete':'Load-cell, NFC, cable-cover screws, threads, screw drives, cable ties and adhesive are not modeled',
+    report['fastener_references']={'included':'Eight nominal M3 cover/rail/guide clamp sets, four stop screws and NFC mounting hardware',
+        'not_complete':'Load-cell screws, threads, screw drives, cable ties and adhesive are not modeled',
         'physical_fit_verified':False}
 scene={}
 for name,s in {**PARTS,**coupons}.items():
@@ -662,7 +681,7 @@ for i,a in enumerate(names):
             report['printed_part_intersections'][a+' / '+b]=vol
 report['component_intersections']={}
 for name,shape in REFS.items():
-    if 'adjustable_stop' in name or name in ('REF_NFC_cable_low','REF_NFC_cable_high'):
+    if ('adjustable_stop' in name and not INDICATORS) or name in ('REF_NFC_cable_low','REF_NFC_cable_high'):
         continue
     volumes={part:overlap(shape,s) for part,s in assembly_parts.items()}
     report['component_intersections'][name]={k:v for k,v in volumes.items() if v>0.01}
@@ -711,6 +730,17 @@ if TOUCH or INDICATORS:
         r=item['diameter_mm']/2
         item['loaded_depth_mm']=round(max(bounds.YMax,r)-min(bounds.YMin,-r),2)
 if INDICATORS:
+    report['fastener_schedule']=schedule()
+    report['nfc_mounts']=verify_mounts(P,App,Part,box,union,pod_for_setting,guide_for_width,CABLE,overlap,assembly_parts,REFS)
+    if not report['nfc_mounts']['digital_clearance_pass']:
+        raise RuntimeError('NFC mounting/service failed: '+str(report['nfc_mounts']))
+    report['lid_service']=verify_service(P,App,Part,box,union,assembly_parts,REFS,guide_for_width,pod_for_setting,CABLE,overlap)
+    if any(report['lid_service']['positive_volume_intersections'].values()):
+        raise RuntimeError('Lid service blocked: '+str(report['lid_service']))
+    report['structural_joints']=verify_structural_joints(P,Part,box,cyl,hex_pocket,assembly_parts,REFS,overlap)
+    joints=report['structural_joints']
+    if any(joints['rail_removal'].values()) or any(t['positive_volume_intersections'] for t in joints['stop_checks']):
+        raise RuntimeError('Structural joint clearance failed: '+str(joints))
     report['indicator_fit']=indicator_data['notes']
     insertion_checks={}
     for name,sweep in indicator_data['insertion_sweeps'].items():
@@ -721,7 +751,7 @@ if INDICATORS:
         insertion_checks[name]={k:overlap(sweep,s) for k,s in targets.items() if overlap(sweep,s)>.01}
     report['oled_insertion']={'applicable':P['oled_enabled'],'main_lid_removed':True,'continuous_vertical_lift_mm':40,'reference_envelopes_checked':list(indicator_data['insertion_sweeps']),'positive_volume_intersections':insertion_checks,'physical_insertion_verified':False}
     if any(insertion_checks.values()):raise RuntimeError('OLED vertical insertion blocked: '+str(insertion_checks))
-    report['nfc_cable_route']=CABLE['verify'](P,PARTS,REFS,guide_for_width,pod_for_setting,overlap)
+    report['nfc_cable_route']=CABLE['verify'](P,assembly_parts,REFS,guide_for_width,pod_for_setting,overlap)
     report['power_fit']={'external_usb_openings':False,'jack_hole':'User drilled; none modeled',
         'converter_placement':'User chooses and verifies wall attachment; no reserved module volume','actual_converter_fit_verified':False,
         'internal_usb_plug_envelope_mm':P['usb_plug_space'],'actual_usb_plug_fit_verified':False,
@@ -765,6 +795,6 @@ if not TOUCH:
     if report['boot_access']['tool_component_intersections']:
         raise RuntimeError('BOOT approach intersects a modeled component; inspect validation.json')
     # Remove only explicitly superseded outputs owned by this generator.
-    for name in (['indicator_fascia.stl','indicator_fascia.step','indicator_back.stl','indicator_back.step'] if INDICATORS else [])+['button_cap.stl','fit_button.stl','button_cap.step','fit_button.step','spoolancer-v0.4-headless.FCStd','spoolancer-v0.4-headless-assembly.step']:
+    for name in (['indicator_fascia.stl','indicator_fascia.step','indicator_back.stl','indicator_back.step','spoolancer-v0.6-'+VARIANT+'.FCStd','spoolancer-v0.6-'+VARIANT+'-assembly.step'] if INDICATORS else [])+['button_cap.stl','fit_button.stl','button_cap.step','fit_button.step','spoolancer-v0.4-headless.FCStd','spoolancer-v0.4-headless-assembly.step']:
         (OUT/name).unlink(missing_ok=True)
 App.closeDocument(doc.Name)

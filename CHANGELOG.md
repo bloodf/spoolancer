@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.7.0-alpha.1
+
+Simplifies assembly of the current LED-only and OLED-plus-LED cases. Screw count falls from 28 to 20, and dimensional sizes fall from nine to three. Metal and nylon M3 × 12 screws are separate purchasing lines. The original headless and integrated-touch designs are unchanged.
+
+- Two rigid rear hooks and two front M3 × 12 screws retain the main lid.
+- Two locating keys and one central M3 × 12 screw retain each rim rail. Each sliding guide keeps two screws.
+- Raised stop posts use M3 × 12 screws with the same provisional 1 mm unloaded gap and adjustable locknuts.
+- The PN532 rests on PCB-edge supports and soft shims. Its mounting holes need no screws. The reader pod cover and cable cover each use one nylon M3 × 12 screw and a rigid locating tongue.
+- Reader-height clamps use the same nylon M3 × 12 size. The two M4 × 25 and two M5 × 12 load-cell screws remain matched to the modeled cell threads.
+- Updated CAD, print files, assembly views, purchasing quantities and service instructions. Both variants retain ten printed production pieces.
+
+Physical fit, joint retention, strength and weighing accuracy remain unvalidated. Firmware is unchanged at `0.5.0-prototype`; this update performs no device flash. See [verification limits](docs/STATUS.md).
+
 ## 0.6.0-alpha.1
 
 Redesigns the two LED cases with integrated vertical front controls, a covered adjustable-reader cable route and chamfered exposed edges. Adds a full interactive assembly guide. Upright spool support and 100 mm width adjustment remain. Physical fit remains unvalidated.

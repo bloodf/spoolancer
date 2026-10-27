@@ -55,7 +55,7 @@ assert {p.stem for p in out.glob('*.stl')}==set(v['parts']),'Unlisted STL export
 assert {p.stem for p in out.glob('*.step') if not p.stem.endswith('-assembly')}==set(v['parts']),'Missing or unlisted individual STEP'
 
 stem='spoolancer-v0.4-touch-8048' if variant=='touch-8048' else 'spoolancer-v0.4.1-headless'
-if variant in ('headless-led','oled-led'): stem='spoolancer-v0.6-'+variant
+if variant in ('headless-led','oled-led'): stem='spoolancer-v0.7-'+variant
 doc=App.openDocument(str(out/(stem+'.FCStd')))
 shapes=[o for o in doc.Objects if hasattr(o,'Shape')]
 assert all(o.Shape.isValid() for o in shapes)
@@ -99,7 +99,7 @@ if variant in ('headless-led','oled-led'):
     checks=[]
     printed=list(doc.getObject('PrintedParts').Group)
     for x in (-78,78):
-        shaft=cyl(1.5,10,x,-76,28.5)
+        shaft=cyl(1.5,12,x,-76,26.5)
         head=cyl(2.75,3,x,-76,38.5)
         washer=cyl(3.2,.5,x,-76,38).cut(cyl(1.6,1,x,-76,37.9))
         radius=5.5/math.sqrt(3)
@@ -108,9 +108,19 @@ if variant in ('headless-led','oled-led'):
         hardware=Part.makeCompound([shaft,head,washer,nut])
         collisions={o.Name:round(hardware.common(o.Shape).Volume,5) for o in printed if hardware.common(o.Shape).Volume>.01}
         assert not collisions,(x,collisions)
-        checks.append({'fastener':'front cover M3x10','x_mm':x,'positive_volume_intersections':collisions})
+        checks.append({'fastener':'front cover M3x12','x_mm':x,'positive_volume_intersections':collisions})
     r['indicator_front_clamp_checks']=checks
-    r['nfc_cable_cover_fastener_note']='Two M2.5x10 prototype plastic-pilot screws; actual retention and screw head fit require physical checks. Front indicators use integrated slots and adhesive/foam, with no rear cover screws.'
+    r['nfc_cable_cover_fastener_note']='One M3x12 nylon screw, washer and captive nut plus rigid tongue. PCB uses printed edge capture. Physical retention remains untested.'
+    r['fastener_schedule']=v['fastener_schedule']
+    assert r['fastener_schedule']['total_screws']==20
+    assert r['fastener_schedule']['dimensional_sizes']==['M3x12','M4x25','M5x12']
+    assert not any(v['lid_service']['positive_volume_intersections'].values())
+    assert not any(v['structural_joints']['rail_removal'].values())
+    assert not any(t['positive_volume_intersections'] for t in v['structural_joints']['stop_checks'])
+    r['lid_service']=v['lid_service']
+    r['structural_joints']=v['structural_joints']
+    r['nfc_mounts']=v['nfc_mounts']
+    assert v['nfc_mounts']['digital_clearance_pass']
     assert v['nfc_cable_route']['digital_clearance_pass']
     assert not any(v['oled_insertion']['positive_volume_intersections'].values())
     assert all(x['operation']=='chamfer' for x in v['edge_finishing']['operations'].values())
@@ -127,7 +137,7 @@ if variant in ('headless-led','oled-led'):
     r['nominal_unloaded_height_with_feet_mm']=v['geometry_checks']['nominal_unloaded_height_with_feet_mm']
 
 sources=[root/'cable_route.py',root/'indicators.py',root/'parameters.json',root/'build.py',root/'render.py',root/'verify_exports.py']+([target/'parameters.json'] if variant!='headless' else [])
-sources += [path for path in [root/'exploded_render.py',root/'assembly-parts.json'] if path.exists()]
+sources += [path for path in [root/'simple_fasteners.py',root/'nfc_mount.py',root/'exploded_render.py',root/'assembly-parts.json'] if path.exists()]
 for source in sources:
     r['source_sha256'][str(source.relative_to(root))]=hashlib.sha256(source.read_bytes()).hexdigest()
 App.closeDocument(doc.Name)

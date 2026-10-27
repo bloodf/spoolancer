@@ -110,12 +110,14 @@ def main():
             contents["DC-POWER.md"] = bundled_guide("docs/DC-POWER.md")
             contents["INDICATOR-GUIDE.md"] = bundled_guide("docs/OLED-RGB-VARIANT.md")
             contents["ASSEMBLY-VIEW.md"] = bundled_guide("docs/ASSEMBLY-VIEW.md")
+            contents["BOM.md"] = bundled_guide("docs/BOM.md")
+            contents["ASSEMBLY.md"] = bundled_guide("docs/ASSEMBLY.md")
             for preview in ("assembled", "exploded", "component-locations", "edge-detail", "cable-routing"):
                 path = folder + f"previews/{preview}.png"
                 if path in files:
                     contents[f"views/{preview}.png"] = files[path]
             indicator_note = """
-Read [variant fit and assembly notes](VARIANT-NOTES.md), [DC power instructions](DC-POWER.md) and [indicator behavior](INDICATOR-GUIDE.md) before printing. The OLED/LED supports are integrated into the vertical front wall and serviced through the main lid. Use the current variant notes for closure screws, removable cable-cover fasteners, fit samples and slicer support needs. OLED/strip and cable dimensions remain provisional.
+Read [variant fit and assembly notes](VARIANT-NOTES.md), [DC power instructions](DC-POWER.md) and [indicator behavior](INDICATOR-GUIDE.md) before printing. The OLED/LED supports are integrated into the vertical front wall and serviced through the main lid. Use the [current fastener list](BOM.md#current-ledoled-fasteners) and [assembly instructions](ASSEMBLY.md). This revision uses 20 screws: 12 metal M3 × 12, 4 nylon M3 × 12, 2 M4 × 25 and 2 M5 × 12. Read the variant notes for rigid lid hooks, keyed rails, removable NFC covers, fit samples and slicer support needs. Use the complete matching print set; do not mix revised joints with v0.6 parts. OLED/strip and cable dimensions remain provisional.
 
 Use [the assembly-view guide](ASSEMBLY-VIEW.md) and the numbered images in `views/` to locate parts. The companion assembly-viewer ZIP provides a rotatable model and an exploded-view slider.
 

@@ -1,21 +1,21 @@
 {
   "variant": "headless-led",
-  "revision": "v0.6-headless-led-integrated-chamfer-cable-fit-prototype",
+  "revision": "v0.7-headless-led-simplified-fasteners-fit-prototype",
   "source": "actual CAD tessellation",
-  "scene_sha256": "b70b753864d4d7a2b8434f0de04c12f6c8bc14d88838f8257c2aad7f6fc140db",
-  "part_map_sha256": "915192757b5f1e98a21af38b6f98b3a5fb429cb3b2653c94e61602c3f4a98ced",
-  "renderer_sha256": "07035c04900f0decf69d3dd599f593da864c4d4c8639818ca6f7513bdee15ea4",
+  "scene_sha256": "aea375cb5f3ce15f1a078f95aefc25c944c32e751361b9d24fad3d5d59f5cfac",
+  "part_map_sha256": "16d1367c29578c2d3620262d316374e6d9740666257c92978a209648fed75eb8",
+  "renderer_sha256": "54c315fc11d5e5ec6c1eec585a68239e311ac8d579fb11c5dd9f75446b86fc23",
   "numbered_printed_instances": 10,
-  "numbered_hardware_groups": 9,
+  "numbered_hardware_groups": 10,
   "physical_validation": false,
   "images": {
-    "assembled.png": "c4d839bb64c1636c8bba40b22cfa9de4e98e3a664ed8a51a0400764880a3d069",
-    "cradle.png": "54e4e85dd101c1c2623e5ecb004a70e6313afff45634d29f3471143273dd1959",
-    "exploded.png": "a0d0ecaf7583d4b5d7750c813c73a014088687548abd8024598f4f048868d0b6",
-    "component-locations.png": "2615c056e8661cbe7be6ac10f0bfc2e95776f96966f8a516ea45b749a4999fa3",
-    "service-interior.png": "194d51fa6be60c09a76bc0d554e817e66be7b3c92e6ed285a71b5fa076b5d720",
-    "indicator-detail.png": "f174907de2186f4dc165ae0012118c3e09fb9768f93e94a56d592d17ef72d994",
-    "edge-detail.png": "14dddc6bce41c85f270499482a2126f2bdd67937a7b8ae877135111b70fe4cc9",
-    "cable-routing.png": "45b2cc5d17d05d7e733df69853c6c9199fb45ebf7b2dbbc52d2b90c2f569f3cb"
+    "assembled.png": "8c7c9012c532c5f0f2a4c74b90e602252aaca158034091a4a463dcd3d41a9faf",
+    "cradle.png": "39170acfaef148a435cd3166d20a24f61470ca0d7e64cf76b2ee4a40e55491ad",
+    "exploded.png": "66ed66e92a076c4f2d23df89e15a87c98991908e599d87d75f43bd9dc6d41bc5",
+    "component-locations.png": "5191ead62d98484cf4d36d06cbfe9dd06841e0a5ed3fa868a360014e6068b5bb",
+    "service-interior.png": "68336e7b89dfe666148fef37f009d4a032beaa63d2463bfa2ef2307a89905651",
+    "indicator-detail.png": "cd0b8b16a4ba0d980a1f02669e233b8b35d7ffce90bc21d0cd69d07e368becd5",
+    "edge-detail.png": "5ff9de518e8ec26103591861ce619b3a28cea416677091cd2546b5a48281c21f",
+    "cable-routing.png": "c44e59a6408ecd198f7ca522d7547b02792a45f4fcd9705a3bc620c2aa0710ea"
   }
 }

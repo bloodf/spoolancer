@@ -1,5 +1,5 @@
 {
-  "revision": "v0.6-headless-led-integrated-chamfer-cable-fit-prototype",
+  "revision": "v0.7-headless-led-simplified-fasteners-fit-prototype",
   "variant": "headless-led",
   "indicators_enabled": true,
   "oled_enabled": false,
@@ -95,6 +95,17 @@
     [
       51,
       -75
+    ]
+  ],
+  "stop_post_top": 33,
+  "saddle_bolt_positions": [
+    [
+      0,
+      -60
+    ],
+    [
+      0,
+      60
     ]
   ]
 }

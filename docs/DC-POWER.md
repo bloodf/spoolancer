@@ -1,6 +1,6 @@
 # 12 V input for the LED and OLED variants
 
-The `headless-led` and `oled-led` cases use a user-drilled DC jack opening and have no external USB cutouts. A separate small tool opening reaches onboard BOOT. Remove the cover to connect a programming cable.
+The `headless-led` and `oled-led` cases use a user-drilled DC jack opening and have no external USB cutouts. A separate small tool opening reaches onboard BOOT. Remove the cover to connect a programming cable. For the current v0.7 cases, remove the spool, move the guides to the 50 mm setting, remove the two front screws, slide the lid about 1.4 mm forward to release its rear hooks, then lift it clear.
 
 **12 V is the input to a buck converter, never the supply to the ESP32 or the 5 V LED strip.** Use a regulated fixed 5 V converter rated for at least 2 A continuous at 12 V input. The owner will glue an insulated converter assembly to a fixed enclosure wall; no dedicated converter mount is required. Its actual dimensions, heat dissipation and wiring must clear the moving assembly. A converter and jack have not yet been physically verified in this enclosure.
 

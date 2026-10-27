@@ -33,9 +33,35 @@ The 5 kg rating is the cell rating. The current firmware targets at most **2 kg 
 
 Use the available 3V3/GND headers or insulated soldered branches to power PN532 and HX711. No distribution perfboard is required. Keep connections and fixed wiring clear of the moving assembly.
 
+## Current LED/OLED fasteners
+
+Use this list for the **v0.7 `headless-led` and `oled-led` builds**. Both use 20 screws in three dimensional sizes, compared with 28 screws in nine sizes in v0.6. There are four purchasing lines because metal and nylon M3 × 12 screws serve different joints. The original headless and touch builds retain the separate lists below.
+
+| Quantity | Screw to buy | Locations |
+| ---: | --- | --- |
+| 12 | Metal M3 × 12 mm socket-head screws | 2 main lid, 2 rim rails, 4 width guides, 4 adjustable stops |
+| 4 | Nylon M3 × 12 mm screws, heads fitting the modeled seats | 2 reader-height clamps, 1 reader-pod cover, 1 cable-channel cover |
+| 2 | Metal M4 × 25 mm socket-head screws | Moving load-cell end |
+| 2 | Metal M5 × 12 mm socket-head screws | Fixed load-cell end |
+| **20** | **Total screws** | No M2.5 screws, PCB mounting screws, threaded inserts or separate OLED/LED screws |
+
+| Quantity | Nuts and washers | Locations |
+| ---: | --- | --- |
+| 8 | Standard metal M3 nuts | 2 main lid, 2 rails, 4 width guides |
+| 4 | Metal M3 nylon-insert locknuts, at most 4.2 mm high | Adjustable stops |
+| 4 | Nylon M3 nuts | Reader-height clamps and both NFC covers |
+| 8 | Metal M3 washers, about 0.5 mm thick | Main lid, rails and width guides |
+| 4 | Nylon M3 washers, about 0.5 mm thick | Reader-height clamps and both NFC covers |
+| 2 | M4 washers, about 0.8 mm thick | Moving load-cell end |
+| 2 | M5 washers, about 1 mm thick | Fixed load-cell end |
+
+That is **16 nuts and 16 washers**. A nylon-insert locknut is a metal nut with a locking ring; it is different from the all-nylon nuts used near the reader. Keep the four NFC screws, nuts and washers nonmetallic. Their modeled envelopes are a 5.5 mm diameter × 3 mm high head, a nut 5.5 mm across flats × 2.4 mm high, and a washer 7 mm outside diameter × 3.2 mm inside diameter × 0.5 mm thick. Use thin nonconductive compressible shims on the PN532 PCB edges and OLED PCB edges, and insulating adhesive for the LED strip. Do not press shims onto components or antenna traces.
+
+These lengths assume the modeled stack. Check received heads, washers and nuts against the fit samples. Keep both load-cell screw sizes: the selected cell has different thread sizes at its two ends. Confirm usable thread depth so neither screw bottoms out. The drawing's `6H` describes thread tolerance, not depth. The [assembly guide](ASSEMBLY.md#current-ledoled-hardware) identifies the simplified joints.
+
 ## Headless fasteners
 
-Quantities cover one complete headless build. Screw lengths assume the modeled stack; confirm actual head, nut and washer sizes and usable load-cell thread depth. The [assembly guide](ASSEMBLY.md#mounting-hardware) identifies every joint.
+Quantities below cover the original v0.4.1 headless build, not the current LED/OLED cases. Screw lengths assume the modeled stack; confirm actual head, nut and washer sizes and usable load-cell thread depth. The [assembly guide](ASSEMBLY.md#mounting-hardware) identifies every joint.
 
 | Quantity | Hardware | Location |
 | ---: | --- | --- |
@@ -72,6 +98,6 @@ For the `headless-led` and `oled-led` variants, reuse the shared scale electroni
 
 The owner chose a 12 V DC jack and glued wall mounting for the converter. Add a regulated 12 V-to-5 V converter rated for at least 2 A continuous, a suitable 3.3 V-to-5 V LED data buffer such as a preassembled 74AHCT125 module, a 330–470 ohm data resistor and a 500–1000 µF capacitor rated at least 6.3 V on the **5 V** rail. The buffer also needs local bypass capacitance. No perfboard or external reset button is required if using wired modules. Check actual module dimensions and wiring before glue or drilling. See [DC power and programming isolation](DC-POWER.md).
 
-The current LED/OLED controls are integrated into the vertical front wall. Use the shared headless fasteners, including all four M3×10 main-cover screws, and add two M2.5×10 screws for the cable cover's prototype plastic pilots. The separate tilted pod and its rear-cover screws are removed. Add thin insulating adhesive for the strip and compressible foam for OLED PCB edge retention. Use [the selected variant's fit notes](OLED-RGB-VARIANT.md#printing-and-assembly) before committing to a full print.
+The current LED/OLED controls are integrated into the vertical front wall. Use the [20-screw list above](#current-ledoled-fasteners), insulating adhesive for the strip and compressible foam for PCB-edge retention. Use [the selected variant's fit notes](OLED-RGB-VARIANT.md#printing-and-assembly) before committing to a full print.
 
 These cases omit USB cutouts and dedicated converter mounts. The jack opening is user-drilled. The original USB-powered variants and their parts remain listed above.

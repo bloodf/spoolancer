@@ -22,7 +22,9 @@ Copy this document into your build notes or a GitHub issue. Record measured valu
 | Check | What to record | Result |
 | --- | --- | --- |
 | Fit samples | Board dimensions, cell holes/threads, actual screw/washer/nut fit, PN532 exit clearance; touch PCB/glass fit if used | Not run |
-| USB and BOOT access | Cable plugged in, cover fitted, button pressed and fully released through its intended access; no contact with surrounding electronics | Not run |
+| USB and BOOT access | Original builds: cable plugged in with cover fitted. Current LED/OLED: programming access with lid removed, BOOT tool access with lid fitted. In every case the button must press and fully release without contact with surrounding electronics | Not run |
+| Current LED/OLED locating joints | Main lid releases at the 50 mm guide setting; both rear hooks engage without forcing. Rail keys seat fully; rails install before guides and remain removable after the guides are removed. Each centrally clamped rail resists rocking. Cable-cover tongue releases without bending or pinching leads. The assembled reader lifts clear of the guide before its pod cover opens on the bench | Not run |
+| PN532 edge retention | Board sits flat, remains retained without rattling, and has no shim/pad pressure on components or antenna traces | Not run |
 | Clamps and adjustment | Rail/guide clamping, actual 50 mm and 100 mm spool cases, reader height travel and flange clearance | Not run |
 | Load path | Empty and loaded carrier clears the cover, base, stops and fixed wiring; cell is the only intended load path | Not run |
 | Stability and feet | Even support on a flat surface, upright spool retention and stability at guide/reader extremes | Not run |

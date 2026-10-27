@@ -261,6 +261,10 @@ def render_variant(previews, scene_data, parameters, validation, variant):
     base_routes = [p for p in nominal_routes if 'REF_NFC_base_flex_nominal' in p['meshes']]
     routing_cover = next((p for p in printed if p['number'] == '29'), None)
     integrated_front = 'indicator_fascia' not in model.by_id
+    simplified_fasteners = 'nfc_fasteners' in model.by_id
+    fastener_schedule = validation.get('fastener_schedule')
+    if simplified_fasteners and not fastener_schedule:
+        raise ValueError('The simplified assembly preview requires its final fastener schedule.')
     finishing = validation.get('edge_finishing', {}).get('operations', {})
     chamfer_count = sum(op['operation'] == 'chamfer' for op in finishing.values())
     if integrated_front and (not finishing or chamfer_count != len(finishing)):
@@ -287,7 +291,7 @@ def render_variant(previews, scene_data, parameters, validation, variant):
         notes = [
             ('Upright, adjustable cradle', 'Spools up to 100 mm wide.\nThe reader stays beside the flange.'),
             ('Chamfered exterior edges', 'Exterior bevels continue across\nthe housing, reader and guides.'),
-            (f'{len(printed)} printed pieces', 'Two identical cradle rails.\nControls integrated into the front wall.' if integrated_front else 'Two identical cradle rails.\nRemovable lid, reader and indicator pod.'),
+            (f'{len(printed)} printed pieces', 'Keyed rails and a hooked main lid.\nReader board captured at its edges.' if simplified_fasteners else ('Two identical cradle rails.\nControls integrated into the front wall.' if integrated_front else 'Two identical cradle rails.\nRemovable lid, reader and indicator pod.')),
             ('DC-powered enclosure', 'Closed USB wall and BOOT access.\nDrill your jack hole after checking fit.'),
         ]
         for y, (title, desc) in zip([.76, .59, .42, .25], notes):
@@ -301,10 +305,21 @@ def render_variant(previews, scene_data, parameters, validation, variant):
     ax = axes(fig, [.195, .095, .61, .73])
     positions = model.draw(ax, main, exploded=True, view=(420, -760, 550))
     callouts(fig, ax, main, positions, left=.023, right=.81, ymin=.14, ymax=.795,
-             subtitles={'carrier': 'Attached to the load cell', 'rim_rail': 'Same print as 05', 'rim_rail_front': 'Same print as 04',
-                        'pn532': 'Inside the side reader pod', 'esp32': 'Approximate board envelope', 'oled': 'Module dimensions provisional',
-                        'stops': 'Hardware references; not printed', 'indicator_fascia': 'Fixed to the main enclosure',
+             subtitles={'carrier': 'Attached to the load cell', 'rim_rail': 'Same print as 05 · keyed seat' if simplified_fasteners else 'Same print as 05',
+                        'rim_rail_front': 'Same print as 04 · keyed seat' if simplified_fasteners else 'Same print as 04',
+                        'top_cover': 'Two rear hooks; two front screws' if simplified_fasteners else '',
+                        'pn532': 'Captured at PCB edges' if simplified_fasteners else 'Inside the side reader pod',
+                        'esp32': 'Approximate board envelope', 'oled': 'Module dimensions provisional',
+                        'stops': 'M3×12 + nylon-insert locknuts' if simplified_fasteners else 'Hardware references; not printed',
+                        'cover_fasteners': 'Metal M3×12 · washer + captive nut' if simplified_fasteners else '',
+                        'rail_fasteners': 'One metal M3×12 set per keyed rail' if simplified_fasteners else '',
+                        'guide_fasteners': 'Metal M3×12 · width adjustment' if simplified_fasteners else '',
+                        'nfc_fasteners': 'Nylon M3×12 · washer + nut',
+                        'indicator_fascia': 'Fixed to the main enclosure',
                         'leds': '60 LEDs/m · 16.67 mm pitch', 'load_cell': 'Nominal 80 mm bar cell'})
+    if fastener_schedule:
+        screw_lines = ' · '.join(f"{item['quantity']} {item['material']} {item['size'].replace('x', '×')}" for item in fastener_schedule['screws'])
+        fig.text(.04, .061, f"Purchase list: {fastener_schedule['total_screws']} screws — {screw_lines}. Four load-cell mounting screws are omitted from the model.", fontsize=9, color=MUTED)
     footer(fig, f'{len(printed)} printed instances ({unique_printed_files} unique files). Numbers match the 3D viewer. Spool, cables and clearance volumes omitted; converter and jack are not modeled.')
     output(fig, 'exploded')
 

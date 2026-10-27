@@ -1,6 +1,32 @@
 # Spoolancer verification status
 
-## v0.6 chamfered CAD and assembly viewer, 27 October 2026
+## v0.7 simplified fasteners, 27 October 2026
+
+The current LED-only and OLED-plus-LED models reduce the screw count from 28 to 20. They use three dimensional sizes and four purchasing lines: 12 metal M3 × 12, four nylon M3 × 12, two M4 × 25 and two M5 × 12. The matching lists contain 16 nuts and 16 washers. The original headless/touch models keep their previous hardware.
+
+The lid uses rigid rear hooks and two front screws. Each keyed rim rail has one central screw; guides retain two each. Raised stop posts use the common M3 × 12 length. PCB-edge retention removes the PN532 mounting screws, and each NFC cover uses a rigid tongue with one nylon screw. The current [BOM](BOM.md#current-ledoled-fasteners) and [assembly guide](ASSEMBLY.md) describe these joints.
+
+Both complete CAD builds, reopened exports and regenerated assembly assets pass the local checks below. These results do not establish hosted-browser, mobile-device or physical-build behavior.
+
+| Area | Current evidence | Limit |
+| --- | --- | --- |
+| Printable geometry | 14 LED-only and 15 OLED parts, including fit samples, are valid single solids with closed meshes and no detected mesh self-intersections; each build has ten production pieces | Digital topology does not establish print quality or strength |
+| Reopened exports | All 14 LED-only and 15 OLED individual STEP/STL pairs reopen and match the design checks. Native FreeCAD assemblies contain 54 and 59 valid shapes, including ten printed instances; complete STEP assemblies reopen with 84 and 89 valid solids. Recorded source hashes match the generator, parameters, metadata and render scripts | Simplified reference bodies are included in complete assemblies; print individual files only |
+| Chamfers and assembled clearance | 27 explicit chamfer operations per variant; assembled component checks, 27 spool cases, nine reader placements and BOOT approach pass | Current results are in each variant's validation report; the shared edge-finish report remains historical v0.6 evidence |
+| Lid, rails and stops | Conservative lid release/lift envelopes clear the installed mechanism at the 50 mm guide setting; rails clear a 60 mm removal lift with both guides removed; twelve modeled stop settings clear surrounding parts | Removal preconditions are required. The 1 mm initial stop gap is untuned and has no demonstrated overload rating |
+| NFC joints and service | Actual modeled hardware at nine width/height settings, tool access, sampled nut loading, sampled whole-pod/cover/PCB removal and geometric nut-retention checks pass | Sampling and geometric obstruction do not measure retention force, fatigue, shim pressure or print tolerance |
+| Reader wiring | Discrete cable routes and conservative continuous height/width envelopes pass; the removable cable cover's hardware, tool and sampled removal checks pass | Cable shape is a nominal envelope. Cable forces, fatigue and real wire bending remain untested |
+| Assembly images | Eight regenerated views per variant have matching scene, metadata, renderer and image hashes in their manifests | Rendered placement references do not establish physical assembly or cable forces |
+| Interactive viewer | Exact generated model bytes match both final CAD scenes; model/visibility behavior tests pass. LED-only has 29 labeled groups and OLED has 31, each with ten printed instances | Local asset and logic checks; hosted-browser and mobile-device behavior are separate checks |
+| Unchanged components | Firmware, web interface and original headless/touch CAD have no changes; all 17 original preview images retain their hashes | Earlier hardware and software evidence keeps its original scope |
+
+Sources: [LED validation](../cad/variants/headless-led/exports/validation.json), [OLED validation](../cad/variants/oled-led/exports/validation.json), [LED export checks](../cad/variants/headless-led/exports/export-verification.json), [OLED export checks](../cad/variants/oled-led/exports/export-verification.json), [LED render manifest](../cad/variants/headless-led/previews/render-manifest.json), [OLED render manifest](../cad/variants/oled-led/previews/render-manifest.json), [viewer checks](../viewer/README.md), [current hardware schedule](BOM.md#current-ledoled-fasteners) and [service instructions](ASSEMBLY.md#service-the-current-ledoled-reader).
+
+The reduced screw count uses reinforced printed posts and locating keys. Production CAD solid volume is **445,142.83 mm³ for LED-only** and **445,834.12 mm³ for OLED**, compared with 431,404.83 and 432,096.12 mm³ in v0.6, about **3.2% more solid geometry**. There are still ten printed pieces. These are CAD volume totals with production quantities, not sliced filament mass, support usage, print-time estimates or physical measurements.
+
+**Physical fit, joint retention, strength, tipping stability, cable forces and weighing accuracy remain unvalidated.** The historical evidence below applies to its named revisions and does not establish v0.7 results. Firmware remains `0.5.0-prototype`; this update performs no flash or peripheral operation.
+
+## Historical v0.6 chamfered CAD and assembly viewer, 27 October 2026
 
 The LED-only and OLED-plus-LED cases use integrated vertical front controls, a covered adjustable-reader cable route and actual exterior chamfers. Each has ten printed instances from nine production models. **Physical fit, stiffness, tipping stability, cable forces and weighing accuracy remain unvalidated.** Firmware and the previous device-flash record are unchanged.
 
@@ -18,7 +44,7 @@ The viewer has ten selectable printed instances per variant, 28 total labeled gr
 
 The printed footprint is 170 × 160 mm for both versions. Solid CAD volume, including production quantities, changes from 438,009.46 to 431,404.83 mm³ for LED-only and from 451,819.89 to 432,096.12 mm³ for OLED. These figures describe geometry; they do not predict sliced filament mass, support usage or print time.
 
-Sources: [edge and protected-region comparison](../cad/edge-finish-verification.json), [LED export checks](../cad/variants/headless-led/exports/export-verification.json), [OLED export checks](../cad/variants/oled-led/exports/export-verification.json), [LED render manifest](../cad/variants/headless-led/previews/render-manifest.json), [OLED render manifest](../cad/variants/oled-led/previews/render-manifest.json), [viewer tests and reproduction](../viewer/README.md) and [assembly guide](ASSEMBLY-VIEW.md).
+Sources are retained in the [v0.6.0-alpha.1 release](https://github.com/bloodf/spoolancer/releases/tag/v0.6.0-alpha.1) and its [CAD reports](https://github.com/bloodf/spoolancer/tree/v0.6.0-alpha.1/cad). The current working-tree reports describe the newer revision.
 
 No device flash, print job, NFC operation or inventory write was performed for this update. The application still identifies itself as `0.5.0-prototype`.
 

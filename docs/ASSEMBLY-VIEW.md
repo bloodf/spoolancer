@@ -15,7 +15,7 @@ The viewer is a build guide. It does not connect to an ESP32, read a scale, writ
 - Toggle clearance references to see provisional plug and wire space.
 - Use a standard camera view or reset the view if the assembly moves off screen.
 
-An exploded view spreads parts for visibility; its separated distances are not assembly measurements or a required installation sequence.
+An exploded view spreads parts for visibility; its separated distances are not assembly measurements or a required installation sequence. In the current LED/OLED design, remove the spool, set the guides to the 50 mm spool-width setting and remove the two front lid screws. Slide the lid about 1.4 mm forward to release its rigid rear hooks before lifting it. Follow the [assembly guide](ASSEMBLY.md) for the keyed rails and single-screw NFC covers. The PN532 pod must be removed from the guide before its cover can open on the bench; an exploded-view offset is not this removal path.
 
 ## What the model represents
 

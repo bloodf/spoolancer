@@ -54,7 +54,7 @@ Hold **BOOT for 8 seconds while running** to clear Wi-Fi credentials and pairing
 
 ## Power and bring-up
 
-The new LED cases have no external USB openings. Their user-drilled 12 V DC jack must feed a **regulated 5 V buck converter**, not the ESP32 or LED strip directly. The owner will glue an insulated converter assembly to a fixed wall, so no dedicated mount is supplied. Follow [DC-POWER.md](docs/DC-POWER.md) for supply isolation before programming, the LED level shifter/resistor/capacitor, and mounting clearance. USB remains accessible with the cover removed. These DC power arrangements have not been physically tested.
+The new LED cases have no external USB openings. Their user-drilled 12 V DC jack must feed a **regulated 5 V buck converter**, not the ESP32 or LED strip directly. The owner will glue an insulated converter assembly to a fixed wall, so no dedicated mount is supplied. Follow [DC-POWER.md](docs/DC-POWER.md) for supply isolation before programming, the LED level shifter/resistor/capacitor, and mounting clearance. USB remains accessible with the cover removed. For the current lid, use the [hook-release sequence](docs/ASSEMBLY.md#5-finish-wiring-and-set-the-stops) before lifting it. These DC power arrangements have not been physically tested.
 
 The standalone LED profiles use GPIO6 for the five-pixel data signal. The OLED profile uses SDA GPIO4 and SCL GPIO5. These are separate from the legacy ST7789 button profile. SSD1306 at address `0x3c` and WS2812-style GRB/800 kHz are provisional defaults; see [firmware options](firmware/README.md#five-leds-and-optional-096-inch-oled) before wiring an unidentified module.
 

@@ -4,7 +4,7 @@ Start with the **headless build** if you have an ESP32-S3 N16R8 and PN532. It us
 
 This is a prototype release. CAD checks, firmware builds and software tests have passed; physical fit, calibrated accuracy, seated NFC operation and a real Spoolman connection still need testing. Record your results in the [hardware validation report](HARDWARE-VALIDATION.md).
 
-The [v0.6.0-alpha.1 release](https://github.com/bloodf/spoolancer/releases/tag/v0.6.0-alpha.1) provides the complete source package, separate print packs for each build and `SHA256SUMS.txt`. The print packs contain individual STEP/STL files; the source package also contains the firmware, web interface and editable CAD generator.
+The [v0.7.0-alpha.1 release](https://github.com/bloodf/spoolancer/releases/tag/v0.7.0-alpha.1) provides the complete source package, separate print packs for each build and `SHA256SUMS.txt`. The print packs contain individual STEP/STL files; the source package also contains the firmware, web interface and editable CAD generator.
 
 ## 1. Choose one controller
 
@@ -15,7 +15,7 @@ The [v0.6.0-alpha.1 release](https://github.com/bloodf/spoolancer/releases/tag/v
 | OLED + five LEDs | Same N16R8, 0.96-inch I²C OLED and five pixels | [oled-led](../cad/variants/oled-led/) | `spoolancer-oled-led` |
 | Integrated touch | ESP-8048S043C-I, 4.3-inch 800 × 480 capacitive | [touch-8048](../cad/variants/touch-8048/) | `spoolancer-touch-8048` |
 
-The LED cases have no external USB cutouts. The user drills the DC jack opening and glues an insulated converter assembly to a fixed wall. A 12 V input must be converted to regulated 5 V; follow [the DC power guide](DC-POWER.md) and disconnect the converter before USB programming. Print the new strip/display fit samples before the full case.
+The LED cases have no external USB cutouts. The user drills the DC jack opening and glues an insulated converter assembly to a fixed wall. A 12 V input must be converted to regulated 5 V; follow [the DC power guide](DC-POWER.md) and disconnect the converter before USB programming. Print the strip/display and NFC fit samples before the full case. Current v0.7 LED/OLED builds use the [20-screw fastener list](BOM.md#current-ledoled-fasteners); the original USB-powered builds retain their earlier joints.
 
 Use only one controller. All builds share the 5 kg bar load cell, HX711 and PN532. Neither needs a separate setup button or perfboard. The touchscreen pin map differs from the headless map, and its microSD slot must remain empty.
 
@@ -24,9 +24,9 @@ Gather the [bill of materials](BOM.md), calipers, a multimeter, soldering tools 
 ## 2. Check the parts before a full print
 
 1. Measure your board, connectors, load-cell holes and thread depths against the [mechanical references](MECHANICAL-SOURCES.md).
-2. Print your variant's three [fit samples](PRINTING.md#fit-samples). Check actual screws, nuts, PCB clearance and connector exits.
+2. Print your variant's [fit samples](PRINTING.md): three for the original builds, five for LED-only or six for OLED/LED. Check actual screws, nuts, PCB clearance and connector exits.
 3. For headless, check BOOT access with the intended USB cable connected. The final enclosure uses a blunt nonconductive tool through the USB opening. Its modeled button position comes from a photo.
-4. Adjust the [CAD parameters](../cad/parameters.json) and repeat any failed sample before printing the complete set.
+4. Adjust the selected variant's `parameters.json` over the [shared CAD defaults](../cad/parameters.json), then regenerate and repeat any failed sample before printing the complete set.
 
 The NFC sample is the actual reader pod. Reuse it as the production pod if it fits and prints cleanly. A fit sample does not qualify the complete enclosure or the load path.
 

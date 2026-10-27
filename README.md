@@ -3,14 +3,14 @@
 <p align="center">
   <a href="https://github.com/bloodf/spoolancer/actions/workflows/ci.yml"><img src="https://github.com/bloodf/spoolancer/actions/workflows/ci.yml/badge.svg" alt="Software checks"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-073f2e" alt="MIT license"></a>
-  <a href="https://github.com/bloodf/spoolancer/releases/tag/v0.6.0-alpha.1"><img src="https://img.shields.io/badge/release-prototype-ffb52d" alt="Prototype release"></a>
+  <a href="https://github.com/bloodf/spoolancer/releases/tag/v0.7.0-alpha.1"><img src="https://img.shields.io/badge/release-prototype-ffb52d" alt="Prototype release"></a>
 </p>
 
 Spoolancer is a standalone filament scale built around an ESP32-S3. Place a spool upright in the cradle, identify it with NFC or a saved profile, and calculate how much filament remains. Manage your inventory in a local web interface and optionally send measurements to Spoolman. The original cases use USB power; the LED variants support a user-installed 12 V jack through a regulated 5 V converter.
 
 **Prototype release:** the software builds and CAD exports have automated checks. One ESP32-S3 has been flashed with the OLED/LED profile and boots with mounted web assets and inventory. Physical fit, display/LED operation, weighing accuracy, seated NFC operation and live Spoolman integration have not yet been validated. Start with the fit samples and the [hardware validation guide](docs/HARDWARE-VALIDATION.md).
 
-[Explore in 3D](https://bloodf.github.io/spoolancer/) · [Start building](docs/BUILD-GUIDE.md) · [Buy parts](docs/BOM.md) · [Print files](docs/PRINTING.md) · [Wiring](WIRING.md) · [Firmware](firmware/README.md) · [Downloads](https://github.com/bloodf/spoolancer/releases/tag/v0.6.0-alpha.1)
+[Explore in 3D](https://bloodf.github.io/spoolancer/) · [Start building](docs/BUILD-GUIDE.md) · [Buy parts](docs/BOM.md) · [Print files](docs/PRINTING.md) · [Wiring](WIRING.md) · [Firmware](firmware/README.md) · [Downloads](https://github.com/bloodf/spoolancer/releases/tag/v0.7.0-alpha.1)
 
 ## Choose a build
 
@@ -29,7 +29,7 @@ All four use one 5 kg bar load cell, an HX711 and a PN532. The side reader moves
 
 ![OLED and five-LED upright CAD prototype with a reference spool](cad/variants/oled-led/previews/assembled.png)
 
-This is a CAD view, not a photograph of a tested build. The current LED/OLED parts have chamfered exposed edges, integrated vertical front controls and a covered NFC cable route, with functional mounting faces retained. Confirm the actual board, load-cell threads and spool fit before printing a full set.
+This is a CAD view, not a photograph of a tested build. The current LED/OLED parts have chamfered exposed edges, integrated vertical front controls and a covered NFC cable route. Their simplified joints use **20 screws in three sizes**, with metal and nylon M3 × 12 bought separately. See the [current fastener list](docs/BOM.md#current-ledoled-fasteners). Confirm the actual board, load-cell threads and spool fit before printing a full set.
 
 ## Explore the assembly
 
@@ -41,15 +41,15 @@ The [assembly-view guide](docs/ASSEMBLY-VIEW.md) explains controls, component lo
 
 ## Download everything
 
-The [prototype pre-release](https://github.com/bloodf/spoolancer/releases/tag/v0.6.0-alpha.1) provides:
+The [prototype pre-release](https://github.com/bloodf/spoolancer/releases/tag/v0.7.0-alpha.1) provides:
 
-- [Headless print bundle](https://github.com/bloodf/spoolancer/releases/download/v0.6.0-alpha.1/spoolancer-v0.6.0-alpha.1-headless-print.zip): 11 matching STEP/STL pairs, including three fit samples, assembly STEP and native FreeCAD.
-- [Touch print bundle](https://github.com/bloodf/spoolancer/releases/download/v0.6.0-alpha.1/spoolancer-v0.6.0-alpha.1-touch-8048-print.zip): 14 matching pairs, including three fit samples, assembly STEP and native FreeCAD.
-- [Five-LED print bundle](https://github.com/bloodf/spoolancer/releases/download/v0.6.0-alpha.1/spoolancer-v0.6.0-alpha.1-headless-led-print.zip): 14 matching pairs, including five fit samples; ten production pieces; 170 × 160 mm printed footprint.
-- [OLED + five-LED print bundle](https://github.com/bloodf/spoolancer/releases/download/v0.6.0-alpha.1/spoolancer-v0.6.0-alpha.1-oled-led-print.zip): 15 matching pairs, including six fit samples; ten production pieces; 170 × 160 mm printed footprint. Both new bundles include editable assemblies and DC/fit instructions.
-- [Complete source bundle](https://github.com/bloodf/spoolancer/releases/download/v0.6.0-alpha.1/spoolancer-v0.6.0-alpha.1-source.zip): firmware, web interface, current and historical CAD, generation scripts, project art, tests and documentation.
-- [Interactive assembly viewer](https://github.com/bloodf/spoolancer/releases/download/v0.6.0-alpha.1/spoolancer-v0.6.0-alpha.1-assembly-viewer.zip): locally bundled 3D viewer, both current LED models, labels and exploded-view controls. New print bundles also include numbered assembly images.
-- [SHA-256 checksums](https://github.com/bloodf/spoolancer/releases/download/v0.6.0-alpha.1/SHA256SUMS.txt) for the downloads.
+- [Headless print bundle](https://github.com/bloodf/spoolancer/releases/download/v0.7.0-alpha.1/spoolancer-v0.7.0-alpha.1-headless-print.zip): 11 matching STEP/STL pairs, including three fit samples, assembly STEP and native FreeCAD.
+- [Touch print bundle](https://github.com/bloodf/spoolancer/releases/download/v0.7.0-alpha.1/spoolancer-v0.7.0-alpha.1-touch-8048-print.zip): 14 matching pairs, including three fit samples, assembly STEP and native FreeCAD.
+- [Five-LED print bundle](https://github.com/bloodf/spoolancer/releases/download/v0.7.0-alpha.1/spoolancer-v0.7.0-alpha.1-headless-led-print.zip): 14 matching pairs, including five fit samples; ten production pieces; 170 × 160 mm printed footprint.
+- [OLED + five-LED print bundle](https://github.com/bloodf/spoolancer/releases/download/v0.7.0-alpha.1/spoolancer-v0.7.0-alpha.1-oled-led-print.zip): 15 matching pairs, including six fit samples; ten production pieces; 170 × 160 mm printed footprint. Both new bundles include editable assemblies and DC/fit instructions.
+- [Complete source bundle](https://github.com/bloodf/spoolancer/releases/download/v0.7.0-alpha.1/spoolancer-v0.7.0-alpha.1-source.zip): firmware, web interface, current and historical CAD, generation scripts, project art, tests and documentation.
+- [Interactive assembly viewer](https://github.com/bloodf/spoolancer/releases/download/v0.7.0-alpha.1/spoolancer-v0.7.0-alpha.1-assembly-viewer.zip): locally bundled 3D viewer, both current LED models, labels and exploded-view controls. New print bundles also include numbered assembly images.
+- [SHA-256 checksums](https://github.com/bloodf/spoolancer/releases/download/v0.7.0-alpha.1/SHA256SUMS.txt) for the downloads.
 
 Each printable part has its own STEP and STL in print orientation, using millimeters. Import individual files into a compatible slicer. Assembly STEP files include electronics/reference bodies and are for inspection, not direct printing. The [print manifest](docs/PRINTING.md) gives quantities and orientation. Editable CAD parameters and scripts are included. No printer-specific G-code or precompiled firmware is distributed in this release.
 
