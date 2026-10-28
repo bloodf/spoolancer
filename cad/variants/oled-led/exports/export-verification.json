@@ -1,759 +1,181 @@
 {
-  "revision": "v0.7-oled-led-simplified-fasteners-fit-prototype",
+  "revision": "v0.8-print-first-fit-prototype",
   "physical_validation": false,
+  "freecad_version": "1.1.4",
   "stl_files": {
     "base": {
       "reopened_closed_mesh": true,
       "self_intersections": false,
+      "bed_z_mm": 0.0,
       "print_bounds_mm": [
         170.0,
-        160.0,
-        35.0
-      ],
-      "bed_z_mm": 0.0
-    },
-    "carrier": {
-      "reopened_closed_mesh": true,
-      "self_intersections": false,
-      "print_bounds_mm": [
-        140.0,
-        130.0,
-        25.3
-      ],
-      "bed_z_mm": 0.0
-    },
-    "rim_rail": {
-      "reopened_closed_mesh": true,
-      "self_intersections": false,
-      "print_bounds_mm": [
-        140.0,
-        29.33,
-        31.0
-      ],
-      "bed_z_mm": 0.0
-    },
-    "side_guide": {
-      "reopened_closed_mesh": true,
-      "self_intersections": false,
-      "print_bounds_mm": [
-        52.0,
-        130.0,
-        16.0
-      ],
-      "bed_z_mm": 0.0
-    },
-    "nfc_guide": {
-      "reopened_closed_mesh": true,
-      "self_intersections": false,
-      "print_bounds_mm": [
-        145.0,
-        130.0,
-        32.9
-      ],
-      "bed_z_mm": 0.0
-    },
-    "nfc_cable_cover": {
-      "reopened_closed_mesh": true,
-      "self_intersections": false,
-      "print_bounds_mm": [
-        145.0,
-        38.0,
-        30.4
-      ],
-      "bed_z_mm": 0.0
-    },
-    "nfc_pod": {
-      "reopened_closed_mesh": true,
-      "self_intersections": false,
-      "print_bounds_mm": [
-        46.8,
-        71.0,
-        13.6
-      ],
-      "bed_z_mm": 0.0
-    },
-    "nfc_pod_cover": {
-      "reopened_closed_mesh": true,
-      "self_intersections": false,
-      "print_bounds_mm": [
-        20.1,
-        46.8,
-        55.55
-      ],
-      "bed_z_mm": 0.0
-    },
-    "top_cover": {
-      "reopened_closed_mesh": true,
-      "self_intersections": false,
-      "print_bounds_mm": [
         170.0,
-        160.0,
-        6.5
+        32.0
       ],
-      "bed_z_mm": 0.0
+      "sha256": "8d28f10489c50a8bd4d652ec9ab70f3f829ef717d9f8cfd38a077c000d7309dc"
     },
-    "fit_nfc": {
+    "cradle": {
       "reopened_closed_mesh": true,
       "self_intersections": false,
+      "bed_z_mm": 0.0,
       "print_bounds_mm": [
-        46.8,
-        71.0,
-        13.6
+        155.399994,
+        140.0,
+        58.0
       ],
-      "bed_z_mm": 0.0
+      "sha256": "90d6d0d0502d18776142a93549cdb30a26c8592e2190f47fd8f7e086cab080af"
     },
-    "fit_esp32": {
+    "cell_spacer": {
       "reopened_closed_mesh": true,
       "self_intersections": false,
+      "bed_z_mm": 0.0,
       "print_bounds_mm": [
-        69.0,
-        41.0,
-        33.0
+        28.0,
+        27.0,
+        15.8
       ],
-      "bed_z_mm": 0.0
+      "sha256": "2df0fb35ef0cc733227819e47d40da01269379318a5140aa8b4db18e50d832d4"
     },
-    "fit_cell": {
+    "nfc_tower": {
       "reopened_closed_mesh": true,
       "self_intersections": false,
+      "bed_z_mm": 0.0,
       "print_bounds_mm": [
-        24.0,
-        80.0,
+        153.300003,
+        100.0,
+        30.0
+      ],
+      "sha256": "34307a369c2b38490cd02cbe4f9a96c666ed1469d7f999fdf7d67022344db60d"
+    },
+    "nfc_cassette": {
+      "reopened_closed_mesh": true,
+      "self_intersections": false,
+      "bed_z_mm": 0.0,
+      "print_bounds_mm": [
+        47.200001,
+        82.0,
+        11.4
+      ],
+      "sha256": "2e1914d18bbcc0d90d9b6eb812d4b4ba2b7ae3b4e123d520f8f04c2f4f6bffda"
+    },
+    "nfc_cover": {
+      "reopened_closed_mesh": true,
+      "self_intersections": false,
+      "bed_z_mm": 0.0,
+      "print_bounds_mm": [
+        147.300003,
+        100.0,
         3.0
       ],
-      "bed_z_mm": 0.0
-    },
-    "fit_led_face": {
-      "reopened_closed_mesh": true,
-      "self_intersections": false,
-      "print_bounds_mm": [
-        89.33,
-        12.5,
-        2.0
-      ],
-      "bed_z_mm": 0.0
-    },
-    "fit_led_carrier": {
-      "reopened_closed_mesh": true,
-      "self_intersections": false,
-      "print_bounds_mm": [
-        89.33,
-        12.5,
-        6.0
-      ],
-      "bed_z_mm": 0.0
-    },
-    "fit_oled_face": {
-      "reopened_closed_mesh": true,
-      "self_intersections": false,
-      "print_bounds_mm": [
-        32.3,
-        30.35,
-        8.6
-      ],
-      "bed_z_mm": 0.0
+      "sha256": "157b9b4d6043d4069faae984025addfd4e710767693f49058046cc06e84c40bd"
     }
   },
   "individual_step_files": {
     "base": {
       "reopened_valid_single_solid": true,
-      "print_bounds_mm": [
-        170.0,
-        160.0,
-        35.0
-      ],
-      "bed_z_mm": -0.0,
-      "volume_mm3": 147203.222652,
-      "stl_volume_mm3": 147183.921875,
-      "stl_volume_difference_percent": 0.013112,
-      "max_design_bounds_difference_mm": 0.0,
-      "max_stl_bounds_difference_mm": 0.0,
-      "sha256": "57d9a1edb77adcb379dc10ed22c963ccc851d31587040b97a676b3b54eb74e20"
-    },
-    "carrier": {
-      "reopened_valid_single_solid": true,
-      "print_bounds_mm": [
-        140.0,
-        130.0,
-        25.3
-      ],
       "bed_z_mm": 0.0,
-      "volume_mm3": 121486.359865,
-      "stl_volume_mm3": 121486.117188,
-      "stl_volume_difference_percent": 0.0002,
-      "max_design_bounds_difference_mm": 0.0,
-      "max_stl_bounds_difference_mm": 1e-06,
-      "sha256": "54a00a4cf73c1896bc05b1a489a08d9246c5f87a89970244590e877bcad9c8ad"
+      "volume_mm3": 198468.561666,
+      "stl_volume_difference_percent": 0.00122,
+      "sha256": "cc78406d87a40466f63e764e35f1dbe719aeadcd430ed1ec44ec493ba26e622f"
     },
-    "rim_rail": {
+    "cradle": {
       "reopened_valid_single_solid": true,
-      "print_bounds_mm": [
-        140.0,
-        29.327767,
-        31.0
-      ],
-      "bed_z_mm": -0.0,
-      "volume_mm3": 44656.794993,
-      "stl_volume_mm3": 44657.707031,
-      "stl_volume_difference_percent": 0.002042,
-      "max_design_bounds_difference_mm": 0.0,
-      "max_stl_bounds_difference_mm": 1e-06,
-      "sha256": "3d7bc85fde1dc2559efe228a6dcce06d6ee73ffedef0304afccb31787eac103a"
-    },
-    "side_guide": {
-      "reopened_valid_single_solid": true,
-      "print_bounds_mm": [
-        52.0,
-        130.0,
-        16.0
-      ],
-      "bed_z_mm": -0.0,
-      "volume_mm3": 17458.720431,
-      "stl_volume_mm3": 17458.787109,
-      "stl_volume_difference_percent": 0.000382,
-      "max_design_bounds_difference_mm": 0.0,
-      "max_stl_bounds_difference_mm": 0.0,
-      "sha256": "52e04123194bfeb7cbfc33ecd03235d36849b2099632383b0f33d6c5a61df1c7"
-    },
-    "nfc_guide": {
-      "reopened_valid_single_solid": true,
-      "print_bounds_mm": [
-        145.0,
-        130.0,
-        32.9
-      ],
-      "bed_z_mm": -0.0,
-      "volume_mm3": 28419.045671,
-      "stl_volume_mm3": 28420.146484,
-      "stl_volume_difference_percent": 0.003874,
-      "max_design_bounds_difference_mm": 0.0,
-      "max_stl_bounds_difference_mm": 1e-06,
-      "sha256": "36808e8c382dc041c06595d2c283d5c028864b114f1b95a06f82adbad1aeb43f"
-    },
-    "nfc_cable_cover": {
-      "reopened_valid_single_solid": true,
-      "print_bounds_mm": [
-        145.0,
-        38.0,
-        30.4
-      ],
       "bed_z_mm": 0.0,
-      "volume_mm3": 6593.812681,
-      "stl_volume_mm3": 6594.520996,
-      "stl_volume_difference_percent": 0.010742,
-      "max_design_bounds_difference_mm": 0.0,
-      "max_stl_bounds_difference_mm": 1.5e-05,
-      "sha256": "a8f7427e0fe3a6c9731f0d25526371cdd7eb3fb59a4c6f574119e3fa8fc3f61f"
+      "volume_mm3": 341112.221916,
+      "stl_volume_difference_percent": 0.00063,
+      "sha256": "c0e522387b892750fea082c9f09f661d04678461da4e91cd79271a78e78f763a"
     },
-    "nfc_pod": {
+    "cell_spacer": {
       "reopened_valid_single_solid": true,
-      "print_bounds_mm": [
-        46.8,
-        71.0,
-        13.6
-      ],
-      "bed_z_mm": -0.0,
-      "volume_mm3": 8563.05403,
-      "stl_volume_mm3": 8563.21875,
-      "stl_volume_difference_percent": 0.001924,
-      "max_design_bounds_difference_mm": 0.0,
-      "max_stl_bounds_difference_mm": 1e-06,
-      "sha256": "9cd98ac4a73f15cdce2d9aa9d4a7a7f7a8b69fa763aa82fbdb1fa038cfae676b"
-    },
-    "nfc_pod_cover": {
-      "reopened_valid_single_solid": true,
-      "print_bounds_mm": [
-        20.1,
-        46.8,
-        55.55
-      ],
-      "bed_z_mm": -0.0,
-      "volume_mm3": 4432.942823,
-      "stl_volume_mm3": 4433.257812,
-      "stl_volume_difference_percent": 0.007106,
-      "max_design_bounds_difference_mm": 0.0,
-      "max_stl_bounds_difference_mm": 1e-06,
-      "sha256": "f8d0a0e40e4456b64d1f809c832aa1aaa95b5c65e935417d3486dc16089dd750"
-    },
-    "top_cover": {
-      "reopened_valid_single_solid": true,
-      "print_bounds_mm": [
-        170.0,
-        160.0,
-        6.5
-      ],
-      "bed_z_mm": -0.0,
-      "volume_mm3": 22363.367609,
-      "stl_volume_mm3": 22363.408203,
-      "stl_volume_difference_percent": 0.000182,
-      "max_design_bounds_difference_mm": 0.0,
-      "max_stl_bounds_difference_mm": 0.0,
-      "sha256": "2a1a8523c44838fe9a37fbede86b4fbeb4f38e6a3fc3aac55e4b3356c19a0736"
-    },
-    "fit_nfc": {
-      "reopened_valid_single_solid": true,
-      "print_bounds_mm": [
-        46.8,
-        71.0,
-        13.6
-      ],
-      "bed_z_mm": -0.0,
-      "volume_mm3": 8563.05403,
-      "stl_volume_mm3": 8563.21875,
-      "stl_volume_difference_percent": 0.001924,
-      "max_design_bounds_difference_mm": 0.0,
-      "max_stl_bounds_difference_mm": 1e-06,
-      "sha256": "59a230a35b6b13326ad129086f6b8aa65a49411b67e9a4cc2f4fd1c2041ed8a0"
-    },
-    "fit_esp32": {
-      "reopened_valid_single_solid": true,
-      "print_bounds_mm": [
-        69.0,
-        41.0,
-        33.0
-      ],
       "bed_z_mm": 0.0,
-      "volume_mm3": 9742.420857,
-      "stl_volume_mm3": 9741.432617,
-      "stl_volume_difference_percent": 0.010144,
-      "max_design_bounds_difference_mm": 0.0,
-      "max_stl_bounds_difference_mm": 0.0,
-      "sha256": "f131ec396ac97e830da7a7508ee519b3fb9407916196bd5d9b3a423c2e5a254c"
+      "volume_mm3": 11293.238806,
+      "stl_volume_difference_percent": 0.00434,
+      "sha256": "319aa806a753048de9635c08ab4119a9ea87bfc799b1a4ed491e898fc09f226c"
     },
-    "fit_cell": {
+    "nfc_tower": {
       "reopened_valid_single_solid": true,
-      "print_bounds_mm": [
-        24.0,
-        80.0,
-        3.0
-      ],
-      "bed_z_mm": 0.0,
-      "volume_mm3": 5512.505331,
-      "stl_volume_mm3": 5512.741699,
-      "stl_volume_difference_percent": 0.004288,
-      "max_design_bounds_difference_mm": 0.0,
-      "max_stl_bounds_difference_mm": 0.0,
-      "sha256": "83c7f982bc766976f9e3641aef01c92bda73dd6e3ebf2f7452c9dd420c893d18"
-    },
-    "fit_led_face": {
-      "reopened_valid_single_solid": true,
-      "print_bounds_mm": [
-        89.333333,
-        12.5,
-        2.0
-      ],
       "bed_z_mm": -0.0,
-      "volume_mm3": 1884.384999,
-      "stl_volume_mm3": 1884.755493,
-      "stl_volume_difference_percent": 0.019661,
-      "max_design_bounds_difference_mm": 0.0,
-      "max_stl_bounds_difference_mm": 3e-06,
-      "sha256": "bea0839cbd93f372e3fd3ea1a998b78a937e24faac5faa1c459c27fd559b05e5"
+      "volume_mm3": 101087.695441,
+      "stl_volume_difference_percent": 0.00057,
+      "sha256": "de09fa3c2f3e2846f824b8200dd80979dd3124d3792a835b53a8577245a13162"
     },
-    "fit_led_carrier": {
+    "nfc_cassette": {
       "reopened_valid_single_solid": true,
-      "print_bounds_mm": [
-        89.333333,
-        12.5,
-        6.0
-      ],
-      "bed_z_mm": 0.0,
-      "volume_mm3": 3712.651665,
-      "stl_volume_mm3": 3713.030029,
-      "stl_volume_difference_percent": 0.010191,
-      "max_design_bounds_difference_mm": 0.0,
-      "max_stl_bounds_difference_mm": 3e-06,
-      "sha256": "8740a2f5549598df23483c1eeea2f2c430c0578e5c35aa7ce5a46f1ad1224ee8"
-    },
-    "fit_oled_face": {
-      "reopened_valid_single_solid": true,
-      "print_bounds_mm": [
-        32.3,
-        30.35,
-        8.6
-      ],
       "bed_z_mm": -0.0,
-      "volume_mm3": 2651.905667,
-      "stl_volume_mm3": 2651.904541,
-      "stl_volume_difference_percent": 4.2e-05,
-      "max_design_bounds_difference_mm": 0.0,
-      "max_stl_bounds_difference_mm": 1e-06,
-      "sha256": "8145ba19e78ebf4523579f52225b4b189e4320da91ee7de0110ee55b6ebbf464"
+      "volume_mm3": 15818.059837,
+      "stl_volume_difference_percent": 0.00098,
+      "sha256": "ea6f0b1f4042daf40fc1cbaba3f7a427448235d85b71a2d4e94d433a4ba8a705"
+    },
+    "nfc_cover": {
+      "reopened_valid_single_solid": true,
+      "bed_z_mm": -0.0,
+      "volume_mm3": 44074.927439,
+      "stl_volume_difference_percent": 2e-05,
+      "sha256": "ebba0ff7b80682d41e5242839412bb4dad02605d6681d35e51f949fa1dd8614a"
     }
   },
   "source_sha256": {
-    "cable_route.py": "18b7ae9f55c0b8b0f5296588e019cd1f9de3d33b46c623372bd813cf0be8d9c3",
-    "indicators.py": "eb46f19a393c16d102c369fd7d901923aa209ff3edf88b969b332b51b48361da",
-    "parameters.json": "f8dabba145b0cbe62ecde1e0d4ff5a9ca15db01fe16e8ca66024de3a90eacb9e",
-    "build.py": "df778688e22caa8c41fdea132ce6e3a1a6c73964f593d4c4fc9d96dbb97143fc",
-    "render.py": "66b50845a181c2c626449f64a270c6d405c9339b6c809f369539460e26edbbce",
-    "verify_exports.py": "5a8394c77bd4f4a5c2d491d4d9c19b67f9331b3e33e8a7c2bfbd69f4e5acc159",
-    "variants/oled-led/parameters.json": "c67b00d0fbf7686b9d2ea1f78564ce192243a892116f37b54ad08265d5373bbc",
-    "simple_fasteners.py": "fab112dcc333722bfbbc79b5ab9f483b7f26116806d6009e48c1fe05e57491db",
-    "nfc_mount.py": "4025006e536bffd6c68c53ed879e7b802740c96b7f488d052c3dfd925bc2d28d",
-    "exploded_render.py": "54c315fc11d5e5ec6c1eec585a68239e311ac8d579fb11c5dd9f75446b86fc23",
-    "assembly-parts.json": "16d1367c29578c2d3620262d316374e6d9740666257c92978a209648fed75eb8"
+    "build_simple.py": "b32793c5552dfb63a69c7585519cd275a9b1d1500ec92b89928c694948c81185",
+    "simple_geometry.py": "92a4bc86d85cc20dd2fc2f6fca3f95a2e779fbc7638e4f0ecf2f82d5cbd11f6c",
+    "simple-parameters.json": "8d68f823bb3193902047ea2f5af75e6c1aa86543e764dcdc645bdeb63188b55c",
+    "variants/oled-led/parameters.json": "a433349c6c11221c705f16ffa2390f3b91a5d0619b2a646d4d20ccd680d44819"
   },
-  "freecad_version": "1.1.4",
-  "step_bounds_method": "optimalBoundingBox(useTriangulation=False, useShapeTolerance=False)",
-  "comparison_tolerances": {
-    "step_vs_design_bounds_mm": 0.001,
-    "step_vs_stl_bounds_mm": 0.2,
-    "step_vs_design_volume_mm3": 0.02,
-    "step_vs_stl_relative_volume": 0.005
-  },
-  "freecad": {
-    "reopened_valid_shapes": 59,
-    "printed_instances": 10
-  },
-  "step": {
-    "reopened_valid": true,
-    "solids": 89
-  },
-  "indicator_front_clamp_checks": [
-    {
-      "fastener": "front cover M3x12",
-      "x_mm": -78,
-      "positive_volume_intersections": {}
-    },
-    {
-      "fastener": "front cover M3x12",
-      "x_mm": 78,
-      "positive_volume_intersections": {}
-    }
-  ],
-  "nfc_cable_cover_fastener_note": "One M3x12 nylon screw, washer and captive nut plus rigid tongue. PCB uses printed edge capture. Physical retention remains untested.",
   "fastener_schedule": {
+    "total_screws": 12,
+    "dimensional_sizes": [
+      "M3x16",
+      "M4x25",
+      "M5x12"
+    ],
     "screws": [
       {
-        "size": "M3x12",
+        "size": "M3x16",
         "material": "metal",
-        "quantity": 12,
-        "locations": {
-          "lid": 2,
-          "rails": 2,
-          "guides": 4,
-          "adjustable_stops": 4
-        }
+        "quantity": 4,
+        "use": "Adjustable stops"
       },
       {
-        "size": "M3x12",
+        "size": "M3x16",
         "material": "nylon",
         "quantity": 4,
-        "locations": {
-          "reader_height": 2,
-          "reader_cover": 1,
-          "cable_cover": 1
-        }
+        "use": "Reader height and rear cover"
       },
       {
         "size": "M4x25",
         "material": "metal",
         "quantity": 2,
-        "locations": {
-          "moving_load_cell_end": 2
-        }
+        "use": "Moving load-cell end"
       },
       {
         "size": "M5x12",
         "material": "metal",
         "quantity": 2,
-        "locations": {
-          "fixed_load_cell_end": 2
-        }
+        "use": "Fixed load-cell end"
       }
     ],
-    "total_screws": 20,
-    "dimensional_sizes": [
-      "M3x12",
-      "M4x25",
-      "M5x12"
-    ],
-    "purchasing_lines": 4,
     "nuts": {
-      "M3_standard_metal": 8,
       "M3_nylon_insert_locknut": 4,
-      "M3_nylon": 4
+      "M3_all_nylon": 4
     },
     "washers": {
-      "M3_metal": 8,
-      "M3_nylon": 4,
+      "M3_nylon": 6,
       "M4_metal": 2,
       "M5_metal": 2
     },
     "physical_validation": false
   },
-  "lid_service": {
-    "spool_removed": true,
-    "guide_width_mm": 50,
-    "reader_height_mm": 155.0,
-    "motion": "Remove two front screws; slide lid forward 1.4 mm, then lift vertically clear of the narrowed cradle.",
-    "method": "Conservative full-motion ring and hook slab envelopes; electronics remain installed.",
-    "positive_volume_intersections": {
-      "forward_1.4mm": {},
-      "lift_210mm": {}
-    },
-    "physical_validation": false
+  "freecad": {
+    "printed_instances": 6,
+    "reference_groups": 25,
+    "reopened_valid": true
   },
-  "structural_joints": {
-    "rail_removal": {
-      "rim_rail_lift_60mm": {},
-      "rim_rail_front_lift_60mm": {}
-    },
-    "rail_service_precondition": "Spool and both guide assemblies removed; rail screw removed.",
-    "rail_locator_print_lead_in_degrees": 45,
-    "rail_key_side_clearance_mm": 0.2,
-    "rail_key_floor_clearance_mm": 0.2,
-    "rail_lift_mm": 60,
-    "stop_checks": [
-      {
-        "head_top_mm": 36.2,
-        "position_mm": [
-          -61,
-          -52
-        ],
-        "positive_volume_intersections": {}
-      },
-      {
-        "head_top_mm": 36.2,
-        "position_mm": [
-          -61,
-          52
-        ],
-        "positive_volume_intersections": {}
-      },
-      {
-        "head_top_mm": 36.2,
-        "position_mm": [
-          61,
-          -52
-        ],
-        "positive_volume_intersections": {}
-      },
-      {
-        "head_top_mm": 36.2,
-        "position_mm": [
-          61,
-          52
-        ],
-        "positive_volume_intersections": {}
-      },
-      {
-        "head_top_mm": 37.0,
-        "position_mm": [
-          -61,
-          -52
-        ],
-        "positive_volume_intersections": {}
-      },
-      {
-        "head_top_mm": 37.0,
-        "position_mm": [
-          -61,
-          52
-        ],
-        "positive_volume_intersections": {}
-      },
-      {
-        "head_top_mm": 37.0,
-        "position_mm": [
-          61,
-          -52
-        ],
-        "positive_volume_intersections": {}
-      },
-      {
-        "head_top_mm": 37.0,
-        "position_mm": [
-          61,
-          52
-        ],
-        "positive_volume_intersections": {}
-      },
-      {
-        "head_top_mm": 38.0,
-        "position_mm": [
-          -61,
-          -52
-        ],
-        "positive_volume_intersections": {}
-      },
-      {
-        "head_top_mm": 38.0,
-        "position_mm": [
-          -61,
-          52
-        ],
-        "positive_volume_intersections": {}
-      },
-      {
-        "head_top_mm": 38.0,
-        "position_mm": [
-          61,
-          -52
-        ],
-        "positive_volume_intersections": {}
-      },
-      {
-        "head_top_mm": 38.0,
-        "position_mm": [
-          61,
-          52
-        ],
-        "positive_volume_intersections": {}
-      }
-    ],
-    "stop_head_envelope_mm": [
-      5.5,
-      3.0
-    ],
-    "stop_nut_envelope_mm": {
-      "across_flats": 5.5,
-      "height": 4.0
-    },
-    "stop_head_top_range_mm": [
-      36.2,
-      38.0
-    ],
-    "stop_gap_note": "Geometric adjustment range only. Actual safe load-cell travel and stop setting must be measured.",
-    "physical_validation": false
+  "assembly_step": {
+    "reopened_valid": true,
+    "solid_count": 81
   },
-  "nfc_mounts": {
-    "physical_validation": false,
-    "digital_clearance_pass": true,
-    "hardware": "Three nylon M3 x 12, three 0.5 mm washers and three M3 captive nuts on the moving pod; the fourth identical set retains the cable cover.",
-    "board_retention": "Four edge seats, 0.3 mm edge clearance and three cover fingers with 0.3 mm foam allowance. No board screws; verify delivered component-free margins.",
-    "screw_dimensions_mm": {
-      "length": 12,
-      "head_diameter": 5.5,
-      "head_height": 3,
-      "nut_af": 5.5,
-      "nut_thickness": 2.4,
-      "washer_outer_diameter": 7,
-      "washer_thickness": 0.5
-    },
-    "actual_hardware_cases": [
-      {
-        "width_mm": 50.0,
-        "reader_center_mm": 90.0,
-        "intersections": {}
-      },
-      {
-        "width_mm": 50.0,
-        "reader_center_mm": 155.0,
-        "intersections": {}
-      },
-      {
-        "width_mm": 50.0,
-        "reader_center_mm": 175.0,
-        "intersections": {}
-      },
-      {
-        "width_mm": 80,
-        "reader_center_mm": 90.0,
-        "intersections": {}
-      },
-      {
-        "width_mm": 80,
-        "reader_center_mm": 155.0,
-        "intersections": {}
-      },
-      {
-        "width_mm": 80,
-        "reader_center_mm": 175.0,
-        "intersections": {}
-      },
-      {
-        "width_mm": 100.0,
-        "reader_center_mm": 90.0,
-        "intersections": {}
-      },
-      {
-        "width_mm": 100.0,
-        "reader_center_mm": 155.0,
-        "intersections": {}
-      },
-      {
-        "width_mm": 100.0,
-        "reader_center_mm": 175.0,
-        "intersections": {}
-      }
-    ],
-    "nut_loading_sampled_intersections": {},
-    "nut_axial_pullout_blocked_in_geometry": {
-      "height_minus": true,
-      "height_plus": true,
-      "pod_cover": true
-    },
-    "tool_access_intersections": {},
-    "whole_pod_removal_sampled_intersections": {},
-    "pod_cover_removal_sampled_intersections": {},
-    "pcb_removal_sampled_intersections": {},
-    "service_pose": {
-      "spool_removed": true,
-      "width_mm": 50,
-      "reader_center_mm": 155.0,
-      "channel_cover_removed": true,
-      "cable_unplugged_and_freed_from_channel": true,
-      "height_screws_and_washers_removed": true,
-      "height_nuts_unthreaded_retained_in_mast": true,
-      "whole_pod_translation_mm": [
-        [
-          0,
-          0,
-          60
-        ],
-        [
-          20,
-          0,
-          0
-        ]
-      ],
-      "reader_center_after_lift_mm": 215,
-      "pod_cover_opened_on_bench": true,
-      "pod_cover_translation_mm": [
-        [
-          0,
-          0,
-          -4
-        ],
-        [
-          20,
-          0,
-          0
-        ]
-      ]
-    },
-    "retention": "Rigid upper tongue and lower M3 clamp; nut side-entry pocket retains axial pullout. Clearance/removal sampling is geometric evidence, not strength, fatigue or foam-pressure validation.",
-    "print_note": "Print pod cover positive-Y side edge down (-90 degrees about X); use a brim and local support beneath PCB fingers and cable hood. This is not a support-free print."
-  },
-  "edge_finishing": {
-    "verified_operation_count": 27,
-    "removal_only": true,
-    "physical_validation": false
-  },
-  "indicator_geometry_checks": {
-    "spool_cases": 27,
-    "dedicated_boot_bore_mm": 4.0,
-    "physical_validation": false
-  },
-  "oled_insertion": {
-    "applicable": true,
-    "main_lid_removed": true,
-    "continuous_vertical_lift_mm": 40,
-    "reference_envelopes_checked": [
-      "OLED_PCB",
-      "OLED_glass",
-      "OLED_components",
-      "OLED_headers"
-    ],
-    "positive_volume_intersections": {
-      "OLED_PCB": {},
-      "OLED_glass": {},
-      "OLED_components": {},
-      "OLED_headers": {}
-    },
-    "physical_insertion_verified": false
-  },
-  "nfc_cable_route_digital_clearance_pass": true,
-  "nominal_unloaded_height_with_feet_mm": 188.4
+  "checks": {
+    "spool_cases": 9,
+    "reader_positions": 7,
+    "service_lifts": 5
+  }
 }

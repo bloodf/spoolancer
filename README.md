@@ -3,33 +3,36 @@
 <p align="center">
   <a href="https://github.com/bloodf/spoolancer/actions/workflows/ci.yml"><img src="https://github.com/bloodf/spoolancer/actions/workflows/ci.yml/badge.svg" alt="Software checks"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-073f2e" alt="MIT license"></a>
-  <a href="https://github.com/bloodf/spoolancer/releases/tag/v0.7.0-alpha.1"><img src="https://img.shields.io/badge/release-prototype-ffb52d" alt="Prototype release"></a>
+  <a href="https://github.com/bloodf/spoolancer/releases/tag/v0.8.0-alpha.1"><img src="https://img.shields.io/badge/release-prototype-ffb52d" alt="Prototype release"></a>
 </p>
 
 Spoolancer is a standalone filament scale built around an ESP32-S3. Place a spool upright in the cradle, identify it with NFC or a saved profile, and calculate how much filament remains. Manage your inventory in a local web interface and optionally send measurements to Spoolman. The original cases use USB power; the LED variants support a user-installed 12 V jack through a regulated 5 V converter.
 
-**Prototype release:** the software builds and CAD exports have automated checks. One ESP32-S3 has been flashed with the OLED/LED profile and boots with mounted web assets and inventory. Physical fit, display/LED operation, weighing accuracy, seated NFC operation and live Spoolman integration have not yet been validated. Start with the fit samples and the [hardware validation guide](docs/HARDWARE-VALIDATION.md).
+**Prototype release:** the software builds and CAD exports have automated checks. One ESP32-S3 has been flashed with the OLED/LED profile and boots with mounted web assets and inventory. Physical fit, display/LED operation, weighing accuracy, seated NFC operation and live Spoolman integration have not yet been validated. Measure your components before printing and follow the [hardware validation guide](docs/HARDWARE-VALIDATION.md).
 
-[Explore in 3D](https://bloodf.github.io/spoolancer/) · [Start building](docs/BUILD-GUIDE.md) · [Buy parts](docs/BOM.md) · [Print files](docs/PRINTING.md) · [Wiring](WIRING.md) · [Firmware](firmware/README.md) · [Downloads](https://github.com/bloodf/spoolancer/releases/tag/v0.7.0-alpha.1)
+[Explore in 3D](https://bloodf.github.io/spoolancer/) · [Start building](docs/BUILD-GUIDE.md) · [Buy parts](docs/BOM.md) · [Print files](docs/PRINTING.md) · [Wiring](WIRING.md) · [Firmware](firmware/README.md) · [Downloads](https://github.com/bloodf/spoolancer/releases/tag/v0.8.0-alpha.1)
 
 ## Choose a build
 
-| | Screenless | Capacitive touch |
+The current **v0.8** mechanical design has six printed pieces: base, one-piece cradle, load-cell spacer, NFC support, reader cassette and rear cover. Both versions use your ESP32-S3 N16R8, PN532, HX711 and a 5 kg bar load cell.
+
+| | Five LEDs + web | OLED + five LEDs |
 | --- | --- | --- |
-| Controller | ESP32-S3 N16R8, documented dual USB-C V6.0.0 board | ESP-8048S043C-I with integrated ESP32-S3 |
-| Controls | Local browser on phone or computer | 800 × 480 touch controls and the same browser interface |
-| Printed production pieces | 9 | 12 |
-| Fixed footprint | 170 × 160 mm | 170 × 205.73 mm with front holder |
-| Wi-Fi recovery | Onboard BOOT | Onboard BOOT |
-| Files | [Headless STEP/STL](cad/variants/headless/exports) | [Touch STEP/STL](cad/variants/touch-8048/exports) |
+| Controller | Standalone ESP32-S3 N16R8 | Same controller |
+| Display | Local web interface | 0.96-inch 128 × 64 OLED and web |
+| Printed pieces | 6 | 6 |
+| Base | 170 × 170 mm | 170 × 170 mm |
+| Files | [LED STEP/STL](cad/variants/headless-led/exports) | [OLED STEP/STL](cad/variants/oled-led/exports) |
 
-Two additional standalone-controller variants add five addressable RGB lights at 16.667 mm pitch. `headless-led` uses the browser and lights; `oled-led` adds a 0.96-inch 128 × 64 OLED. Both retain onboard BOOT, omit external USB cutouts, and leave the DC-jack hole for the builder to drill. Their component dimensions are provisional: print the LED/OLED fit samples first. See [the variant guide](docs/OLED-RGB-VARIANT.md), [12 V power wiring](docs/DC-POWER.md), [LED-only CAD](cad/variants/headless-led) and [OLED + LED CAD](cad/variants/oled-led).
+The fixed cradle accepts the modeled **50–100 mm spool widths and 160–220 mm diameters**. Put the spool upright near the reader-side wall. The reader adjusts vertically; rotate the seated spool to align its tag. There are no sliding side guides, separate rails, hinges or bearings. Narrow spools sit off-center, so calibration and corner-load testing remain necessary.
 
-All four use one 5 kg bar load cell, an HX711 and a PN532. The side reader moves with the cradle and adjusts to a tag on a seated spool. No axle, bearings, separate setup button or perfboard are required. The guides target **50–100 mm spool widths**. The proposed operating range is **20–2,000 g gross spool weight**, with calibration still required. The sensor's 5 kg rating also carries the moving mechanism and is not the supported spool-weight limit.
+Both cases have vertical front controls, five LEDs at 16.667 mm pitch, closed USB walls and space for a user-installed DC supply. Drill the jack hole after checking the actual components; **12 V must pass through a regulated 5 V converter**. See [power wiring](docs/DC-POWER.md) and [the indicator guide](docs/OLED-RGB-VARIANT.md).
 
-![OLED and five-LED upright CAD prototype with a reference spool](cad/variants/oled-led/previews/assembled.png)
+![Six-piece OLED and LED CAD prototype](cad/variants/oled-led/previews/assembled.png)
 
-This is a CAD view, not a photograph of a tested build. The current LED/OLED parts have chamfered exposed edges, integrated vertical front controls and a covered NFC cable route. Use **18 screws with glued rails**, or **20 screws with removable rails**, in three sizes. Metal and nylon M3 × 12 are bought separately. The [glue assembly guide](docs/GLUE-ASSEMBLY.md) uses the existing v0.7 print files; CAD views still show the removable 20-screw build. Bond strength is untested. See the [current fastener list](docs/BOM.md#current-ledoled-fasteners). Confirm the actual board, load-cell threads and spool fit before printing a full set.
+The new construction uses **12 screws in three sizes**, plus one broad glued joint for the NFC support. Load-cell screws, reader adjustment and the rear cover remain removable. See the [fastener list](docs/BOM.md#current-ledoled-fasteners) and [assembly instructions](docs/ASSEMBLY.md). This is a CAD prototype; printed strength, adhesive retention, fit and weighing are untested. The proposed operating range remains 20–2,000 g gross spool weight. The sensor's 5 kg rating also carries the moving mechanism.
+
+The original [screenless USB design](cad/variants/headless) and [800 × 480 integrated-touch design](cad/variants/touch-8048) remain available as **legacy mechanical versions**. Their old parts do not fit the new six-piece mechanism. Firmware support is unchanged.
 
 ## Explore the assembly
 
@@ -41,15 +44,15 @@ The [assembly-view guide](docs/ASSEMBLY-VIEW.md) explains controls, component lo
 
 ## Download everything
 
-The [prototype pre-release](https://github.com/bloodf/spoolancer/releases/tag/v0.7.0-alpha.1) provides:
+The [v0.8 prototype pre-release](https://github.com/bloodf/spoolancer/releases/tag/v0.8.0-alpha.1) provides:
 
-- [Headless print bundle](https://github.com/bloodf/spoolancer/releases/download/v0.7.0-alpha.1/spoolancer-v0.7.0-alpha.1-headless-print.zip): 11 matching STEP/STL pairs, including three fit samples, assembly STEP and native FreeCAD.
-- [Touch print bundle](https://github.com/bloodf/spoolancer/releases/download/v0.7.0-alpha.1/spoolancer-v0.7.0-alpha.1-touch-8048-print.zip): 14 matching pairs, including three fit samples, assembly STEP and native FreeCAD.
-- [Five-LED print bundle](https://github.com/bloodf/spoolancer/releases/download/v0.7.0-alpha.1/spoolancer-v0.7.0-alpha.1-headless-led-print.zip): 14 matching pairs, including five fit samples; ten production pieces; 170 × 160 mm printed footprint.
-- [OLED + five-LED print bundle](https://github.com/bloodf/spoolancer/releases/download/v0.7.0-alpha.1/spoolancer-v0.7.0-alpha.1-oled-led-print.zip): 15 matching pairs, including six fit samples; ten production pieces; 170 × 160 mm printed footprint. Both new bundles include editable assemblies and DC/fit instructions.
-- [Complete source bundle](https://github.com/bloodf/spoolancer/releases/download/v0.7.0-alpha.1/spoolancer-v0.7.0-alpha.1-source.zip): firmware, web interface, current and historical CAD, generation scripts, project art, tests and documentation.
-- [Interactive assembly viewer](https://github.com/bloodf/spoolancer/releases/download/v0.7.0-alpha.1/spoolancer-v0.7.0-alpha.1-assembly-viewer.zip): locally bundled 3D viewer, both current LED models, labels and exploded-view controls. New print bundles also include numbered assembly images.
-- [SHA-256 checksums](https://github.com/bloodf/spoolancer/releases/download/v0.7.0-alpha.1/SHA256SUMS.txt) for the downloads.
+- [OLED + five-LED print bundle](https://github.com/bloodf/spoolancer/releases/download/v0.8.0-alpha.1/spoolancer-v0.8.0-alpha.1-oled-led-print.zip): six STEP/STL pairs, native FreeCAD, full assembly STEP, assembly views and instructions.
+- [Five-LED print bundle](https://github.com/bloodf/spoolancer/releases/download/v0.8.0-alpha.1/spoolancer-v0.8.0-alpha.1-headless-led-print.zip): the same mechanism, with a base without the OLED opening.
+- [Complete source](https://github.com/bloodf/spoolancer/releases/download/v0.8.0-alpha.1/spoolancer-v0.8.0-alpha.1-source.zip) and [offline assembly viewer](https://github.com/bloodf/spoolancer/releases/download/v0.8.0-alpha.1/spoolancer-v0.8.0-alpha.1-assembly-viewer.zip).
+- Legacy [headless](https://github.com/bloodf/spoolancer/releases/download/v0.8.0-alpha.1/spoolancer-v0.8.0-alpha.1-headless-print.zip) and [integrated-touch](https://github.com/bloodf/spoolancer/releases/download/v0.8.0-alpha.1/spoolancer-v0.8.0-alpha.1-touch-8048-print.zip) bundles, clearly separated from v0.8 mechanics.
+- [SHA-256 checksums](https://github.com/bloodf/spoolancer/releases/download/v0.8.0-alpha.1/SHA256SUMS.txt).
+
+![Six actual print poses](cad/variants/oled-led/previews/print-orientations.png)
 
 Each printable part has its own STEP and STL in print orientation, using millimeters. Import individual files into a compatible slicer. Assembly STEP files include electronics/reference bodies and are for inspection, not direct printing. The [print manifest](docs/PRINTING.md) gives quantities and orientation. Editable CAD parameters and scripts are included. No printer-specific G-code or precompiled firmware is distributed in this release.
 

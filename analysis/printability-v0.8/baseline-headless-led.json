@@ -1,0 +1,53 @@
+{
+  "commit": "ac554fe77525a2b2db122d7b7bb781936e773888",
+  "parts": {
+    "base": {
+      "git_path": "cad/variants/headless-led/exports/base.stl",
+      "quantity": 1,
+      "sha256": "a40f92d58f2d5497343031daddc0b52d7f99101216ad43642c22670e64f69093"
+    },
+    "carrier": {
+      "git_path": "cad/variants/headless-led/exports/carrier.stl",
+      "quantity": 1,
+      "sha256": "32b77f0624034f6f418012e16a8f61931546e69b701a45b2cfadfd47816993f9"
+    },
+    "nfc_cable_cover": {
+      "git_path": "cad/variants/headless-led/exports/nfc_cable_cover.stl",
+      "quantity": 1,
+      "sha256": "d19b8d69e59ca00073a5433587181434a0ae34949a3e1071ea62574be020cbf8"
+    },
+    "nfc_guide": {
+      "git_path": "cad/variants/headless-led/exports/nfc_guide.stl",
+      "quantity": 1,
+      "sha256": "a8741e1d30c0b239d634a93947452790b56dd4526e8bd31c8280abe0cb9f3dec"
+    },
+    "nfc_pod": {
+      "git_path": "cad/variants/headless-led/exports/nfc_pod.stl",
+      "quantity": 1,
+      "sha256": "033ccaf7477f851ac9d8a7a34c3a228d1adf6cb81734eb9bee39c58797160e51"
+    },
+    "nfc_pod_cover": {
+      "git_path": "cad/variants/headless-led/exports/nfc_pod_cover.stl",
+      "quantity": 1,
+      "sha256": "d1cd72c6d1ab23952a3f266ba0c7e10a9d2bf052ec46d698850b3bfea0b8ad02"
+    },
+    "rim_rail": {
+      "git_path": "cad/variants/headless-led/exports/rim_rail.stl",
+      "quantity": 2,
+      "sha256": "27dd523802d4d428086b6ba61f5d6507f2993d56f20b49473d3fe7bb75973b2c"
+    },
+    "side_guide": {
+      "git_path": "cad/variants/headless-led/exports/side_guide.stl",
+      "quantity": 1,
+      "sha256": "a038af7df219ad4f93954b390cf98a154a280ccbc1c70d89fb0638c5b55c597d"
+    },
+    "top_cover": {
+      "git_path": "cad/variants/headless-led/exports/top_cover.stl",
+      "quantity": 1,
+      "sha256": "c6942286c4f8a70fefa7f1bec9b4d023266f2744e215293a2a8a3f34c90129bd"
+    }
+  },
+  "requested_ref": "ac554fe77525a2b2db122d7b7bb781936e773888",
+  "validation_sha256": "6d4e144223bc4e6ab14474b61287fb6d880754c41c50fa198b4338dfc5f87252",
+  "variant": "headless-led"
+}

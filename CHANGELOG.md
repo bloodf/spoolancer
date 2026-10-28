@@ -1,6 +1,18 @@
 # Changelog
 
-## Unreleased documentation
+## 0.8.0-alpha.1
+
+Rebuilds the LED-only and OLED/LED mechanical design around six broad printed parts. The old ten-piece frame, separate rails, sliding width guides and main lid are replaced by a rigid fixed-width cradle and open-top base. The NFC reader retains vertical adjustment and a hidden wire loop.
+
+- Base and cradle print on full flat undersides; the reader support, cassette and rear cover print with broad faces down.
+- Integral ramps, an 8 mm cradle floor, thick walls and broad mounting seats replace thin rails and tabs.
+- Twelve screws in three sizes, with one broad glued reader-support joint. No glue on the load cell or its moving/fixed gap.
+- Six STEP/STL pairs per variant, editable geometry, native FreeCAD, assembled/exploded/print-pose views and updated assembly viewer.
+- Reopened export and collision checks plus actual support-enabled OrcaSlicer diagnostics on P1S and U1 profiles. Results and limits are in `analysis/printability-v0.8/`.
+
+Physical printing, bond strength, seated NFC, calibration and stability remain untested. The original headless/touch designs and firmware are unchanged.
+
+## Historical v0.7 documentation
 
 - Add an 18-screw glued-rail assembly option for the existing v0.7 LED/OLED prints, saving two metal M3 × 12 screws, two nuts and two washers. Document bonding locations, preparation, permanent-rail service and the remaining mechanical fasteners.
 - Keep all CAD files, the 20-screw reference assemblies and existing release ZIPs unchanged. Adhesive strength and physical assembly remain untested.

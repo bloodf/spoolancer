@@ -16,13 +16,16 @@ assert.ok(clearance, 'The assembly includes at least one explicit clearance refe
 const visibility = { electronics: true, clearance: false, spool: true };
 assert.equal(partVisible(base, visibility, null, new Set()), true);
 assert.equal(partVisible(clearance, visibility, null, new Set()), false);
-assert.equal(partVisible(base, visibility, 'carrier', new Set()), false);
+assert.equal(partVisible(base, visibility, 'cradle', new Set()), false);
 assert.equal(partVisible(base, visibility, null, new Set(['base'])), false);
 for (const pose of ['min', 'max']) {
-  const alternate = metadata.parts.find(part => part.pose === pose);
-  assert.ok(alternate, `A ${pose} cable reference is defined.`);
+  // Alternate reference poses remain a supported viewer behavior even when the
+  // current CAD scene includes only the nominal routing envelope.
+  const alternate = { id: `cable_${pose}`, category: 'clearance', pose };
   assert.equal(partVisible(alternate, { ...visibility, clearance: true }, null, new Set()), false);
   assert.equal(partVisible(alternate, { ...visibility, clearance: true }, alternate.id, new Set()), true);
   assert.equal(partVisible(alternate, { ...visibility, clearance: true }, base.id, new Set()), false);
 }
+assert.deepEqual(metadata.parts.filter(part => part.category === 'printed').map(part => part.id),
+  ['base', 'cradle', 'cell_spacer', 'nfc_tower', 'nfc_cassette', 'nfc_cover']);
 console.log(`Viewer transforms and visibility passed for ${metadata.parts.length} component groups.`);

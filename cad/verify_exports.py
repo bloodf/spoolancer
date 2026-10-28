@@ -15,6 +15,10 @@ root=Path(__file__).resolve().parent;target=root/'variants'/variant if args.vari
 p=json.loads((root/'parameters.json').read_text())
 if variant!='headless':p.update(json.loads((target/'parameters.json').read_text()))
 v=json.loads((out/'validation.json').read_text())
+if v['revision'].startswith('v0.8'):
+    from verify_simple_exports import verify
+    verify(variant)
+    raise SystemExit(0)
 assert not v['printed_part_intersections'] and not v['esp_wire_envelope_intersections']
 assert not any(v['component_intersections'].values())
 assert not any(x['positive_volume_intersections'] for x in v['spool_envelope_checks']+v['pod_adjustment_checks'])

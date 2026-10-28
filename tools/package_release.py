@@ -106,28 +106,35 @@ def main():
         production = sum(part["quantity"] for name, part in parts.items() if not name.startswith("fit_"))
         indicator_note = ""
         if variant in ("headless-led", "oled-led"):
+            del contents["parameters.json"]
+            contents["simple-parameters.json"] = files["cad/simple-parameters.json"]
             contents["VARIANT-NOTES.md"] = bundled_guide(folder + "NOTES.md")
             contents["DC-POWER.md"] = bundled_guide("docs/DC-POWER.md")
             contents["INDICATOR-GUIDE.md"] = bundled_guide("docs/OLED-RGB-VARIANT.md")
             contents["ASSEMBLY-VIEW.md"] = bundled_guide("docs/ASSEMBLY-VIEW.md")
             contents["BOM.md"] = bundled_guide("docs/BOM.md")
             contents["ASSEMBLY.md"] = bundled_guide("docs/ASSEMBLY.md")
-            for preview in ("assembled", "exploded", "component-locations", "edge-detail", "cable-routing"):
+            contents["PRINTING.md"] = bundled_guide("docs/PRINTING.md")
+            contents["GLUE-ASSEMBLY.md"] = bundled_guide("docs/GLUE-ASSEMBLY.md")
+            for preview in ("assembled", "exploded", "component-locations", "edge-detail", "cable-routing", "print-orientations", "service-interior"):
                 path = folder + f"previews/{preview}.png"
                 if path in files:
                     contents[f"views/{preview}.png"] = files[path]
             indicator_note = """
-Read [variant fit and assembly notes](VARIANT-NOTES.md), [DC power instructions](DC-POWER.md) and [indicator behavior](INDICATOR-GUIDE.md) before printing. The OLED/LED supports are integrated into the vertical front wall and serviced through the main lid. Use the [current fastener list](BOM.md#current-ledoled-fasteners) and [assembly instructions](ASSEMBLY.md). This revision uses 20 screws: 12 metal M3 × 12, 4 nylon M3 × 12, 2 M4 × 25 and 2 M5 × 12. Read the variant notes for rigid lid hooks, keyed rails, removable NFC covers, fit samples and slicer support needs. Use the complete matching print set; do not mix revised joints with v0.6 parts. OLED/strip and cable dimensions remain provisional.
+Read [variant notes](VARIANT-NOTES.md), [printing instructions](PRINTING.md), [DC power instructions](DC-POWER.md) and [indicator behavior](INDICATOR-GUIDE.md) before printing. This is the six-piece v0.8 fixed-width design. The reader support has one broad glued joint; the load cell, reader adjustment and rear cover use 12 screws: 4 metal M3 × 16, 4 nylon M3 × 16, 2 M4 × 25 and 2 M5 × 12. Use the [fastener list](BOM.md#current-ledoled-fasteners), [assembly instructions](ASSEMBLY.md) and [bonding guide](GLUE-ASSEMBLY.md). Keep the complete matching set; old lid, rails and sliding guides are incompatible. Each of the six parts prints once; there are no separate fit coupons in this revision. Check actual electronics dimensions before printing.
 
 Use [the assembly-view guide](ASSEMBLY-VIEW.md) and the numbered images in `views/` to locate parts. The companion assembly-viewer ZIP provides a rotatable model and an exploded-view slider.
 
-This case has closed USB walls, BOOT tool access, no jack hole and no converter mount. Drill only after checking the actual jack and wiring; mount an insulated converter on a fixed wall. A 12 V input must pass through a regulated 5 V converter. Open the lid and isolate the converter supply before computer USB programming.
+This case has closed USB walls, no jack hole and no converter mount. Drill only after checking the actual jack and wiring; mount an insulated converter on a fixed wall. A 12 V input must pass through a regulated 5 V converter. Remove the spool and cradle and isolate the converter supply before computer USB programming.
 """
+        parameter_note = ("Current controls are in `simple-parameters.json`; `variant-parameters.json` records the model. Other construction dimensions are explicit in `cad/simple_geometry.py` in the source bundle. See the CAD guide for supported controls."
+                          if variant in ("headless-led", "oled-led") else
+                          "Legacy shared defaults are in `parameters.json`; apply `variant-parameters.json` over those defaults. The source bundle contains the legacy generator.")
         readme = f"""# Spoolancer {version}: {variant}
 
 Prototype print bundle, generated from commit `{commit}`. Physical fit, strength and weighing have not been validated.
 
-There are {len(parts)} STEP/STL pairs including fit samples, and {production} production pieces. STEP and STL are alternative formats for the same part; do not print both. Units are millimeters and parts are placed in print orientation. Print the fit samples first.
+There are {len(parts)} STEP/STL pairs and {production} production pieces. STEP and STL are alternative formats for the same part; do not print both. Units are millimeters and parts are placed in print orientation. Fit samples, where listed, belong only to that revision. Original headless/touch bundles retain legacy mechanics and cannot be mixed with the six-piece LED/OLED set.
 
 | File stem | Quantity | Purpose |
 | --- | ---: | --- |
@@ -135,7 +142,7 @@ There are {len(parts)} STEP/STL pairs including fit samples, and {production} pr
 
 Use individual files in `parts/` with a slicer that supports their format. `assembly/` contains editable FreeCAD and complete STEP reference assemblies, including electronics/reference bodies. Do not send the complete assembly directly to a slicer.
 
-Initial print settings: unfilled PETG, 0.2 mm layers, four walls, five top/bottom layers and 20–25% infill. Inspect bridges and support needs in your printer's slicer. No G-code is included. Shared CAD defaults are in `parameters.json`; apply `variant-parameters.json` over those defaults for this variant. The source bundle contains the generator.
+Initial print settings: unfilled PETG, 0.2 mm layers, four walls, five top/bottom layers and 20–25% infill. Inspect bridges and support needs in your printer's slicer. No G-code is included. {parameter_note}
 {indicator_note}
 
 Follow the [print guide](https://github.com/bloodf/spoolancer/blob/v{version}/docs/PRINTING.md), [BOM](https://github.com/bloodf/spoolancer/blob/v{version}/docs/BOM.md) and [assembly guide](https://github.com/bloodf/spoolancer/blob/v{version}/docs/ASSEMBLY.md). Editable generators, firmware, web UI and full docs are in the companion source ZIP and [repository](https://github.com/bloodf/spoolancer/tree/v{version}).

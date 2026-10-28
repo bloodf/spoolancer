@@ -1,6 +1,6 @@
 # Spoolancer assembly explorer
 
-A standalone, offline-capable 3D view of the **OLED + five LEDs** and **five LEDs + web controls** enclosures. It uses the actual CAD tessellations, with every printed instance independently selectable, including the two identical cradle rails.
+A standalone, offline-capable 3D view of the **OLED + five LEDs** and **five LEDs + web controls** enclosures. The v0.8 models use actual CAD tessellations, with six independently selectable printed pieces: base, one-piece cradle, load-cell spacer, NFC tower, reader cassette and rear cover.
 
 ## Open locally
 
@@ -10,7 +10,7 @@ From this folder, run:
 python3 -m http.server 8874 --bind 127.0.0.1
 ```
 
-Open **http://127.0.0.1:8874/**. A local HTTP server is necessary because browsers restrict module and asset loading through `file://`. No internet connection is needed after downloading the folder. Use a WebGL2-capable browser.
+Open the [local viewer](http://127.0.0.1:8874/). A local HTTP server is necessary because browsers restrict module and asset loading through `file://`. No internet connection is needed after downloading the folder. Use a WebGL2-capable browser.
 
 The viewer is also suitable for static hosting such as GitHub Pages. Every asset URL is relative. This folder is a separate desktop/browser deliverable; **do not copy it into the ESP32's web filesystem**.
 
@@ -19,12 +19,14 @@ The viewer is also suitable for static hosting such as GitHub Pages. Every asset
 - Drag to orbit, scroll or pinch to zoom, right-drag or two-finger drag to pan. Focus the canvas and use arrow keys to pan.
 - Move **Open the assembly** between assembled and exploded positions.
 - Select a numbered component or a list entry. Use **Focus**, **Isolate part** or **Hide part** to inspect it.
-- **See inside housing** makes the base, lid, NFC reader housing and cable-channel cover transparent. Hardware references, the spool, cable/clearance references and part numbers have separate toggles.
-- Alternative low/high cable routes stay hidden in the normal assembly. Select their list entries to inspect each route in isolation; they represent one cable at different positions, not additional wires.
+- **See inside housing** makes the base, cradle, reader tower, cassette and rear cover transparent. Hardware references, the spool, cable/clearance references and part numbers have separate toggles.
+- **Cable / clearances** shows the nominal reader wire loop and its tail into the base. These are representative spaces, not simulated wires at every reader height.
 - **Reset** restores the complete assembled model. **Fit view** frames the visible parts. Standard front, side and top views are available.
 - Both light and dark themes work locally; the preference is saved when browser storage is available.
 
-No converter, converter mount or reserved converter volume is modeled. Fit and insulate a 12 V-to-5 V converter against a suitable fixed wall only after checking the actual board, cable route and clearances. Hardware envelopes remain provisional. Any cable paths shown are dimensional references, not qualified cable assemblies. Electrical terminations, some fasteners, adhesive and the user-drilled jack are not represented. Exploded offsets illustrate component locations, not a collision-free assembly sequence. Original CAD coordinates are retained at 0% explosion. Flat face shading preserves mechanical edges; the viewer does not smooth or modify the shape.
+No converter, converter mount or reserved converter volume is modeled. Fit and insulate a 12 V-to-5 V converter against a suitable fixed wall only after checking the actual board, cable route and clearances. Hardware envelopes remain provisional. Any cable paths shown are dimensional references, not qualified cable assemblies. Electrical terminations, threads, screw drives, adhesive and the user-drilled jack are not represented. Exploded offsets illustrate component locations, not a collision-free assembly sequence. Original CAD coordinates are retained at 0% explosion. Flat face shading preserves mechanical edges; the viewer does not smooth or modify the shape.
+
+The spool and glued reader tower sit on one floating cradle with integral ramps and fixed sides. Only reader height adjusts. The base and front controls stay fixed. To service the base, remove the spool, disconnect power and the NFC lead, then remove the two moving-end load-cell screws and lift the cradle while supporting its spacer. The viewer's exploded offsets do not illustrate this service motion. Physical fit, strength, bond retention and weighing accuracy remain untested.
 
 ## Rebuild and verify from the repository
 

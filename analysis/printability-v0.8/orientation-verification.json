@@ -1,0 +1,727 @@
+{
+  "physical_validation": false,
+  "all_60_project_transforms_preserve_exported_bed_face": true,
+  "meaning": "No tilt, inversion or scaling; Arrange may translate and rotate in the XY plane. The orientation_preserved field in slice summaries refers to the exported bed face.",
+  "projects": [
+    {
+      "revision": "v0.7",
+      "variant": "headless-led",
+      "printer": "p1s",
+      "part": "base",
+      "project_sha256": "3292b8c0de09128cb993887736c13f1406fd6d30b973b200f9f00cee3e4f2599",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        90.0
+      ]
+    },
+    {
+      "revision": "v0.7",
+      "variant": "headless-led",
+      "printer": "p1s",
+      "part": "carrier",
+      "project_sha256": "9b3d3d672ccdb011e6feb41a7bf11e40fce134409d2387520fd9f000fa05d798",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "revision": "v0.7",
+      "variant": "headless-led",
+      "printer": "p1s",
+      "part": "nfc_cable_cover",
+      "project_sha256": "985428d3441a1fc57c576ccc56b5bc224b0d62c93067f24c1e6a895b5e1a899c",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        180.0
+      ]
+    },
+    {
+      "revision": "v0.7",
+      "variant": "headless-led",
+      "printer": "p1s",
+      "part": "nfc_guide",
+      "project_sha256": "a8ec0ce699898409afd672d4ecc1e9aa16a6efa7b99f078a82e191f165d4be92",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        -90.0
+      ]
+    },
+    {
+      "revision": "v0.7",
+      "variant": "headless-led",
+      "printer": "p1s",
+      "part": "nfc_pod",
+      "project_sha256": "0d9ddc87d98c5a986d8c5236e05ee2b1532d0b25aae46572a3f27c89ff163a18",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        90.0
+      ]
+    },
+    {
+      "revision": "v0.7",
+      "variant": "headless-led",
+      "printer": "p1s",
+      "part": "nfc_pod_cover",
+      "project_sha256": "86e7ea845074d9ac7a4794786ac3eb400f208195b940d9c4b54eb8a99ebce110",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        -90.0
+      ]
+    },
+    {
+      "revision": "v0.7",
+      "variant": "headless-led",
+      "printer": "p1s",
+      "part": "rim_rail",
+      "project_sha256": "3a5041a45ec36bf2c5ca2c6ff3c19c9d0856cf19a4e4447493e6f1d7f2bb9c17",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        180.0
+      ]
+    },
+    {
+      "revision": "v0.7",
+      "variant": "headless-led",
+      "printer": "p1s",
+      "part": "side_guide",
+      "project_sha256": "c56c7266bc1e766bfb37b9426b8306649f0c1f916730623fad26b742e83069ca",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        -90.0
+      ]
+    },
+    {
+      "revision": "v0.7",
+      "variant": "headless-led",
+      "printer": "p1s",
+      "part": "top_cover",
+      "project_sha256": "354637881741e39658d9843e077202559dc0ce5928627992dc3b974d901dc280",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "revision": "v0.7",
+      "variant": "headless-led",
+      "printer": "u1",
+      "part": "base",
+      "project_sha256": "d0dc674cd66bd74ad21e9f26bc6bc2b56dc646306b06b5898abca60c7691697b",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        90.0
+      ]
+    },
+    {
+      "revision": "v0.7",
+      "variant": "headless-led",
+      "printer": "u1",
+      "part": "carrier",
+      "project_sha256": "02f406b0668b589346462ee2c97ad5096b0db16a58d65c1fe8de3d2a0c15f410",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "revision": "v0.7",
+      "variant": "headless-led",
+      "printer": "u1",
+      "part": "nfc_cable_cover",
+      "project_sha256": "f7f87a2c527316badea60dbabdce5ee22a0f89c8e523eca1b5772ab0705af918",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        180.0
+      ]
+    },
+    {
+      "revision": "v0.7",
+      "variant": "headless-led",
+      "printer": "u1",
+      "part": "nfc_guide",
+      "project_sha256": "0e1dea71953dc8463dea60e5de30246937d6cc6e8b2c301703921c2fb0c2e863",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        -90.0
+      ]
+    },
+    {
+      "revision": "v0.7",
+      "variant": "headless-led",
+      "printer": "u1",
+      "part": "nfc_pod",
+      "project_sha256": "9628985cf3ff580ee4279c9a5ee277f4cbb41444ae469d000d57be66e96ba638",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        90.0
+      ]
+    },
+    {
+      "revision": "v0.7",
+      "variant": "headless-led",
+      "printer": "u1",
+      "part": "nfc_pod_cover",
+      "project_sha256": "410afdcf10e2eebee1e27c8c7c303e766b57007dc9afc6502979c9985e916031",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        -90.0
+      ]
+    },
+    {
+      "revision": "v0.7",
+      "variant": "headless-led",
+      "printer": "u1",
+      "part": "rim_rail",
+      "project_sha256": "357871fdd2b9343d446af06f214cc4fd9be208ea93b5cc32b0cce2c04b847177",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        180.0
+      ]
+    },
+    {
+      "revision": "v0.7",
+      "variant": "headless-led",
+      "printer": "u1",
+      "part": "side_guide",
+      "project_sha256": "b686999ffdce3194520c3c482f93cfe6e00c2cdb8f917a5dfb06dabceb52ed89",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        -90.0
+      ]
+    },
+    {
+      "revision": "v0.7",
+      "variant": "headless-led",
+      "printer": "u1",
+      "part": "top_cover",
+      "project_sha256": "8bb29fed09c8e26b9be83d1054136da8c8fdd118a36cfec2eb2c167985e2a5cb",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "revision": "v0.7",
+      "variant": "oled-led",
+      "printer": "p1s",
+      "part": "base",
+      "project_sha256": "66e4d299c2bd06a8952aca4defed62a748a09d876103890871437e510edc777d",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        90.0
+      ]
+    },
+    {
+      "revision": "v0.7",
+      "variant": "oled-led",
+      "printer": "p1s",
+      "part": "carrier",
+      "project_sha256": "27b58910e8935d75132578bc745a20c13c331117ff004b6e7a33e8a82a3ccca1",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "revision": "v0.7",
+      "variant": "oled-led",
+      "printer": "p1s",
+      "part": "nfc_cable_cover",
+      "project_sha256": "7c428435c827c2b3683629586582d7bc78616775e6258ba5515ffb4bc663f5bc",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        180.0
+      ]
+    },
+    {
+      "revision": "v0.7",
+      "variant": "oled-led",
+      "printer": "p1s",
+      "part": "nfc_guide",
+      "project_sha256": "dd783e8e4454d3eef93af5a42107afe87c2862a22ff789b53ad42a726e0687e5",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        -90.0
+      ]
+    },
+    {
+      "revision": "v0.7",
+      "variant": "oled-led",
+      "printer": "p1s",
+      "part": "nfc_pod",
+      "project_sha256": "71394aa21ce814b0a5564905c9f08301d8c56f37da9283e4a9379a49e1ba2f40",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        90.0
+      ]
+    },
+    {
+      "revision": "v0.7",
+      "variant": "oled-led",
+      "printer": "p1s",
+      "part": "nfc_pod_cover",
+      "project_sha256": "59b9f48eed94fe97a8be03ace6745f4f3c3c42cf3645b1dd5da16abec40d428f",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        -90.0
+      ]
+    },
+    {
+      "revision": "v0.7",
+      "variant": "oled-led",
+      "printer": "p1s",
+      "part": "rim_rail",
+      "project_sha256": "c8ab6d056b9a99cbb4427712db46bb48626695eea63429cc5516e09aa9162283",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        180.0
+      ]
+    },
+    {
+      "revision": "v0.7",
+      "variant": "oled-led",
+      "printer": "p1s",
+      "part": "side_guide",
+      "project_sha256": "c7ae72be90fee8f26c4eab272742dc8bd8983dfcd09ef866cd49cc6167fb453c",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        -90.0
+      ]
+    },
+    {
+      "revision": "v0.7",
+      "variant": "oled-led",
+      "printer": "p1s",
+      "part": "top_cover",
+      "project_sha256": "9f176454993b96cce9fe75f1f4d9bf124a62bfd24b04ccdea9faab3bf549fd42",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "revision": "v0.7",
+      "variant": "oled-led",
+      "printer": "u1",
+      "part": "base",
+      "project_sha256": "cb258a7d457a5bb921b55abd1ba482cc3087cf4f95594e06e05170ac94eca85b",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        90.0
+      ]
+    },
+    {
+      "revision": "v0.7",
+      "variant": "oled-led",
+      "printer": "u1",
+      "part": "carrier",
+      "project_sha256": "12a0820aaae7ab842a01738211ee7c41a9c19935ef23847d22df3b173d0b95bc",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "revision": "v0.7",
+      "variant": "oled-led",
+      "printer": "u1",
+      "part": "nfc_cable_cover",
+      "project_sha256": "52098ea53bc9426a3fffbc92cf23f59a8c0969d72991ee719eb43dbc5d952659",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        180.0
+      ]
+    },
+    {
+      "revision": "v0.7",
+      "variant": "oled-led",
+      "printer": "u1",
+      "part": "nfc_guide",
+      "project_sha256": "1c5aad0b6547079f6da9dc3caa47531dafea5b59ae071f64a0088b1980e88bf9",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        -90.0
+      ]
+    },
+    {
+      "revision": "v0.7",
+      "variant": "oled-led",
+      "printer": "u1",
+      "part": "nfc_pod",
+      "project_sha256": "4a3a4f637c778a86a339597877679660168b26b2cb0af8003e5e782f2a6b2ec0",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        90.0
+      ]
+    },
+    {
+      "revision": "v0.7",
+      "variant": "oled-led",
+      "printer": "u1",
+      "part": "nfc_pod_cover",
+      "project_sha256": "ea001a483e54189bfacc76bd23791e5177f4fd34599a9c8722bdaaffe4a7ab28",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        -90.0
+      ]
+    },
+    {
+      "revision": "v0.7",
+      "variant": "oled-led",
+      "printer": "u1",
+      "part": "rim_rail",
+      "project_sha256": "6d5d4475f8082c47240821938a2cb6ce9e6495ac7d11bdd6392d32cf83ef4e0a",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        180.0
+      ]
+    },
+    {
+      "revision": "v0.7",
+      "variant": "oled-led",
+      "printer": "u1",
+      "part": "side_guide",
+      "project_sha256": "19ae9ed7fd21e61420ec451f9362e39688d80e7bdf4b3810191af0609352ff7f",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        -90.0
+      ]
+    },
+    {
+      "revision": "v0.7",
+      "variant": "oled-led",
+      "printer": "u1",
+      "part": "top_cover",
+      "project_sha256": "d50ade67743670687f2afb2bf5af951d9204c400b3c7f0679a6544fea6192dfc",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "revision": "v0.8",
+      "variant": "headless-led",
+      "printer": "p1s",
+      "part": "base",
+      "project_sha256": "bcccd10ab356fb313c82e0d11e9049ec0f68712b259c07ffb9e07411d020c09b",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "revision": "v0.8",
+      "variant": "headless-led",
+      "printer": "p1s",
+      "part": "cell_spacer",
+      "project_sha256": "8f9a1230a804db27439754c6df9c1fbf2e3f304d84cd0413b6f1935cd23f691d",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "revision": "v0.8",
+      "variant": "headless-led",
+      "printer": "p1s",
+      "part": "cradle",
+      "project_sha256": "25e01a00fb75a9059a76dd24f00157905099c49d42b531e415994bbd56bdbcfb",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "revision": "v0.8",
+      "variant": "headless-led",
+      "printer": "p1s",
+      "part": "nfc_cassette",
+      "project_sha256": "4fe06a68d7704de920f5d8dff939304e3b96f16a5c43601b31e7ddadf5a13f43",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        90.0
+      ]
+    },
+    {
+      "revision": "v0.8",
+      "variant": "headless-led",
+      "printer": "p1s",
+      "part": "nfc_cover",
+      "project_sha256": "49dbd3d362a277830bb63819b79d041cc1adbbe7359c2b98be45d333def42e3e",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "revision": "v0.8",
+      "variant": "headless-led",
+      "printer": "p1s",
+      "part": "nfc_tower",
+      "project_sha256": "c3a88dfbd11d9f28e41baee969e8d8f7b65f224f6e132d4173d86f0f3667f9f7",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "revision": "v0.8",
+      "variant": "headless-led",
+      "printer": "u1",
+      "part": "base",
+      "project_sha256": "44de5888a2e4b3cdaa7762825fe8afa13c88e3e5b5e6d34928a335c1fa6801ec",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "revision": "v0.8",
+      "variant": "headless-led",
+      "printer": "u1",
+      "part": "cell_spacer",
+      "project_sha256": "8e93b996e622c7f34e668c2d819df86435fc0e34d6abf728f266e2d16b38351d",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "revision": "v0.8",
+      "variant": "headless-led",
+      "printer": "u1",
+      "part": "cradle",
+      "project_sha256": "3379164352b30a30c4321d9693953f5e5f2ba9fbd315630d8be9f7d93ca88440",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "revision": "v0.8",
+      "variant": "headless-led",
+      "printer": "u1",
+      "part": "nfc_cassette",
+      "project_sha256": "469e86ad4ba52be4386f7c09b925835c9a4b86d09f17d76871574329d4f72af3",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        90.0
+      ]
+    },
+    {
+      "revision": "v0.8",
+      "variant": "headless-led",
+      "printer": "u1",
+      "part": "nfc_cover",
+      "project_sha256": "fb3bb4a1bab7675a62c38e4a3aa768c0c978012577468234fa08e864b9a2832a",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "revision": "v0.8",
+      "variant": "headless-led",
+      "printer": "u1",
+      "part": "nfc_tower",
+      "project_sha256": "bdeb720b123a7275a2afde89aaa6735d184b6e42f247b02196155535dd09583f",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "revision": "v0.8",
+      "variant": "oled-led",
+      "printer": "p1s",
+      "part": "base",
+      "project_sha256": "506c6d6a61b8b4fdbc4256ae91d29cb97a0d700419603899d4e7f77d3b72ec12",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "revision": "v0.8",
+      "variant": "oled-led",
+      "printer": "p1s",
+      "part": "cell_spacer",
+      "project_sha256": "996db69560f8c54a03d95997a21553c209ffa8d0f0fcc510014b72755eb383c2",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "revision": "v0.8",
+      "variant": "oled-led",
+      "printer": "p1s",
+      "part": "cradle",
+      "project_sha256": "1583e9c333c98ab35ad6f788306d61ada1693b77c120625bad3bdfb59cd90169",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "revision": "v0.8",
+      "variant": "oled-led",
+      "printer": "p1s",
+      "part": "nfc_cassette",
+      "project_sha256": "6e606db8b8eb1bd53b56305caed4030833354dbbe193acff5e0d8cb3d1024500",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        90.0
+      ]
+    },
+    {
+      "revision": "v0.8",
+      "variant": "oled-led",
+      "printer": "p1s",
+      "part": "nfc_cover",
+      "project_sha256": "c30ffc58ac41d394856fcdf60fafea34741464ffc63ab9af481b818db49e805a",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "revision": "v0.8",
+      "variant": "oled-led",
+      "printer": "p1s",
+      "part": "nfc_tower",
+      "project_sha256": "5287de557036faf67469e50e20565186c2eb8a13fdc95f8bccdb380b45c9815b",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "revision": "v0.8",
+      "variant": "oled-led",
+      "printer": "u1",
+      "part": "base",
+      "project_sha256": "4f2f4b75b5feab6b0d28b76dc9774f926c4e3bc96c24d4f7785d8f7064cc0055",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "revision": "v0.8",
+      "variant": "oled-led",
+      "printer": "u1",
+      "part": "cell_spacer",
+      "project_sha256": "c098f01a103a114ce467fda2cfa52d573a6bde5ebf6146c2aa775373342355cc",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "revision": "v0.8",
+      "variant": "oled-led",
+      "printer": "u1",
+      "part": "cradle",
+      "project_sha256": "9928ee970b88798723977910cd54f8992e2ea047cb582a9f4f5e784cff2b39f0",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "revision": "v0.8",
+      "variant": "oled-led",
+      "printer": "u1",
+      "part": "nfc_cassette",
+      "project_sha256": "2e44958119654192593d047f536be6865da54bcb82a3653d345c2d6b230fed41",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        90.0
+      ]
+    },
+    {
+      "revision": "v0.8",
+      "variant": "oled-led",
+      "printer": "u1",
+      "part": "nfc_cover",
+      "project_sha256": "b116b5342da86bef563bf27c5fc6944bd3a183ecb8698e53627dcc87d06a0984",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "revision": "v0.8",
+      "variant": "oled-led",
+      "printer": "u1",
+      "part": "nfc_tower",
+      "project_sha256": "ebc484a82fbaad48736cccc2d5d18b1c9b1e7976f219d6c1255c7e707e19dc8a",
+      "bed_face_preserved": true,
+      "in_plane_rotation_degrees_by_transform": [
+        0.0,
+        0.0
+      ]
+    }
+  ]
+}

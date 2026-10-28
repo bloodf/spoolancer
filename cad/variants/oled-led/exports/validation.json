@@ -1,6 +1,8 @@
 {
-  "revision": "v0.7-oled-led-simplified-fasteners-fit-prototype",
+  "revision": "v0.8-print-first-fit-prototype",
   "units": "mm",
+  "variant": "oled-led",
+  "assembly_stem": "spoolancer-v0.8-oled-led",
   "physical_validation": false,
   "parts": {
     "base": {
@@ -8,3383 +10,515 @@
       "solid_count": 1,
       "closed_mesh": true,
       "mesh_self_intersections": false,
-      "triangle_count": 12802,
+      "triangle_count": 4860,
       "print_z_min_mm": 0.0,
-      "volume_mm3": 147203.22,
+      "volume_mm3": 198468.561666,
       "print_bounds_mm": [
         170.0,
-        160.0,
-        35.0
+        170.0,
+        32.0
       ],
       "step_bounds_mm": [
         170.0,
-        160.0,
-        35.0
+        170.0,
+        32.0
       ],
-      "step_z_min_mm": -0.0,
+      "step_z_min_mm": 0,
       "files": {
         "stl": "base.stl",
         "step": "base.step"
       },
       "quantity": 1
     },
-    "carrier": {
+    "cradle": {
       "solid_valid": true,
       "solid_count": 1,
       "closed_mesh": true,
       "mesh_self_intersections": false,
-      "triangle_count": 7700,
+      "triangle_count": 3200,
       "print_z_min_mm": 0.0,
-      "volume_mm3": 121486.36,
+      "volume_mm3": 341112.221916,
       "print_bounds_mm": [
+        155.399994,
         140.0,
-        130.0,
-        25.3
+        58.0
       ],
       "step_bounds_mm": [
+        155.4,
         140.0,
-        130.0,
-        25.3
+        58.0
       ],
-      "step_z_min_mm": 0.0,
+      "step_z_min_mm": 0,
       "files": {
-        "stl": "carrier.stl",
-        "step": "carrier.step"
+        "stl": "cradle.stl",
+        "step": "cradle.step"
       },
       "quantity": 1
     },
-    "rim_rail": {
+    "cell_spacer": {
       "solid_valid": true,
       "solid_count": 1,
       "closed_mesh": true,
       "mesh_self_intersections": false,
-      "triangle_count": 1622,
+      "triangle_count": 708,
       "print_z_min_mm": 0.0,
-      "volume_mm3": 44656.8,
+      "volume_mm3": 11293.238806,
       "print_bounds_mm": [
-        140.0,
-        29.33,
-        31.0
+        28.0,
+        27.0,
+        15.8
       ],
       "step_bounds_mm": [
-        140.0,
-        29.327767,
-        31.0
+        28.0,
+        27.0,
+        15.8
       ],
-      "step_z_min_mm": -0.0,
+      "step_z_min_mm": 0,
       "files": {
-        "stl": "rim_rail.stl",
-        "step": "rim_rail.step"
-      },
-      "quantity": 2
-    },
-    "side_guide": {
-      "solid_valid": true,
-      "solid_count": 1,
-      "closed_mesh": true,
-      "mesh_self_intersections": false,
-      "triangle_count": 772,
-      "print_z_min_mm": 0.0,
-      "volume_mm3": 17458.72,
-      "print_bounds_mm": [
-        52.0,
-        130.0,
-        16.0
-      ],
-      "step_bounds_mm": [
-        52.0,
-        130.0,
-        16.0
-      ],
-      "step_z_min_mm": -0.0,
-      "files": {
-        "stl": "side_guide.stl",
-        "step": "side_guide.step"
+        "stl": "cell_spacer.stl",
+        "step": "cell_spacer.step"
       },
       "quantity": 1
     },
-    "nfc_guide": {
+    "nfc_tower": {
       "solid_valid": true,
       "solid_count": 1,
       "closed_mesh": true,
       "mesh_self_intersections": false,
-      "triangle_count": 8942,
+      "triangle_count": 2930,
       "print_z_min_mm": 0.0,
-      "volume_mm3": 28419.05,
+      "volume_mm3": 101087.695441,
       "print_bounds_mm": [
-        145.0,
-        130.0,
-        32.9
+        153.300003,
+        100.0,
+        30.0
       ],
       "step_bounds_mm": [
-        145.0,
-        130.0,
-        32.9
+        153.3,
+        100.0,
+        30.0
       ],
-      "step_z_min_mm": -0.0,
+      "step_z_min_mm": 0,
       "files": {
-        "stl": "nfc_guide.stl",
-        "step": "nfc_guide.step"
+        "stl": "nfc_tower.stl",
+        "step": "nfc_tower.step"
       },
       "quantity": 1
     },
-    "nfc_cable_cover": {
+    "nfc_cassette": {
       "solid_valid": true,
       "solid_count": 1,
       "closed_mesh": true,
       "mesh_self_intersections": false,
-      "triangle_count": 5790,
+      "triangle_count": 824,
       "print_z_min_mm": 0.0,
-      "volume_mm3": 6593.81,
+      "volume_mm3": 15818.059837,
       "print_bounds_mm": [
-        145.0,
-        38.0,
-        30.4
+        47.200001,
+        82.0,
+        11.4
       ],
       "step_bounds_mm": [
-        145.0,
-        38.0,
-        30.4
+        47.2,
+        82.0,
+        11.4
       ],
-      "step_z_min_mm": -0.0,
+      "step_z_min_mm": 0,
       "files": {
-        "stl": "nfc_cable_cover.stl",
-        "step": "nfc_cable_cover.step"
+        "stl": "nfc_cassette.stl",
+        "step": "nfc_cassette.step"
       },
       "quantity": 1
     },
-    "nfc_pod": {
+    "nfc_cover": {
       "solid_valid": true,
       "solid_count": 1,
       "closed_mesh": true,
       "mesh_self_intersections": false,
-      "triangle_count": 1680,
+      "triangle_count": 708,
       "print_z_min_mm": 0.0,
-      "volume_mm3": 8563.05,
+      "volume_mm3": 44074.927439,
       "print_bounds_mm": [
-        46.8,
-        71.0,
-        13.6
-      ],
-      "step_bounds_mm": [
-        46.8,
-        71.0,
-        13.6
-      ],
-      "step_z_min_mm": -0.0,
-      "files": {
-        "stl": "nfc_pod.stl",
-        "step": "nfc_pod.step"
-      },
-      "quantity": 1
-    },
-    "nfc_pod_cover": {
-      "solid_valid": true,
-      "solid_count": 1,
-      "closed_mesh": true,
-      "mesh_self_intersections": false,
-      "triangle_count": 4790,
-      "print_z_min_mm": 0.0,
-      "volume_mm3": 4432.94,
-      "print_bounds_mm": [
-        20.1,
-        46.8,
-        55.55
-      ],
-      "step_bounds_mm": [
-        20.1,
-        46.8,
-        55.55
-      ],
-      "step_z_min_mm": 0.0,
-      "files": {
-        "stl": "nfc_pod_cover.stl",
-        "step": "nfc_pod_cover.step"
-      },
-      "quantity": 1
-    },
-    "top_cover": {
-      "solid_valid": true,
-      "solid_count": 1,
-      "closed_mesh": true,
-      "mesh_self_intersections": false,
-      "triangle_count": 840,
-      "print_z_min_mm": 0.0,
-      "volume_mm3": 22363.37,
-      "print_bounds_mm": [
-        170.0,
-        160.0,
-        6.5
-      ],
-      "step_bounds_mm": [
-        170.0,
-        160.0,
-        6.5
-      ],
-      "step_z_min_mm": -0.0,
-      "files": {
-        "stl": "top_cover.stl",
-        "step": "top_cover.step"
-      },
-      "quantity": 1
-    },
-    "fit_nfc": {
-      "solid_valid": true,
-      "solid_count": 1,
-      "closed_mesh": true,
-      "mesh_self_intersections": false,
-      "triangle_count": 1680,
-      "print_z_min_mm": 0.0,
-      "volume_mm3": 8563.05,
-      "print_bounds_mm": [
-        46.8,
-        71.0,
-        13.6
-      ],
-      "step_bounds_mm": [
-        46.8,
-        71.0,
-        13.6
-      ],
-      "step_z_min_mm": -0.0,
-      "files": {
-        "stl": "fit_nfc.stl",
-        "step": "fit_nfc.step"
-      },
-      "quantity": 1
-    },
-    "fit_esp32": {
-      "solid_valid": true,
-      "solid_count": 1,
-      "closed_mesh": true,
-      "mesh_self_intersections": false,
-      "triangle_count": 310,
-      "print_z_min_mm": 0.0,
-      "volume_mm3": 9742.42,
-      "print_bounds_mm": [
-        69.0,
-        41.0,
-        33.0
-      ],
-      "step_bounds_mm": [
-        69.0,
-        41.0,
-        33.0
-      ],
-      "step_z_min_mm": 0.0,
-      "files": {
-        "stl": "fit_esp32.stl",
-        "step": "fit_esp32.step"
-      },
-      "quantity": 1
-    },
-    "fit_cell": {
-      "solid_valid": true,
-      "solid_count": 1,
-      "closed_mesh": true,
-      "mesh_self_intersections": false,
-      "triangle_count": 1372,
-      "print_z_min_mm": 0.0,
-      "volume_mm3": 5512.51,
-      "print_bounds_mm": [
-        24.0,
-        80.0,
+        147.300003,
+        100.0,
         3.0
       ],
       "step_bounds_mm": [
-        24.0,
-        80.0,
+        147.3,
+        100.0,
         3.0
       ],
-      "step_z_min_mm": 0.0,
+      "step_z_min_mm": 0,
       "files": {
-        "stl": "fit_cell.stl",
-        "step": "fit_cell.step"
-      },
-      "quantity": 1
-    },
-    "fit_led_face": {
-      "solid_valid": true,
-      "solid_count": 1,
-      "closed_mesh": true,
-      "mesh_self_intersections": false,
-      "triangle_count": 2976,
-      "print_z_min_mm": 0.0,
-      "volume_mm3": 1884.38,
-      "print_bounds_mm": [
-        89.33,
-        12.5,
-        2.0
-      ],
-      "step_bounds_mm": [
-        89.333333,
-        12.5,
-        2.0
-      ],
-      "step_z_min_mm": -0.0,
-      "files": {
-        "stl": "fit_led_face.stl",
-        "step": "fit_led_face.step"
-      },
-      "quantity": 1
-    },
-    "fit_led_carrier": {
-      "solid_valid": true,
-      "solid_count": 1,
-      "closed_mesh": true,
-      "mesh_self_intersections": false,
-      "triangle_count": 3008,
-      "print_z_min_mm": 0.0,
-      "volume_mm3": 3712.65,
-      "print_bounds_mm": [
-        89.33,
-        12.5,
-        6.0
-      ],
-      "step_bounds_mm": [
-        89.333333,
-        12.5,
-        6.0
-      ],
-      "step_z_min_mm": 0.0,
-      "files": {
-        "stl": "fit_led_carrier.stl",
-        "step": "fit_led_carrier.step"
-      },
-      "quantity": 1
-    },
-    "fit_oled_face": {
-      "solid_valid": true,
-      "solid_count": 1,
-      "closed_mesh": true,
-      "mesh_self_intersections": false,
-      "triangle_count": 96,
-      "print_z_min_mm": 0.0,
-      "volume_mm3": 2651.91,
-      "print_bounds_mm": [
-        32.3,
-        30.35,
-        8.6
-      ],
-      "step_bounds_mm": [
-        32.3,
-        30.35,
-        8.6
-      ],
-      "step_z_min_mm": -0.0,
-      "files": {
-        "stl": "fit_oled_face.stl",
-        "step": "fit_oled_face.step"
+        "stl": "nfc_cover.stl",
+        "step": "nfc_cover.step"
       },
       "quantity": 1
     }
   },
   "geometry_checks": {
-    "carrier_body_vertical_gap_mm": 3.0,
-    "carrier_cover_plan_gap_mm": 2.0,
-    "esp_wire_allowance_to_carrier_ribs_mm": 2.4,
-    "esp_wire_allowance_to_relief_roof_mm": 1.0,
-    "esp_relief_roof_thickness_mm": 1.4,
-    "nfc_patch_thickness_mm": 1.2,
-    "initial_stop_gap_mm_unvalidated": 1.0,
-    "cell_wire_allowance_front_wall_gap_mm": 1.0,
-    "boot_gpio": 0,
+    "stem": "spoolancer-v0.8-oled-led",
+    "variant": "oled-led",
+    "production_part_count": 6,
+    "revision": "v0.8-print-first-fit-prototype",
+    "fastener_schedule": {
+      "total_screws": 12,
+      "dimensional_sizes": [
+        "M3x16",
+        "M4x25",
+        "M5x12"
+      ],
+      "screws": [
+        {
+          "size": "M3x16",
+          "material": "metal",
+          "quantity": 4,
+          "use": "Adjustable stops"
+        },
+        {
+          "size": "M3x16",
+          "material": "nylon",
+          "quantity": 4,
+          "use": "Reader height and rear cover"
+        },
+        {
+          "size": "M4x25",
+          "material": "metal",
+          "quantity": 2,
+          "use": "Moving load-cell end"
+        },
+        {
+          "size": "M5x12",
+          "material": "metal",
+          "quantity": 2,
+          "use": "Fixed load-cell end"
+        }
+      ],
+      "nuts": {
+        "M3_nylon_insert_locknut": 4,
+        "M3_all_nylon": 4
+      },
+      "washers": {
+        "M3_nylon": 6,
+        "M4_metal": 2,
+        "M5_metal": 2
+      },
+      "physical_validation": false
+    },
+    "spool_axis": "X",
+    "base_envelope_mm": [
+      170,
+      170,
+      32
+    ],
+    "assembly_footprint_mm": [
+      173.7,
+      170
+    ],
+    "cradle_floor_mm": 8,
+    "minimum_general_wall_mm": 3,
+    "spool_bay_width_mm": 104,
+    "spool_right_datum_x_mm": 52,
+    "spool_reference_gap_mm": 0.5,
+    "reader_height_range_mm": [
+      85.0,
+      170.0
+    ],
+    "spool_center_z_mm": 154.6495457622364,
+    "load_cell_flexure_y_range_mm": [
+      -40,
+      -16
+    ],
+    "stop_gap_mm": 1,
+    "load_cell_engagement_mm": {
+      "M4": 5.2,
+      "M5": 5.2
+    },
+    "v_apex_z_mm": 39.179491924311236,
+    "v_slope": 0.5773502691896256,
+    "v_angle_degrees": 30.0,
+    "cell_stack_mm": {
+      "cell_bottom": 12,
+      "cell_top": 24.7,
+      "spacer_top": 40.5,
+      "cradle_top": 48.5,
+      "moving_head_seat": 43.7
+    },
+    "service": "Remove spool and two moving-end M4 screws to lift cradle, spacer and tower; fixed M5 screws remain installed. Disconnect the NFC lead before lifting fully.",
+    "glue_joint": "Broad tower bottom and three-sided nest only. Dry-fit and verify clearance before permanent bonding.",
+    "boot_access": "Remove spool; insert a straight nonconductive probe vertically through the 6 mm cradle hole at X=-33,Y=-6. Estimated button top Z=12.6; verify actual board position before final mounting.",
+    "boot_center_estimate_mm": [
+      -33.0,
+      -6.0,
+      12.6
+    ],
+    "boot_access_diameter_mm": 6.0,
+    "fit_notes": [
+      "Generic electronics, LED strip width and connector envelopes require actual-part checks.",
+      "Wire depiction is representative; route a gentle slack loop and check weighing zero throughout travel.",
+      "Tower face is 3 mm thick; verify NFC read distance with the actual tag before final assembly.",
+      "Screw thread form, cell tapped-hole depths and final stop setting must be checked on received load cell."
+    ],
+    "physical_validation": false,
     "assembled_printed_bounds_mm": [
+      170.4,
       170.0,
-      160.0,
-      187.0
-    ],
-    "maximum_adjusted_assembly_bounds_mm": [
-      170.0,
-      160.0,
-      198.4
-    ],
-    "nfc_face_to_spool_mm": 2.0,
-    "nfc_antenna_to_spool_nominal_mm": 4.0,
-    "nominal_unloaded_height_with_feet_mm": 188.4,
-    "reference_loaded_height_with_feet_mm": 256.87,
-    "reference_loaded_depth_mm": 200
+      202.0
+    ]
   },
-  "edge_finishing": {
-    "operations": {
-      "rail_locator_nose_-55": {
-        "operation": "chamfer",
-        "radius_or_chamfer_mm": 0.3,
-        "selected_edge_count": 4,
-        "selected_edges": [
-          {
-            "index": 1,
-            "bounds_mm": [
-              -58.0,
-              57.5,
-              48.2,
-              -52.0,
-              57.5,
-              48.2
-            ]
-          },
-          {
-            "index": 2,
-            "bounds_mm": [
-              -58.0,
-              60.7,
-              48.2,
-              -52.0,
-              60.7,
-              48.2
-            ]
-          },
-          {
-            "index": 3,
-            "bounds_mm": [
-              -58.0,
-              57.5,
-              48.2,
-              -58.0,
-              60.7,
-              48.2
-            ]
-          },
-          {
-            "index": 4,
-            "bounds_mm": [
-              -52.0,
-              57.5,
-              48.2,
-              -52.0,
-              60.7,
-              48.2
-            ]
-          }
-        ],
-        "before_volume_mm3": 44.28,
-        "after_volume_mm3": 43.554673,
-        "removed_volume_mm3": 0.725327,
-        "added_volume_mm3": 0.0,
-        "valid_single_solid": true,
-        "selection_evidence": "Explicit geometric bounds; no fallback or silent edge skipping"
-      },
-      "rail_locator_nose_55": {
-        "operation": "chamfer",
-        "radius_or_chamfer_mm": 0.3,
-        "selected_edge_count": 4,
-        "selected_edges": [
-          {
-            "index": 1,
-            "bounds_mm": [
-              52.0,
-              57.5,
-              48.2,
-              58.0,
-              57.5,
-              48.2
-            ]
-          },
-          {
-            "index": 2,
-            "bounds_mm": [
-              52.0,
-              60.7,
-              48.2,
-              58.0,
-              60.7,
-              48.2
-            ]
-          },
-          {
-            "index": 3,
-            "bounds_mm": [
-              52.0,
-              57.5,
-              48.2,
-              52.0,
-              60.7,
-              48.2
-            ]
-          },
-          {
-            "index": 4,
-            "bounds_mm": [
-              58.0,
-              57.5,
-              48.2,
-              58.0,
-              60.7,
-              48.2
-            ]
-          }
-        ],
-        "before_volume_mm3": 44.28,
-        "after_volume_mm3": 43.554673,
-        "removed_volume_mm3": 0.725327,
-        "added_volume_mm3": 0.0,
-        "valid_single_solid": true,
-        "selection_evidence": "Explicit geometric bounds; no fallback or silent edge skipping"
-      },
-      "front_control_opening_bevels": {
-        "operation": "chamfer",
-        "radius_or_chamfer_mm": 0.4,
-        "selected_edge_count": 9,
-        "selected_edges": [
-          {
-            "index": 5,
-            "bounds_mm": [
-              -14.53333,
-              -85.0,
-              25.8,
-              -8.13333,
-              -85.0,
-              32.2
-            ]
-          },
-          {
-            "index": 6,
-            "bounds_mm": [
-              2.13333,
-              -85.0,
-              25.8,
-              8.53333,
-              -85.0,
-              32.2
-            ]
-          },
-          {
-            "index": 7,
-            "bounds_mm": [
-              18.8,
-              -85.0,
-              25.8,
-              25.2,
-              -85.0,
-              32.2
-            ]
-          },
-          {
-            "index": 8,
-            "bounds_mm": [
-              35.46667,
-              -85.0,
-              25.8,
-              41.86667,
-              -85.0,
-              32.2
-            ]
-          },
-          {
-            "index": 9,
-            "bounds_mm": [
-              52.13333,
-              -85.0,
-              25.8,
-              58.53333,
-              -85.0,
-              32.2
-            ]
-          },
-          {
-            "index": 10,
-            "bounds_mm": [
-              -64.0,
-              -85.0,
-              26.0,
-              -40.0,
-              -85.0,
-              26.0
-            ]
-          },
-          {
-            "index": 11,
-            "bounds_mm": [
-              -40.0,
-              -85.0,
-              12.0,
-              -40.0,
-              -85.0,
-              26.0
-            ]
-          },
-          {
-            "index": 12,
-            "bounds_mm": [
-              -64.0,
-              -85.0,
-              12.0,
-              -40.0,
-              -85.0,
-              12.0
-            ]
-          },
-          {
-            "index": 13,
-            "bounds_mm": [
-              -64.0,
-              -85.0,
-              12.0,
-              -64.0,
-              -85.0,
-              26.0
-            ]
-          }
-        ],
-        "before_volume_mm3": 147668.216097,
-        "after_volume_mm3": 147653.673183,
-        "removed_volume_mm3": 14.542914,
-        "added_volume_mm3": 0.0,
-        "valid_single_solid": true,
-        "selection_evidence": "Explicit geometric bounds; no fallback or silent edge skipping"
-      },
-      "base_bottom_perimeter": {
-        "operation": "chamfer",
-        "radius_or_chamfer_mm": 1.0,
-        "selected_edge_count": 8,
-        "selected_edges": [
-          {
-            "index": 3,
-            "bounds_mm": [
-              -77.0,
-              -85.0,
-              0.0,
-              77.0,
-              -85.0,
-              0.0
-            ]
-          },
-          {
-            "index": 16,
-            "bounds_mm": [
-              -85.0,
-              -85.0,
-              0.0,
-              -77.0,
-              -77.0,
-              0.0
-            ]
-          },
-          {
-            "index": 23,
-            "bounds_mm": [
-              77.0,
-              -85.0,
-              0.0,
-              85.0,
-              -77.0,
-              0.0
-            ]
-          },
-          {
-            "index": 24,
-            "bounds_mm": [
-              -85.0,
-              -77.0,
-              0.0,
-              -85.0,
-              67.0,
-              0.0
-            ]
-          },
-          {
-            "index": 25,
-            "bounds_mm": [
-              85.0,
-              -77.0,
-              0.0,
-              85.0,
-              67.0,
-              0.0
-            ]
-          },
-          {
-            "index": 26,
-            "bounds_mm": [
-              -85.0,
-              67.0,
-              0.0,
-              -77.0,
-              75.0,
-              0.0
-            ]
-          },
-          {
-            "index": 27,
-            "bounds_mm": [
-              77.0,
-              67.0,
-              0.0,
-              85.0,
-              75.0,
-              0.0
-            ]
-          },
-          {
-            "index": 28,
-            "bounds_mm": [
-              -77.0,
-              75.0,
-              0.0,
-              77.0,
-              75.0,
-              0.0
-            ]
-          }
-        ],
-        "before_volume_mm3": 147653.673183,
-        "after_volume_mm3": 147334.150335,
-        "removed_volume_mm3": 319.522847,
-        "added_volume_mm3": 0.0,
-        "valid_single_solid": true,
-        "selection_evidence": "Explicit geometric bounds; no fallback or silent edge skipping"
-      },
-      "base_top_outer_perimeter": {
-        "operation": "chamfer",
-        "radius_or_chamfer_mm": 0.65,
-        "selected_edge_count": 12,
-        "selected_edges": [
-          {
-            "index": 3,
-            "bounds_mm": [
-              -77.0,
-              -85.0,
-              35.0,
-              77.0,
-              -85.0,
-              35.0
-            ]
-          },
-          {
-            "index": 15,
-            "bounds_mm": [
-              -80.58579,
-              -85.0,
-              35.0,
-              -77.0,
-              -81.41421,
-              35.0
-            ]
-          },
-          {
-            "index": 18,
-            "bounds_mm": [
-              -85.0,
-              -78.58579,
-              35.0,
-              -83.41421,
-              -77.0,
-              35.0
-            ]
-          },
-          {
-            "index": 25,
-            "bounds_mm": [
-              77.0,
-              -85.0,
-              35.0,
-              80.58579,
-              -81.41421,
-              35.0
-            ]
-          },
-          {
-            "index": 26,
-            "bounds_mm": [
-              -85.0,
-              -77.0,
-              35.0,
-              -85.0,
-              67.0,
-              35.0
-            ]
-          },
-          {
-            "index": 28,
-            "bounds_mm": [
-              -85.0,
-              67.0,
-              35.0,
-              -83.41421,
-              68.58579,
-              35.0
-            ]
-          },
-          {
-            "index": 29,
-            "bounds_mm": [
-              83.41421,
-              -78.58579,
-              35.0,
-              85.0,
-              -77.0,
-              35.0
-            ]
-          },
-          {
-            "index": 31,
-            "bounds_mm": [
-              85.0,
-              -77.0,
-              35.0,
-              85.0,
-              67.0,
-              35.0
-            ]
-          },
-          {
-            "index": 32,
-            "bounds_mm": [
-              -80.58579,
-              71.41421,
-              35.0,
-              -77.0,
-              75.0,
-              35.0
-            ]
-          },
-          {
-            "index": 33,
-            "bounds_mm": [
-              83.41421,
-              67.0,
-              35.0,
-              85.0,
-              68.58579,
-              35.0
-            ]
-          },
-          {
-            "index": 34,
-            "bounds_mm": [
-              -77.0,
-              75.0,
-              35.0,
-              77.0,
-              75.0,
-              35.0
-            ]
-          },
-          {
-            "index": 36,
-            "bounds_mm": [
-              77.0,
-              71.41421,
-              35.0,
-              80.58579,
-              75.0,
-              35.0
-            ]
-          }
-        ],
-        "before_volume_mm3": 147334.150335,
-        "after_volume_mm3": 147203.222653,
-        "removed_volume_mm3": 130.927683,
-        "added_volume_mm3": 0.0,
-        "valid_single_solid": true,
-        "selection_evidence": "Explicit geometric bounds; no fallback or silent edge skipping"
-      },
-      "carrier_lower_outer_edges": {
-        "operation": "chamfer",
-        "radius_or_chamfer_mm": 0.6,
-        "selected_edge_count": 4,
-        "selected_edges": [
-          {
-            "index": 2,
-            "bounds_mm": [
-              -70.0,
-              -65.0,
-              38.0,
-              70.0,
-              -65.0,
-              38.0
-            ]
-          },
-          {
-            "index": 9,
-            "bounds_mm": [
-              70.0,
-              -65.0,
-              38.0,
-              70.0,
-              65.0,
-              38.0
-            ]
-          },
-          {
-            "index": 20,
-            "bounds_mm": [
-              -70.0,
-              -65.0,
-              38.0,
-              -70.0,
-              65.0,
-              38.0
-            ]
-          },
-          {
-            "index": 21,
-            "bounds_mm": [
-              -70.0,
-              65.0,
-              38.0,
-              70.0,
-              65.0,
-              38.0
-            ]
-          }
-        ],
-        "before_volume_mm3": 121583.271865,
-        "after_volume_mm3": 121486.359865,
-        "removed_volume_mm3": 96.912,
-        "added_volume_mm3": 0.0,
-        "valid_single_solid": true,
-        "selection_evidence": "Explicit geometric bounds; no fallback or silent edge skipping"
-      },
-      "rim_rail_external_end_perimeters": {
-        "operation": "chamfer",
-        "radius_or_chamfer_mm": 1.2,
-        "selected_edge_count": 8,
-        "selected_edges": [
-          {
-            "index": 2,
-            "bounds_mm": [
-              -70.0,
-              34.0,
-              50.0,
-              -70.0,
-              65.0,
-              50.0
-            ]
-          },
-          {
-            "index": 3,
-            "bounds_mm": [
-              70.0,
-              34.0,
-              50.0,
-              70.0,
-              65.0,
-              50.0
-            ]
-          },
-          {
-            "index": 17,
-            "bounds_mm": [
-              -70.0,
-              34.0,
-              50.0,
-              -70.0,
-              34.0,
-              59.62991
-            ]
-          },
-          {
-            "index": 18,
-            "bounds_mm": [
-              70.0,
-              34.0,
-              50.0,
-              70.0,
-              34.0,
-              59.62991
-            ]
-          },
-          {
-            "index": 35,
-            "bounds_mm": [
-              -70.0,
-              65.0,
-              50.0,
-              -70.0,
-              65.0,
-              77.52777
-            ]
-          },
-          {
-            "index": 36,
-            "bounds_mm": [
-              -70.0,
-              34.0,
-              59.62991,
-              -70.0,
-              65.0,
-              77.52777
-            ]
-          },
-          {
-            "index": 37,
-            "bounds_mm": [
-              70.0,
-              65.0,
-              50.0,
-              70.0,
-              65.0,
-              77.52777
-            ]
-          },
-          {
-            "index": 38,
-            "bounds_mm": [
-              70.0,
-              34.0,
-              59.62991,
-              70.0,
-              65.0,
-              77.52777
-            ]
-          }
-        ],
-        "before_volume_mm3": 44801.524827,
-        "after_volume_mm3": 44656.796371,
-        "removed_volume_mm3": 144.728456,
-        "added_volume_mm3": 0.0,
-        "valid_single_solid": true,
-        "selection_evidence": "Explicit geometric bounds; no fallback or silent edge skipping"
-      },
-      "side_guide_top_outer_edge": {
-        "operation": "chamfer",
-        "radius_or_chamfer_mm": 1.2,
-        "selected_edge_count": 1,
-        "selected_edges": [
-          {
-            "index": 23,
-            "bounds_mm": [
-              46.0,
-              -61.0,
-              102.0,
-              46.0,
-              61.0,
-              102.0
-            ]
-          }
-        ],
-        "before_volume_mm3": 17547.136431,
-        "after_volume_mm3": 17458.720431,
-        "removed_volume_mm3": 88.416,
-        "added_volume_mm3": 0.0,
-        "valid_single_solid": true,
-        "selection_evidence": "Explicit geometric bounds; no fallback or silent edge skipping"
-      },
-      "nfc_mast_external_vertical_corners": {
-        "operation": "chamfer",
-        "radius_or_chamfer_mm": 1.5,
-        "selected_edge_count": 4,
-        "selected_edges": [
-          {
-            "index": 69,
-            "bounds_mm": [
-              48.0,
-              -33.5,
-              80.0,
-              48.0,
-              -33.5,
-              184.0
-            ]
-          },
-          {
-            "index": 78,
-            "bounds_mm": [
-              48.0,
-              -25.5,
-              80.0,
-              48.0,
-              -25.5,
-              184.0
-            ]
-          },
-          {
-            "index": 83,
-            "bounds_mm": [
-              48.0,
-              25.5,
-              80.0,
-              48.0,
-              25.5,
-              184.0
-            ]
-          },
-          {
-            "index": 94,
-            "bounds_mm": [
-              48.0,
-              33.5,
-              80.0,
-              48.0,
-              33.5,
-              184.0
-            ]
-          }
-        ],
-        "before_volume_mm3": 19856.197852,
-        "after_volume_mm3": 19388.197852,
-        "removed_volume_mm3": 468.0,
-        "added_volume_mm3": 0.0,
-        "valid_single_solid": true,
-        "selection_evidence": "Explicit geometric bounds; no fallback or silent edge skipping"
-      },
-      "nfc_mast_top_outer_edges": {
-        "operation": "chamfer",
-        "radius_or_chamfer_mm": 0.6,
-        "selected_edge_count": 12,
-        "selected_edges": [
-          {
-            "index": 4,
-            "bounds_mm": [
-              42.0,
-              -33.5,
-              184.0,
-              46.5,
-              -33.5,
-              184.0
-            ]
-          },
-          {
-            "index": 13,
-            "bounds_mm": [
-              46.5,
-              -33.5,
-              184.0,
-              48.0,
-              -32.0,
-              184.0
-            ]
-          },
-          {
-            "index": 38,
-            "bounds_mm": [
-              42.0,
-              -25.5,
-              184.0,
-              46.5,
-              -25.5,
-              184.0
-            ]
-          },
-          {
-            "index": 39,
-            "bounds_mm": [
-              46.5,
-              -27.0,
-              184.0,
-              48.0,
-              -25.5,
-              184.0
-            ]
-          },
-          {
-            "index": 40,
-            "bounds_mm": [
-              42.0,
-              -33.5,
-              184.0,
-              42.0,
-              -25.5,
-              184.0
-            ]
-          },
-          {
-            "index": 41,
-            "bounds_mm": [
-              48.0,
-              -32.0,
-              184.0,
-              48.0,
-              -27.0,
-              184.0
-            ]
-          },
-          {
-            "index": 58,
-            "bounds_mm": [
-              42.0,
-              25.5,
-              184.0,
-              42.0,
-              33.5,
-              184.0
-            ]
-          },
-          {
-            "index": 82,
-            "bounds_mm": [
-              42.0,
-              25.5,
-              184.0,
-              46.5,
-              25.5,
-              184.0
-            ]
-          },
-          {
-            "index": 88,
-            "bounds_mm": [
-              42.0,
-              33.5,
-              184.0,
-              46.5,
-              33.5,
-              184.0
-            ]
-          },
-          {
-            "index": 134,
-            "bounds_mm": [
-              46.5,
-              32.0,
-              184.0,
-              48.0,
-              33.5,
-              184.0
-            ]
-          },
-          {
-            "index": 135,
-            "bounds_mm": [
-              48.0,
-              27.0,
-              184.0,
-              48.0,
-              32.0,
-              184.0
-            ]
-          },
-          {
-            "index": 136,
-            "bounds_mm": [
-              46.5,
-              25.5,
-              184.0,
-              48.0,
-              27.0,
-              184.0
-            ]
-          }
-        ],
-        "before_volume_mm3": 19388.197852,
-        "after_volume_mm3": 19379.277089,
-        "removed_volume_mm3": 8.920764,
-        "added_volume_mm3": 0.0,
-        "valid_single_solid": true,
-        "selection_evidence": "Explicit geometric bounds; no fallback or silent edge skipping"
-      },
-      "nfc_channel_latch_ear_0": {
-        "operation": "chamfer",
-        "radius_or_chamfer_mm": 1.0,
-        "selected_edge_count": 4,
-        "selected_edges": [
-          {
-            "index": 9,
-            "bounds_mm": [
-              64.7,
-              -12.0,
-              85.5,
-              73.1,
-              -12.0,
-              85.5
-            ]
-          },
-          {
-            "index": 10,
-            "bounds_mm": [
-              64.7,
-              -12.0,
-              94.5,
-              73.1,
-              -12.0,
-              94.5
-            ]
-          },
-          {
-            "index": 11,
-            "bounds_mm": [
-              64.7,
-              -2.4,
-              85.5,
-              73.1,
-              -2.4,
-              85.5
-            ]
-          },
-          {
-            "index": 12,
-            "bounds_mm": [
-              64.7,
-              -2.4,
-              94.5,
-              73.1,
-              -2.4,
-              94.5
-            ]
-          }
-        ],
-        "before_volume_mm3": 725.76,
-        "after_volume_mm3": 708.96,
-        "removed_volume_mm3": 16.8,
-        "added_volume_mm3": 0.0,
-        "valid_single_solid": true,
-        "selection_evidence": "Explicit geometric bounds; no fallback or silent edge skipping"
-      },
-      "nfc_channel_latch_ear_1": {
-        "operation": "chamfer",
-        "radius_or_chamfer_mm": 1.0,
-        "selected_edge_count": 4,
-        "selected_edges": [
-          {
-            "index": 9,
-            "bounds_mm": [
-              64.7,
-              -12.0,
-              173.0,
-              73.1,
-              -12.0,
-              173.0
-            ]
-          },
-          {
-            "index": 10,
-            "bounds_mm": [
-              64.7,
-              -12.0,
-              185.0,
-              73.1,
-              -12.0,
-              185.0
-            ]
-          },
-          {
-            "index": 11,
-            "bounds_mm": [
-              64.7,
-              -2.4,
-              173.0,
-              73.1,
-              -2.4,
-              173.0
-            ]
-          },
-          {
-            "index": 12,
-            "bounds_mm": [
-              64.7,
-              -2.4,
-              185.0,
-              73.1,
-              -2.4,
-              185.0
-            ]
-          }
-        ],
-        "before_volume_mm3": 967.68,
-        "after_volume_mm3": 950.88,
-        "removed_volume_mm3": 16.8,
-        "added_volume_mm3": 0.0,
-        "valid_single_solid": true,
-        "selection_evidence": "Explicit geometric bounds; no fallback or silent edge skipping"
-      },
-      "nfc_service_bridge_top_edges": {
-        "operation": "chamfer",
-        "radius_or_chamfer_mm": 0.5,
-        "selected_edge_count": 10,
-        "selected_edges": [
-          {
-            "index": 2,
-            "bounds_mm": [
-              70.0,
-              39.0,
-              184.0,
-              70.0,
-              43.0,
-              184.0
-            ]
-          },
-          {
-            "index": 6,
-            "bounds_mm": [
-              68.7,
-              39.0,
-              184.0,
-              70.0,
-              39.0,
-              184.0
-            ]
-          },
-          {
-            "index": 8,
-            "bounds_mm": [
-              68.7,
-              25.0,
-              184.0,
-              68.7,
-              39.0,
-              184.0
-            ]
-          },
-          {
-            "index": 13,
-            "bounds_mm": [
-              42.0,
-              29.0,
-              184.0,
-              46.0,
-              29.0,
-              184.0
-            ]
-          },
-          {
-            "index": 15,
-            "bounds_mm": [
-              46.0,
-              29.0,
-              184.0,
-              46.0,
-              39.0,
-              184.0
-            ]
-          },
-          {
-            "index": 20,
-            "bounds_mm": [
-              46.0,
-              39.0,
-              184.0,
-              64.7,
-              39.0,
-              184.0
-            ]
-          },
-          {
-            "index": 21,
-            "bounds_mm": [
-              64.7,
-              25.0,
-              184.0,
-              64.7,
-              39.0,
-              184.0
-            ]
-          },
-          {
-            "index": 25,
-            "bounds_mm": [
-              64.7,
-              25.0,
-              184.0,
-              68.7,
-              25.0,
-              184.0
-            ]
-          },
-          {
-            "index": 26,
-            "bounds_mm": [
-              42.0,
-              29.0,
-              184.0,
-              42.0,
-              43.0,
-              184.0
-            ]
-          },
-          {
-            "index": 29,
-            "bounds_mm": [
-              42.0,
-              43.0,
-              184.0,
-              70.0,
-              43.0,
-              184.0
-            ]
-          }
-        ],
-        "before_volume_mm3": 624.0,
-        "after_volume_mm3": 610.166667,
-        "removed_volume_mm3": 13.833333,
-        "added_volume_mm3": 0.0,
-        "valid_single_solid": true,
-        "selection_evidence": "Explicit geometric bounds; no fallback or silent edge skipping"
-      },
-      "nfc_channel_front_vertical_bevels": {
-        "operation": "chamfer",
-        "radius_or_chamfer_mm": 0.5,
-        "selected_edge_count": 2,
-        "selected_edges": [
-          {
-            "index": 95,
-            "bounds_mm": [
-              64.7,
-              -4.0,
-              94.5,
-              64.7,
-              -4.0,
-              173.0
-            ]
-          },
-          {
-            "index": 147,
-            "bounds_mm": [
-              64.7,
-              26.5,
-              78.0,
-              64.7,
-              26.5,
-              181.0
-            ]
-          }
-        ],
-        "before_volume_mm3": 9137.51217,
-        "after_volume_mm3": 9114.824632,
-        "removed_volume_mm3": 22.687538,
-        "added_volume_mm3": 0.0,
-        "valid_single_solid": true,
-        "selection_evidence": "Explicit geometric bounds; no fallback or silent edge skipping"
-      },
-      "nfc_channel_lower_outer_bevels": {
-        "operation": "chamfer",
-        "radius_or_chamfer_mm": 0.5,
-        "selected_edge_count": 5,
-        "selected_edges": [
-          {
-            "index": 85,
-            "bounds_mm": [
-              54.0,
-              -4.0,
-              48.0,
-              74.9,
-              -4.0,
-              68.9
-            ]
-          },
-          {
-            "index": 86,
-            "bounds_mm": [
-              54.0,
-              -4.0,
-              42.0,
-              54.0,
-              -4.0,
-              48.0
-            ]
-          },
-          {
-            "index": 87,
-            "bounds_mm": [
-              44.5,
-              -4.0,
-              42.0,
-              54.0,
-              -4.0,
-              42.0
-            ]
-          },
-          {
-            "index": 88,
-            "bounds_mm": [
-              44.5,
-              -4.0,
-              42.0,
-              44.5,
-              -4.0,
-              53.3
-            ]
-          },
-          {
-            "index": 89,
-            "bounds_mm": [
-              44.5,
-              -4.0,
-              53.3,
-              64.7,
-              -4.0,
-              73.5
-            ]
-          }
-        ],
-        "before_volume_mm3": 9114.824632,
-        "after_volume_mm3": 9104.292561,
-        "removed_volume_mm3": 10.53207,
-        "added_volume_mm3": 0.0,
-        "valid_single_solid": true,
-        "selection_evidence": "Explicit geometric bounds; no fallback or silent edge skipping"
-      },
-      "nfc_channel_cover_vertical_bevels": {
-        "operation": "chamfer",
-        "radius_or_chamfer_mm": 0.5,
-        "selected_edge_count": 2,
-        "selected_edges": [
-          {
-            "index": 16,
-            "bounds_mm": [
-              74.9,
-              26.5,
-              78.0,
-              74.9,
-              26.5,
-              187.0
-            ]
-          },
-          {
-            "index": 19,
-            "bounds_mm": [
-              74.9,
-              -4.0,
-              93.5,
-              74.9,
-              -4.0,
-              175.3
-            ]
-          }
-        ],
-        "before_volume_mm3": 6631.119574,
-        "after_volume_mm3": 6607.269554,
-        "removed_volume_mm3": 23.85002,
-        "added_volume_mm3": 0.0,
-        "valid_single_solid": true,
-        "selection_evidence": "Explicit geometric bounds; no fallback or silent edge skipping"
-      },
-      "nfc_channel_cover_lower_bevels": {
-        "operation": "chamfer",
-        "radius_or_chamfer_mm": 0.5,
-        "selected_edge_count": 3,
-        "selected_edges": [
-          {
-            "index": 34,
-            "bounds_mm": [
-              54.0,
-              4.0,
-              48.0,
-              74.9,
-              4.0,
-              68.9
-            ]
-          },
-          {
-            "index": 35,
-            "bounds_mm": [
-              54.0,
-              4.0,
-              42.0,
-              54.0,
-              4.0,
-              48.0
-            ]
-          },
-          {
-            "index": 36,
-            "bounds_mm": [
-              44.5,
-              4.0,
-              42.0,
-              54.0,
-              4.0,
-              42.0
-            ]
-          }
-        ],
-        "before_volume_mm3": 6607.269554,
-        "after_volume_mm3": 6601.641011,
-        "removed_volume_mm3": 5.628543,
-        "added_volume_mm3": 0.0,
-        "valid_single_solid": true,
-        "selection_evidence": "Explicit geometric bounds; no fallback or silent edge skipping"
-      },
-      "nfc_channel_top_rim": {
-        "operation": "chamfer",
-        "radius_or_chamfer_mm": 0.5,
-        "selected_edge_count": 7,
-        "selected_edges": [
-          {
-            "index": 17,
-            "bounds_mm": [
-              64.7,
-              -4.0,
-              187.0,
-              64.7,
-              15.0,
-              187.0
-            ]
-          },
-          {
-            "index": 87,
-            "bounds_mm": [
-              64.7,
-              15.0,
-              187.0,
-              67.8,
-              15.0,
-              187.0
-            ]
-          },
-          {
-            "index": 93,
-            "bounds_mm": [
-              64.7,
-              25.0,
-              187.0,
-              67.8,
-              25.0,
-              187.0
-            ]
-          },
-          {
-            "index": 94,
-            "bounds_mm": [
-              64.7,
-              25.0,
-              187.0,
-              64.7,
-              26.5,
-              187.0
-            ]
-          },
-          {
-            "index": 95,
-            "bounds_mm": [
-              64.7,
-              26.5,
-              187.0,
-              73.1,
-              26.5,
-              187.0
-            ]
-          },
-          {
-            "index": 96,
-            "bounds_mm": [
-              73.1,
-              -4.0,
-              187.0,
-              73.1,
-              26.5,
-              187.0
-            ]
-          },
-          {
-            "index": 97,
-            "bounds_mm": [
-              64.7,
-              -4.0,
-              187.0,
-              73.1,
-              -4.0,
-              187.0
-            ]
-          }
-        ],
-        "before_volume_mm3": 9104.292561,
-        "after_volume_mm3": 9095.292345,
-        "removed_volume_mm3": 9.000216,
-        "added_volume_mm3": 0.0,
-        "valid_single_solid": true,
-        "selection_evidence": "Explicit geometric bounds; no fallback or silent edge skipping"
-      },
-      "nfc_channel_cover_top_rim": {
-        "operation": "chamfer",
-        "radius_or_chamfer_mm": 0.5,
-        "selected_edge_count": 5,
-        "selected_edges": [
-          {
-            "index": 7,
-            "bounds_mm": [
-              74.9,
-              -4.0,
-              187.0,
-              74.9,
-              26.0,
-              187.0
-            ]
-          },
-          {
-            "index": 47,
-            "bounds_mm": [
-              74.4,
-              26.0,
-              187.0,
-              74.9,
-              26.5,
-              187.0
-            ]
-          },
-          {
-            "index": 55,
-            "bounds_mm": [
-              73.3,
-              26.5,
-              187.0,
-              74.4,
-              26.5,
-              187.0
-            ]
-          },
-          {
-            "index": 56,
-            "bounds_mm": [
-              73.3,
-              -4.0,
-              187.0,
-              73.3,
-              26.5,
-              187.0
-            ]
-          },
-          {
-            "index": 57,
-            "bounds_mm": [
-              73.3,
-              -4.0,
-              187.0,
-              74.9,
-              -4.0,
-              187.0
-            ]
-          }
-        ],
-        "before_volume_mm3": 6601.641011,
-        "after_volume_mm3": 6593.812087,
-        "removed_volume_mm3": 7.828924,
-        "added_volume_mm3": 0.0,
-        "valid_single_solid": true,
-        "selection_evidence": "Explicit geometric bounds; no fallback or silent edge skipping"
-      },
-      "nfc_pod_external_corners": {
-        "operation": "chamfer",
-        "radius_or_chamfer_mm": 2.2,
-        "selected_edge_count": 4,
-        "selected_edges": [
-          {
-            "index": 5,
-            "bounds_mm": [
-              42.0,
-              -24.55,
-              131.6,
-              55.6,
-              -24.55,
-              131.6
-            ]
-          },
-          {
-            "index": 7,
-            "bounds_mm": [
-              42.0,
-              -24.55,
-              178.4,
-              55.6,
-              -24.55,
-              178.4
-            ]
-          },
-          {
-            "index": 8,
-            "bounds_mm": [
-              42.0,
-              24.55,
-              178.4,
-              55.6,
-              24.55,
-              178.4
-            ]
-          },
-          {
-            "index": 10,
-            "bounds_mm": [
-              42.0,
-              24.55,
-              131.6,
-              55.6,
-              24.55,
-              131.6
-            ]
-          }
-        ],
-        "before_volume_mm3": 6435.792,
-        "after_volume_mm3": 6304.144,
-        "removed_volume_mm3": 131.648,
-        "added_volume_mm3": 0.0,
-        "valid_single_solid": true,
-        "selection_evidence": "Explicit geometric bounds; no fallback or silent edge skipping"
-      },
-      "nfc_back_cover_corners": {
-        "operation": "chamfer",
-        "radius_or_chamfer_mm": 2.2,
-        "selected_edge_count": 4,
-        "selected_edges": [
-          {
-            "index": 9,
-            "bounds_mm": [
-              55.6,
-              -24.55,
-              131.6,
-              57.2,
-              -24.55,
-              131.6
-            ]
-          },
-          {
-            "index": 10,
-            "bounds_mm": [
-              55.6,
-              -24.55,
-              178.4,
-              57.2,
-              -24.55,
-              178.4
-            ]
-          },
-          {
-            "index": 11,
-            "bounds_mm": [
-              55.6,
-              24.55,
-              131.6,
-              57.2,
-              24.55,
-              131.6
-            ]
-          },
-          {
-            "index": 12,
-            "bounds_mm": [
-              55.6,
-              24.55,
-              178.4,
-              57.2,
-              24.55,
-              178.4
-            ]
-          }
-        ],
-        "before_volume_mm3": 3676.608,
-        "after_volume_mm3": 3661.12,
-        "removed_volume_mm3": 15.488,
-        "added_volume_mm3": 0.0,
-        "valid_single_solid": true,
-        "selection_evidence": "Explicit geometric bounds; no fallback or silent edge skipping"
-      },
-      "nfc_back_cover_outer_rim": {
-        "operation": "chamfer",
-        "radius_or_chamfer_mm": 0.45,
-        "selected_edge_count": 8,
-        "selected_edges": [
-          {
-            "index": 9,
-            "bounds_mm": [
-              57.2,
-              -24.55,
-              133.8,
-              57.2,
-              -24.55,
-              176.2
-            ]
-          },
-          {
-            "index": 13,
-            "bounds_mm": [
-              57.2,
-              -24.55,
-              131.6,
-              57.2,
-              -22.35,
-              133.8
-            ]
-          },
-          {
-            "index": 15,
-            "bounds_mm": [
-              57.2,
-              -24.55,
-              176.2,
-              57.2,
-              -22.35,
-              178.4
-            ]
-          },
-          {
-            "index": 17,
-            "bounds_mm": [
-              57.2,
-              -22.35,
-              131.6,
-              57.2,
-              22.35,
-              131.6
-            ]
-          },
-          {
-            "index": 19,
-            "bounds_mm": [
-              57.2,
-              -22.35,
-              178.4,
-              57.2,
-              22.35,
-              178.4
-            ]
-          },
-          {
-            "index": 21,
-            "bounds_mm": [
-              57.2,
-              22.35,
-              131.6,
-              57.2,
-              24.55,
-              133.8
-            ]
-          },
-          {
-            "index": 23,
-            "bounds_mm": [
-              57.2,
-              22.35,
-              176.2,
-              57.2,
-              24.55,
-              178.4
-            ]
-          },
-          {
-            "index": 24,
-            "bounds_mm": [
-              57.2,
-              24.55,
-              133.8,
-              57.2,
-              24.55,
-              176.2
-            ]
-          }
-        ],
-        "before_volume_mm3": 3661.12,
-        "after_volume_mm3": 3642.32284,
-        "removed_volume_mm3": 18.79716,
-        "added_volume_mm3": 0.0,
-        "valid_single_solid": true,
-        "selection_evidence": "Explicit geometric bounds; no fallback or silent edge skipping"
-      },
-      "nfc_latch_ear_profile": {
-        "operation": "chamfer",
-        "radius_or_chamfer_mm": 1.0,
-        "selected_edge_count": 4,
-        "selected_edges": [
-          {
-            "index": 9,
-            "bounds_mm": [
-              48.0,
-              -31.0,
-              132.7,
-              55.6,
-              -31.0,
-              132.7
-            ]
-          },
-          {
-            "index": 10,
-            "bounds_mm": [
-              48.0,
-              -31.0,
-              141.3,
-              55.6,
-              -31.0,
-              141.3
-            ]
-          },
-          {
-            "index": 11,
-            "bounds_mm": [
-              48.0,
-              -22.0,
-              132.7,
-              55.6,
-              -22.0,
-              132.7
-            ]
-          },
-          {
-            "index": 12,
-            "bounds_mm": [
-              48.0,
-              -22.0,
-              141.3,
-              55.6,
-              -22.0,
-              141.3
-            ]
-          }
-        ],
-        "before_volume_mm3": 588.24,
-        "after_volume_mm3": 573.04,
-        "removed_volume_mm3": 15.2,
-        "added_volume_mm3": 0.0,
-        "valid_single_solid": true,
-        "selection_evidence": "Explicit geometric bounds; no fallback or silent edge skipping"
-      },
-      "nfc_cover_latch_ear_profile": {
-        "operation": "chamfer",
-        "radius_or_chamfer_mm": 1.0,
-        "selected_edge_count": 4,
-        "selected_edges": [
-          {
-            "index": 9,
-            "bounds_mm": [
-              55.6,
-              -31.0,
-              132.7,
-              59.7,
-              -31.0,
-              132.7
-            ]
-          },
-          {
-            "index": 10,
-            "bounds_mm": [
-              55.6,
-              -31.0,
-              141.3,
-              59.7,
-              -31.0,
-              141.3
-            ]
-          },
-          {
-            "index": 11,
-            "bounds_mm": [
-              55.6,
-              -22.0,
-              132.7,
-              59.7,
-              -22.0,
-              132.7
-            ]
-          },
-          {
-            "index": 12,
-            "bounds_mm": [
-              55.6,
-              -22.0,
-              141.3,
-              59.7,
-              -22.0,
-              141.3
-            ]
-          }
-        ],
-        "before_volume_mm3": 317.34,
-        "after_volume_mm3": 309.14,
-        "removed_volume_mm3": 8.2,
-        "added_volume_mm3": 0.0,
-        "valid_single_solid": true,
-        "selection_evidence": "Explicit geometric bounds; no fallback or silent edge skipping"
-      },
-      "nfc_pigtail_hood_outer_bevels": {
-        "operation": "chamfer",
-        "radius_or_chamfer_mm": 0.5,
-        "selected_edge_count": 8,
-        "selected_edges": [
-          {
-            "index": 12,
-            "bounds_mm": [
-              57.2,
-              16.0,
-              146.0,
-              59.0,
-              16.0,
-              146.0
-            ]
-          },
-          {
-            "index": 25,
-            "bounds_mm": [
-              57.2,
-              24.0,
-              146.0,
-              59.0,
-              24.0,
-              146.0
-            ]
-          },
-          {
-            "index": 27,
-            "bounds_mm": [
-              57.2,
-              24.0,
-              134.0,
-              59.0,
-              24.0,
-              134.0
-            ]
-          },
-          {
-            "index": 32,
-            "bounds_mm": [
-              61.0,
-              24.0,
-              134.0,
-              66.0,
-              24.0,
-              134.0
-            ]
-          },
-          {
-            "index": 34,
-            "bounds_mm": [
-              61.0,
-              16.0,
-              134.0,
-              66.0,
-              16.0,
-              134.0
-            ]
-          },
-          {
-            "index": 38,
-            "bounds_mm": [
-              57.2,
-              16.0,
-              134.0,
-              59.0,
-              16.0,
-              134.0
-            ]
-          },
-          {
-            "index": 61,
-            "bounds_mm": [
-              61.0,
-              24.0,
-              146.0,
-              66.0,
-              24.0,
-              146.0
-            ]
-          },
-          {
-            "index": 72,
-            "bounds_mm": [
-              61.0,
-              16.0,
-              146.0,
-              66.0,
-              16.0,
-              146.0
-            ]
-          }
-        ],
-        "before_volume_mm3": 302.835249,
-        "after_volume_mm3": 299.435249,
-        "removed_volume_mm3": 3.4,
-        "added_volume_mm3": 0.0,
-        "valid_single_solid": true,
-        "selection_evidence": "Explicit geometric bounds; no fallback or silent edge skipping"
-      },
-      "cover_top_outer_perimeter": {
-        "operation": "chamfer",
-        "radius_or_chamfer_mm": 0.8,
-        "selected_edge_count": 8,
-        "selected_edges": [
-          {
-            "index": 4,
-            "bounds_mm": [
-              -77.0,
-              -85.0,
-              38.0,
-              77.0,
-              -85.0,
-              38.0
-            ]
-          },
-          {
-            "index": 7,
-            "bounds_mm": [
-              -85.0,
-              -85.0,
-              38.0,
-              -77.0,
-              -77.0,
-              38.0
-            ]
-          },
-          {
-            "index": 10,
-            "bounds_mm": [
-              77.0,
-              -85.0,
-              38.0,
-              85.0,
-              -77.0,
-              38.0
-            ]
-          },
-          {
-            "index": 38,
-            "bounds_mm": [
-              -85.0,
-              -77.0,
-              38.0,
-              -85.0,
-              67.0,
-              38.0
-            ]
-          },
-          {
-            "index": 39,
-            "bounds_mm": [
-              85.0,
-              -77.0,
-              38.0,
-              85.0,
-              67.0,
-              38.0
-            ]
-          },
-          {
-            "index": 40,
-            "bounds_mm": [
-              -85.0,
-              67.0,
-              38.0,
-              -77.0,
-              75.0,
-              38.0
-            ]
-          },
-          {
-            "index": 41,
-            "bounds_mm": [
-              77.0,
-              67.0,
-              38.0,
-              85.0,
-              75.0,
-              38.0
-            ]
-          },
-          {
-            "index": 42,
-            "bounds_mm": [
-              -77.0,
-              75.0,
-              38.0,
-              77.0,
-              75.0,
-              38.0
-            ]
-          }
-        ],
-        "before_volume_mm3": 22623.924783,
-        "after_volume_mm3": 22419.288776,
-        "removed_volume_mm3": 204.636007,
-        "added_volume_mm3": 0.0,
-        "valid_single_solid": true,
-        "selection_evidence": "Explicit geometric bounds; no fallback or silent edge skipping"
-      },
-      "cover_top_carrier_aperture": {
-        "operation": "chamfer",
-        "radius_or_chamfer_mm": 0.45,
-        "selected_edge_count": 8,
-        "selected_edges": [
-          {
-            "index": 56,
-            "bounds_mm": [
-              70.0,
-              -67.0,
-              38.0,
-              72.0,
-              -65.0,
-              38.0
-            ]
-          },
-          {
-            "index": 57,
-            "bounds_mm": [
-              72.0,
-              -65.0,
-              38.0,
-              72.0,
-              65.0,
-              38.0
-            ]
-          },
-          {
-            "index": 58,
-            "bounds_mm": [
-              -70.0,
-              -67.0,
-              38.0,
-              70.0,
-              -67.0,
-              38.0
-            ]
-          },
-          {
-            "index": 59,
-            "bounds_mm": [
-              70.0,
-              65.0,
-              38.0,
-              72.0,
-              67.0,
-              38.0
-            ]
-          },
-          {
-            "index": 60,
-            "bounds_mm": [
-              -72.0,
-              -67.0,
-              38.0,
-              -70.0,
-              -65.0,
-              38.0
-            ]
-          },
-          {
-            "index": 61,
-            "bounds_mm": [
-              -70.0,
-              67.0,
-              38.0,
-              70.0,
-              67.0,
-              38.0
-            ]
-          },
-          {
-            "index": 62,
-            "bounds_mm": [
-              -72.0,
-              -65.0,
-              38.0,
-              -72.0,
-              65.0,
-              38.0
-            ]
-          },
-          {
-            "index": 63,
-            "bounds_mm": [
-              -72.0,
-              65.0,
-              38.0,
-              -70.0,
-              67.0,
-              38.0
-            ]
-          }
-        ],
-        "before_volume_mm3": 22419.288776,
-        "after_volume_mm3": 22363.367609,
-        "removed_volume_mm3": 55.921167,
-        "added_volume_mm3": 0.0,
-        "valid_single_solid": true,
-        "selection_evidence": "Explicit geometric bounds; no fallback or silent edge skipping"
-      }
-    },
-    "all_operations_remove_material_only": true,
-    "functional_exclusions": [
-      "Load-cell bearing pads and bolt seats",
-      "Rail slopes within the 100 mm spool width",
-      "Guide sliding feet and inner spool-facing planes",
-      "Nut pockets and fastener bores",
-      "Central NFC antenna face and 1.2 mm window",
-      "PCB support pads and OLED glass seat",
-      "Indicator opening throats; only front edges are beveled"
-    ],
-    "coordinate_note": "Selections are recorded in each construction frame before later mirror/rotation; repeated adjustment cases reuse the same predicates."
-  },
-  "fastener_references": {
-    "included": "Eight nominal M3 cover/rail/guide clamp sets, four stop screws and NFC mounting hardware",
-    "not_complete": "Load-cell screws, threads, screw drives, cable ties and adhesive are not modeled",
-    "physical_fit_verified": false
-  },
-  "boot_access": {
-    "opening": "Dedicated angled BOOT bore in the closed USB wall; relocated board estimate",
-    "tool_diameter_mm": 2.5,
-    "entry_xyz_mm": [
-      -94,
-      -23.5,
-      33
-    ],
-    "tip_xyz_mm": [
-      -43.0,
-      -23.5,
-      15.6
-    ],
-    "button_center_xy_mm_estimate": [
-      -43,
-      -23.5
-    ],
-    "button_position_evidence": "Photo estimate only; verify actual board, cable and button before printing",
-    "spool_removal_required_by_nominal_path": false,
-    "tool_component_intersections": {},
-    "physical_access_and_operation_verified": false,
-    "bore_diameter_mm": 4.0
-  },
-  "printed_part_intersections": {},
-  "component_intersections": {
-    "REF_LED_strip_provisional": {},
-    "REF_LED_pixel_0": {},
-    "REF_LED_pixel_1": {},
-    "REF_LED_pixel_2": {},
-    "REF_LED_pixel_3": {},
-    "REF_LED_pixel_4": {},
-    "REF_OLED_PCB_provisional": {},
-    "REF_OLED_glass_provisional": {},
-    "REF_OLED_active_area_provisional": {},
-    "REF_OLED_components_provisional": {},
-    "REF_OLED_pin_allowance_provisional": {},
-    "REF_PN532_PCB": {},
-    "REF_PN532_components": {},
-    "REF_PN532_wire_allowance": {},
-    "REF_NFC_cable_nominal": {},
-    "REF_NFC_base_flex_nominal": {},
-    "REF_load_cell": {},
-    "REF_load_cell_wire_allowance": {},
-    "REF_ESP32_PCB_estimate": {},
-    "REF_ESP32_module_estimate": {},
-    "REF_USB_-6": {},
-    "REF_USB_6": {},
-    "REF_HX711_PCB": {},
-    "REF_USB_internal_plug_allowance": {},
-    "REF_BOOT_body_estimate": {},
-    "REF_BOOT_actuator_estimate": {},
-    "REF_BOOT_tool_approach_estimate": {},
-    "REF_adjustable_stop_0": {},
-    "REF_adjustable_stop_1": {},
-    "REF_adjustable_stop_2": {},
-    "REF_adjustable_stop_3": {},
-    "REF_fastener_cover_-78_-76": {},
-    "REF_fastener_cover_78_-76": {},
-    "REF_fastener_rail_0_-60": {},
-    "REF_fastener_rail_0_60": {},
-    "REF_fastener_guide_-52.0_-15": {},
-    "REF_fastener_guide_-52.0_15": {},
-    "REF_fastener_guide_52.0_-15": {},
-    "REF_fastener_guide_52.0_15": {},
-    "REF_fastener_nfc_height_minus": {},
-    "REF_fastener_nfc_height_plus": {},
-    "REF_fastener_nfc_pod_cover": {},
-    "REF_fastener_nfc_cable_cover": {},
-    "REF_upright_spool": {},
-    "REF_filament": {}
-  },
-  "esp_wire_envelope_intersections": {},
-  "spool_envelope_checks": [
-    {
-      "diameter_mm": 160.0,
-      "width_mm": 50.0,
-      "pod_center_mm": 90.0,
-      "side_clearance_each_mm": 2.0,
-      "loaded_height_including_feet_mm": 213.78,
-      "loaded_depth_mm": 165.0,
-      "positive_volume_intersections": {}
-    },
-    {
-      "diameter_mm": 160.0,
-      "width_mm": 50.0,
-      "pod_center_mm": 155.0,
-      "side_clearance_each_mm": 2.0,
-      "loaded_height_including_feet_mm": 213.78,
-      "loaded_depth_mm": 165.0,
-      "positive_volume_intersections": {}
-    },
-    {
-      "diameter_mm": 160.0,
-      "width_mm": 50.0,
-      "pod_center_mm": 175.0,
-      "side_clearance_each_mm": 2.0,
-      "loaded_height_including_feet_mm": 213.78,
-      "loaded_depth_mm": 165.0,
-      "positive_volume_intersections": {}
-    },
-    {
-      "diameter_mm": 160.0,
-      "width_mm": 80,
-      "pod_center_mm": 90.0,
-      "side_clearance_each_mm": 2.0,
-      "loaded_height_including_feet_mm": 213.78,
-      "loaded_depth_mm": 165.0,
-      "positive_volume_intersections": {}
-    },
-    {
-      "diameter_mm": 160.0,
-      "width_mm": 80,
-      "pod_center_mm": 155.0,
-      "side_clearance_each_mm": 2.0,
-      "loaded_height_including_feet_mm": 213.78,
-      "loaded_depth_mm": 165.0,
-      "positive_volume_intersections": {}
-    },
-    {
-      "diameter_mm": 160.0,
-      "width_mm": 80,
-      "pod_center_mm": 175.0,
-      "side_clearance_each_mm": 2.0,
-      "loaded_height_including_feet_mm": 213.78,
-      "loaded_depth_mm": 165.0,
-      "positive_volume_intersections": {}
-    },
-    {
-      "diameter_mm": 160.0,
-      "width_mm": 100.0,
-      "pod_center_mm": 90.0,
-      "side_clearance_each_mm": 2.0,
-      "loaded_height_including_feet_mm": 213.78,
-      "loaded_depth_mm": 165.0,
-      "positive_volume_intersections": {}
-    },
-    {
-      "diameter_mm": 160.0,
-      "width_mm": 100.0,
-      "pod_center_mm": 155.0,
-      "side_clearance_each_mm": 2.0,
-      "loaded_height_including_feet_mm": 213.78,
-      "loaded_depth_mm": 165.0,
-      "positive_volume_intersections": {}
-    },
-    {
-      "diameter_mm": 160.0,
-      "width_mm": 100.0,
-      "pod_center_mm": 175.0,
-      "side_clearance_each_mm": 2.0,
-      "loaded_height_including_feet_mm": 213.78,
-      "loaded_depth_mm": 165.0,
-      "positive_volume_intersections": {}
-    },
-    {
-      "diameter_mm": 200,
-      "width_mm": 50.0,
-      "pod_center_mm": 90.0,
-      "side_clearance_each_mm": 2.0,
-      "loaded_height_including_feet_mm": 256.87,
-      "loaded_depth_mm": 200.0,
-      "positive_volume_intersections": {}
-    },
-    {
-      "diameter_mm": 200,
-      "width_mm": 50.0,
-      "pod_center_mm": 155.0,
-      "side_clearance_each_mm": 2.0,
-      "loaded_height_including_feet_mm": 256.87,
-      "loaded_depth_mm": 200.0,
-      "positive_volume_intersections": {}
-    },
-    {
-      "diameter_mm": 200,
-      "width_mm": 50.0,
-      "pod_center_mm": 175.0,
-      "side_clearance_each_mm": 2.0,
-      "loaded_height_including_feet_mm": 256.87,
-      "loaded_depth_mm": 200.0,
-      "positive_volume_intersections": {}
-    },
-    {
-      "diameter_mm": 200,
-      "width_mm": 80,
-      "pod_center_mm": 90.0,
-      "side_clearance_each_mm": 2.0,
-      "loaded_height_including_feet_mm": 256.87,
-      "loaded_depth_mm": 200.0,
-      "positive_volume_intersections": {}
-    },
-    {
-      "diameter_mm": 200,
-      "width_mm": 80,
-      "pod_center_mm": 155.0,
-      "side_clearance_each_mm": 2.0,
-      "loaded_height_including_feet_mm": 256.87,
-      "loaded_depth_mm": 200.0,
-      "positive_volume_intersections": {}
-    },
-    {
-      "diameter_mm": 200,
-      "width_mm": 80,
-      "pod_center_mm": 175.0,
-      "side_clearance_each_mm": 2.0,
-      "loaded_height_including_feet_mm": 256.87,
-      "loaded_depth_mm": 200.0,
-      "positive_volume_intersections": {}
-    },
-    {
-      "diameter_mm": 200,
-      "width_mm": 100.0,
-      "pod_center_mm": 90.0,
-      "side_clearance_each_mm": 2.0,
-      "loaded_height_including_feet_mm": 256.87,
-      "loaded_depth_mm": 200.0,
-      "positive_volume_intersections": {}
-    },
-    {
-      "diameter_mm": 200,
-      "width_mm": 100.0,
-      "pod_center_mm": 155.0,
-      "side_clearance_each_mm": 2.0,
-      "loaded_height_including_feet_mm": 256.87,
-      "loaded_depth_mm": 200.0,
-      "positive_volume_intersections": {}
-    },
-    {
-      "diameter_mm": 200,
-      "width_mm": 100.0,
-      "pod_center_mm": 175.0,
-      "side_clearance_each_mm": 2.0,
-      "loaded_height_including_feet_mm": 256.87,
-      "loaded_depth_mm": 200.0,
-      "positive_volume_intersections": {}
-    },
-    {
-      "diameter_mm": 220.0,
-      "width_mm": 50.0,
-      "pod_center_mm": 90.0,
-      "side_clearance_each_mm": 2.0,
-      "loaded_height_including_feet_mm": 278.42,
-      "loaded_depth_mm": 220.0,
-      "positive_volume_intersections": {}
-    },
-    {
-      "diameter_mm": 220.0,
-      "width_mm": 50.0,
-      "pod_center_mm": 155.0,
-      "side_clearance_each_mm": 2.0,
-      "loaded_height_including_feet_mm": 278.42,
-      "loaded_depth_mm": 220.0,
-      "positive_volume_intersections": {}
-    },
-    {
-      "diameter_mm": 220.0,
-      "width_mm": 50.0,
-      "pod_center_mm": 175.0,
-      "side_clearance_each_mm": 2.0,
-      "loaded_height_including_feet_mm": 278.42,
-      "loaded_depth_mm": 220.0,
-      "positive_volume_intersections": {}
-    },
-    {
-      "diameter_mm": 220.0,
-      "width_mm": 80,
-      "pod_center_mm": 90.0,
-      "side_clearance_each_mm": 2.0,
-      "loaded_height_including_feet_mm": 278.42,
-      "loaded_depth_mm": 220.0,
-      "positive_volume_intersections": {}
-    },
-    {
-      "diameter_mm": 220.0,
-      "width_mm": 80,
-      "pod_center_mm": 155.0,
-      "side_clearance_each_mm": 2.0,
-      "loaded_height_including_feet_mm": 278.42,
-      "loaded_depth_mm": 220.0,
-      "positive_volume_intersections": {}
-    },
-    {
-      "diameter_mm": 220.0,
-      "width_mm": 80,
-      "pod_center_mm": 175.0,
-      "side_clearance_each_mm": 2.0,
-      "loaded_height_including_feet_mm": 278.42,
-      "loaded_depth_mm": 220.0,
-      "positive_volume_intersections": {}
-    },
-    {
-      "diameter_mm": 220.0,
-      "width_mm": 100.0,
-      "pod_center_mm": 90.0,
-      "side_clearance_each_mm": 2.0,
-      "loaded_height_including_feet_mm": 278.42,
-      "loaded_depth_mm": 220.0,
-      "positive_volume_intersections": {}
-    },
-    {
-      "diameter_mm": 220.0,
-      "width_mm": 100.0,
-      "pod_center_mm": 155.0,
-      "side_clearance_each_mm": 2.0,
-      "loaded_height_including_feet_mm": 278.42,
-      "loaded_depth_mm": 220.0,
-      "positive_volume_intersections": {}
-    },
-    {
-      "diameter_mm": 220.0,
-      "width_mm": 100.0,
-      "pod_center_mm": 175.0,
-      "side_clearance_each_mm": 2.0,
-      "loaded_height_including_feet_mm": 278.42,
-      "loaded_depth_mm": 220.0,
-      "positive_volume_intersections": {}
-    }
-  ],
-  "pod_adjustment_checks": [
-    {
-      "width_mm": 50.0,
-      "height_mm": 90.0,
-      "positive_volume_intersections": {}
-    },
-    {
-      "width_mm": 50.0,
-      "height_mm": 155.0,
-      "positive_volume_intersections": {}
-    },
-    {
-      "width_mm": 50.0,
-      "height_mm": 175.0,
-      "positive_volume_intersections": {}
-    },
-    {
-      "width_mm": 80,
-      "height_mm": 90.0,
-      "positive_volume_intersections": {}
-    },
-    {
-      "width_mm": 80,
-      "height_mm": 155.0,
-      "positive_volume_intersections": {}
-    },
-    {
-      "width_mm": 80,
-      "height_mm": 175.0,
-      "positive_volume_intersections": {}
-    },
-    {
-      "width_mm": 100.0,
-      "height_mm": 90.0,
-      "positive_volume_intersections": {}
-    },
-    {
-      "width_mm": 100.0,
-      "height_mm": 155.0,
-      "positive_volume_intersections": {}
-    },
-    {
-      "width_mm": 100.0,
-      "height_mm": 175.0,
-      "positive_volume_intersections": {}
-    }
-  ],
   "fastener_schedule": {
+    "total_screws": 12,
+    "dimensional_sizes": [
+      "M3x16",
+      "M4x25",
+      "M5x12"
+    ],
     "screws": [
       {
-        "size": "M3x12",
+        "size": "M3x16",
         "material": "metal",
-        "quantity": 12,
-        "locations": {
-          "lid": 2,
-          "rails": 2,
-          "guides": 4,
-          "adjustable_stops": 4
-        }
+        "quantity": 4,
+        "use": "Adjustable stops"
       },
       {
-        "size": "M3x12",
+        "size": "M3x16",
         "material": "nylon",
         "quantity": 4,
-        "locations": {
-          "reader_height": 2,
-          "reader_cover": 1,
-          "cable_cover": 1
-        }
+        "use": "Reader height and rear cover"
       },
       {
         "size": "M4x25",
         "material": "metal",
         "quantity": 2,
-        "locations": {
-          "moving_load_cell_end": 2
-        }
+        "use": "Moving load-cell end"
       },
       {
         "size": "M5x12",
         "material": "metal",
         "quantity": 2,
-        "locations": {
-          "fixed_load_cell_end": 2
-        }
+        "use": "Fixed load-cell end"
       }
     ],
-    "total_screws": 20,
-    "dimensional_sizes": [
-      "M3x12",
-      "M4x25",
-      "M5x12"
-    ],
-    "purchasing_lines": 4,
     "nuts": {
-      "M3_standard_metal": 8,
       "M3_nylon_insert_locknut": 4,
-      "M3_nylon": 4
+      "M3_all_nylon": 4
     },
     "washers": {
-      "M3_metal": 8,
-      "M3_nylon": 4,
+      "M3_nylon": 6,
       "M4_metal": 2,
       "M5_metal": 2
     },
     "physical_validation": false
   },
-  "nfc_mounts": {
-    "physical_validation": false,
-    "digital_clearance_pass": true,
-    "hardware": "Three nylon M3 x 12, three 0.5 mm washers and three M3 captive nuts on the moving pod; the fourth identical set retains the cable cover.",
-    "board_retention": "Four edge seats, 0.3 mm edge clearance and three cover fingers with 0.3 mm foam allowance. No board screws; verify delivered component-free margins.",
-    "screw_dimensions_mm": {
-      "length": 12,
-      "head_diameter": 5.5,
-      "head_height": 3,
-      "nut_af": 5.5,
-      "nut_thickness": 2.4,
-      "washer_outer_diameter": 7,
-      "washer_thickness": 0.5
-    },
-    "actual_hardware_cases": [
-      {
-        "width_mm": 50.0,
-        "reader_center_mm": 90.0,
-        "intersections": {}
-      },
-      {
-        "width_mm": 50.0,
-        "reader_center_mm": 155.0,
-        "intersections": {}
-      },
-      {
-        "width_mm": 50.0,
-        "reader_center_mm": 175.0,
-        "intersections": {}
-      },
-      {
-        "width_mm": 80,
-        "reader_center_mm": 90.0,
-        "intersections": {}
-      },
-      {
-        "width_mm": 80,
-        "reader_center_mm": 155.0,
-        "intersections": {}
-      },
-      {
-        "width_mm": 80,
-        "reader_center_mm": 175.0,
-        "intersections": {}
-      },
-      {
-        "width_mm": 100.0,
-        "reader_center_mm": 90.0,
-        "intersections": {}
-      },
-      {
-        "width_mm": 100.0,
-        "reader_center_mm": 155.0,
-        "intersections": {}
-      },
-      {
-        "width_mm": 100.0,
-        "reader_center_mm": 175.0,
-        "intersections": {}
-      }
-    ],
-    "nut_loading_sampled_intersections": {},
-    "nut_axial_pullout_blocked_in_geometry": {
-      "height_minus": true,
-      "height_plus": true,
-      "pod_cover": true
-    },
-    "tool_access_intersections": {},
-    "whole_pod_removal_sampled_intersections": {},
-    "pod_cover_removal_sampled_intersections": {},
-    "pcb_removal_sampled_intersections": {},
-    "service_pose": {
-      "spool_removed": true,
-      "width_mm": 50,
-      "reader_center_mm": 155.0,
-      "channel_cover_removed": true,
-      "cable_unplugged_and_freed_from_channel": true,
-      "height_screws_and_washers_removed": true,
-      "height_nuts_unthreaded_retained_in_mast": true,
-      "whole_pod_translation_mm": [
-        [
-          0,
-          0,
-          60
-        ],
-        [
-          20,
-          0,
-          0
-        ]
+  "print_orientations": {
+    "base": {
+      "rotation_degrees_xyz": [
+        0,
+        0,
+        0
       ],
-      "reader_center_after_lift_mm": 215,
-      "pod_cover_opened_on_bench": true,
-      "pod_cover_translation_mm": [
-        [
-          0,
-          0,
-          -4
-        ],
-        [
-          20,
-          0,
-          0
-        ]
-      ]
+      "bed_face": "Large flat underside",
+      "flat_bed_contact_mm2": 28677.141,
+      "support_intent": "No supports intended; inspect sliced result and bridge quality."
     },
-    "retention": "Rigid upper tongue and lower M3 clamp; nut side-entry pocket retains axial pullout. Clearance/removal sampling is geometric evidence, not strength, fatigue or foam-pressure validation.",
-    "print_note": "Print pod cover positive-Y side edge down (-90 degrees about X); use a brim and local support beneath PCB fingers and cable hood. This is not a support-free print."
-  },
-  "lid_service": {
-    "spool_removed": true,
-    "guide_width_mm": 50,
-    "reader_height_mm": 155.0,
-    "motion": "Remove two front screws; slide lid forward 1.4 mm, then lift vertically clear of the narrowed cradle.",
-    "method": "Conservative full-motion ring and hook slab envelopes; electronics remain installed.",
-    "positive_volume_intersections": {
-      "forward_1.4mm": {},
-      "lift_210mm": {}
+    "cradle": {
+      "rotation_degrees_xyz": [
+        0,
+        0,
+        0
+      ],
+      "bed_face": "Continuous eight-millimetre slab",
+      "flat_bed_contact_mm2": 21510.003,
+      "support_intent": "No supports intended; inspect sliced result and bridge quality."
     },
-    "physical_validation": false
-  },
-  "structural_joints": {
-    "rail_removal": {
-      "rim_rail_lift_60mm": {},
-      "rim_rail_front_lift_60mm": {}
+    "cell_spacer": {
+      "rotation_degrees_xyz": [
+        0,
+        0,
+        0
+      ],
+      "bed_face": "Broad flat bottom",
+      "flat_bed_contact_mm2": 714.762,
+      "support_intent": "No supports intended; inspect sliced result and bridge quality."
     },
-    "rail_service_precondition": "Spool and both guide assemblies removed; rail screw removed.",
-    "rail_locator_print_lead_in_degrees": 45,
-    "rail_key_side_clearance_mm": 0.2,
-    "rail_key_floor_clearance_mm": 0.2,
-    "rail_lift_mm": 60,
-    "stop_checks": [
-      {
-        "head_top_mm": 36.2,
-        "position_mm": [
-          -61,
-          -52
-        ],
-        "positive_volume_intersections": {}
-      },
-      {
-        "head_top_mm": 36.2,
-        "position_mm": [
-          -61,
-          52
-        ],
-        "positive_volume_intersections": {}
-      },
-      {
-        "head_top_mm": 36.2,
-        "position_mm": [
-          61,
-          -52
-        ],
-        "positive_volume_intersections": {}
-      },
-      {
-        "head_top_mm": 36.2,
-        "position_mm": [
-          61,
-          52
-        ],
-        "positive_volume_intersections": {}
-      },
-      {
-        "head_top_mm": 37.0,
-        "position_mm": [
-          -61,
-          -52
-        ],
-        "positive_volume_intersections": {}
-      },
-      {
-        "head_top_mm": 37.0,
-        "position_mm": [
-          -61,
-          52
-        ],
-        "positive_volume_intersections": {}
-      },
-      {
-        "head_top_mm": 37.0,
-        "position_mm": [
-          61,
-          -52
-        ],
-        "positive_volume_intersections": {}
-      },
-      {
-        "head_top_mm": 37.0,
-        "position_mm": [
-          61,
-          52
-        ],
-        "positive_volume_intersections": {}
-      },
-      {
-        "head_top_mm": 38.0,
-        "position_mm": [
-          -61,
-          -52
-        ],
-        "positive_volume_intersections": {}
-      },
-      {
-        "head_top_mm": 38.0,
-        "position_mm": [
-          -61,
-          52
-        ],
-        "positive_volume_intersections": {}
-      },
-      {
-        "head_top_mm": 38.0,
-        "position_mm": [
-          61,
-          -52
-        ],
-        "positive_volume_intersections": {}
-      },
-      {
-        "head_top_mm": 38.0,
-        "position_mm": [
-          61,
-          52
-        ],
-        "positive_volume_intersections": {}
-      }
-    ],
-    "stop_head_envelope_mm": [
-      5.5,
-      3.0
-    ],
-    "stop_nut_envelope_mm": {
-      "across_flats": 5.5,
-      "height": 4.0
+    "nfc_tower": {
+      "rotation_degrees_xyz": [
+        0,
+        -90,
+        0
+      ],
+      "bed_face": "Broad front panel; open tray points upward",
+      "flat_bed_contact_mm2": 13967.983,
+      "support_intent": "No supports intended; inspect sliced result and bridge quality."
     },
-    "stop_head_top_range_mm": [
-      36.2,
-      38.0
-    ],
-    "stop_gap_note": "Geometric adjustment range only. Actual safe load-cell travel and stop setting must be measured.",
-    "physical_validation": false
-  },
-  "indicator_fit": {
-    "five_led_centers_mm": [
-      -11.333333333333336,
-      5.333333333333332,
-      22.0,
-      38.66666666666667,
-      55.333333333333336
-    ],
-    "led_pitch_mm": 16.666666666666668,
-    "led_center_height_mm": 29,
-    "front_plane_y_mm": -85.0,
-    "strip_length_mm_provisional": 83.33333333333334,
-    "strip_width_mm_provisional": 10.0,
-    "opening_diameter_mm": 6.4,
-    "face_angle_from_horizontal_deg": 90,
-    "oled_enabled": true,
-    "oled_center_xz_mm": [
-      -52,
-      19
-    ],
-    "oled_fit": "Provisional generic envelope; actual PCB, glass, pins and controller not identified. Winstar WEA012864D-03 gives 27.3 mm square, Joy-IT SBC-OLED01 gives 27 mm square; neither identifies the user board. No board hole pitch assumed.",
-    "led_fit": "60 LEDs/m confirmed; 10 mm strip width and 5050 package provisional. Five-pixel cut length, coating and pads require measurement.",
-    "physical_validation": false,
-    "led_wall_gap_mm_provisional": 0.2,
-    "led_adhesive_gap_mm_provisional": 0.2,
-    "attachment": "Supports integrated into fixed base front wall; service through main lid. No separate fascia or rear cover.",
-    "oled_retention": "Open-top PCB side guides, lower front edge pad, bottom stop and rear edge rails with 0.4 mm nominal foam allowance. No PCB hole pattern assumed; do not clamp glass.",
-    "wiring": "Front controls wire inside the fixed base. Keep clear of load-cell leads and moving carrier.",
-    "print_note": "Base floor down. Inspect support needs beneath internal LED gutter and PCB edge pads; all are accessible through the main lid. Fit coupons include the actual retained support geometry."
-  },
-  "oled_insertion": {
-    "applicable": true,
-    "main_lid_removed": true,
-    "continuous_vertical_lift_mm": 40,
-    "reference_envelopes_checked": [
-      "OLED_PCB",
-      "OLED_glass",
-      "OLED_components",
-      "OLED_headers"
-    ],
-    "positive_volume_intersections": {
-      "OLED_PCB": {},
-      "OLED_glass": {},
-      "OLED_components": {},
-      "OLED_headers": {}
+    "nfc_cassette": {
+      "rotation_degrees_xyz": [
+        0,
+        90,
+        0
+      ],
+      "bed_face": "Flat closed back; antenna cup opens upward",
+      "flat_bed_contact_mm2": 2676.917,
+      "support_intent": "No supports intended; inspect sliced result and bridge quality."
     },
-    "physical_insertion_verified": false
-  },
-  "nfc_cable_route": {
-    "physical_validation": false,
-    "digital_clearance_pass": true,
-    "cover_retention": {
-      "physical_validation": false,
-      "digital_clearance_pass": true,
-      "actual_hardware_intersections": {},
-      "tool_access_intersections": {},
-      "nut_insertion_sampled_intersections": {},
-      "cover_removal_sampled_intersections": {},
-      "nut_axial_pullout_blocked_in_geometry": true,
-      "service_pose": {
-        "spool_removed": true,
-        "width_mm": 50,
-        "reader_center_mm": 155.0,
-        "cover_translation_mm": [
-          [
-            0,
-            3.5,
-            0
-          ],
-          [
-            20,
-            0,
-            0
-          ]
-        ]
-      },
-      "limits": "18 sampled cover poses per translation leg, 17 sampled nut insertion poses and one pullout obstruction check. These are clearance evidence, not retention-force or print-tolerance validation."
-    },
-    "bundle_diameter_mm_provisional": 4.0,
-    "moving_reader_route_bend_radius_mm_design_target": 10,
-    "illustrative_base_tail_small_arc_radius_mm": 5,
-    "reader_center_range_mm": [
-      90.0,
-      175.0
-    ],
-    "spool_width_range_mm": [
-      50.0,
-      100.0
-    ],
-    "constant_moving_route_centerline_length_mm": 220.24778,
-    "cassette_loop_centerline_length_mm": 136.415927,
-    "discrete_actual_path_cases": [
-      {
-        "width_mm": 50.0,
-        "reader_center_mm": 90.0,
-        "positive_volume_intersections": {}
-      },
-      {
-        "width_mm": 50.0,
-        "reader_center_mm": 155.0,
-        "positive_volume_intersections": {}
-      },
-      {
-        "width_mm": 50.0,
-        "reader_center_mm": 175.0,
-        "positive_volume_intersections": {}
-      },
-      {
-        "width_mm": 80,
-        "reader_center_mm": 90.0,
-        "positive_volume_intersections": {}
-      },
-      {
-        "width_mm": 80,
-        "reader_center_mm": 155.0,
-        "positive_volume_intersections": {}
-      },
-      {
-        "width_mm": 80,
-        "reader_center_mm": 175.0,
-        "positive_volume_intersections": {}
-      },
-      {
-        "width_mm": 100.0,
-        "reader_center_mm": 90.0,
-        "positive_volume_intersections": {}
-      },
-      {
-        "width_mm": 100.0,
-        "reader_center_mm": 155.0,
-        "positive_volume_intersections": {}
-      },
-      {
-        "width_mm": 100.0,
-        "reader_center_mm": 175.0,
-        "positive_volume_intersections": {}
-      }
-    ],
-    "continuous_height_conservative_solid_sweep_intersections": {},
-    "continuous_height_conservative_cable_sweep_intersections": {},
-    "continuous_width_fixed_boundary_sweep_intersections": {},
-    "continuous_height_clamp_access_sweep_intersections": {},
-    "clamp_access_diameter_mm": 5.5,
-    "clamp_washer_diameter_mm": 7,
-    "tail_continuous_bounds_method": "The cubic Bezier lies inside its control-point convex hull; control x spans the full width interval, and the 2 mm bundle radius expands that hull. The R5 semicircle and straight ends have fixed bounds. The checked boxes enclose those bounds.",
-    "tail_model": "Nominal routing and a conservative free-space envelope; no constant-length flex simulation or cable spring-force measurement. Dress slack within this space and re-zero/check at every adjustment.",
-    "maintenance": "One nylon M3 x 12, one 0.5 mm washer and one captive M3 nut. Remove screw, translate cover 3.5 mm in +Y then pull outward to release rigid tongue. One cover exposes rear cassette and lower side gutter.",
-    "concealment": "Upper route behind guide/pod and removable cover; lower chute overlaps the open carrier bay without touching fixed lid. The flexible tail remains below the lid inside the base.",
-    "no_rigid_loadcell_bypass": true,
-    "actual_wire_stiffness_and_weighing_effect_verified": false
-  },
-  "power_fit": {
-    "external_usb_openings": false,
-    "jack_hole": "User drilled; none modeled",
-    "converter_placement": "User chooses and verifies wall attachment; no reserved module volume",
-    "actual_converter_fit_verified": false,
-    "internal_usb_plug_envelope_mm": [
-      10,
-      22,
-      12
-    ],
-    "actual_usb_plug_fit_verified": false,
-    "pcb_edge_to_closed_inner_wall_mm": 11.35
-  },
-  "cad_solid_volume_mm3_with_quantities": 445834.12,
-  "comparison_to_v0_2": {
-    "old_base_footprint_mm": [
-      190,
-      230
-    ],
-    "new_base_footprint_mm": [
-      170.0,
-      160.0
-    ],
-    "footprint_area_reduction_percent": 37.76,
-    "old_cad_solid_volume_mm3_with_quantities": 885509.25,
-    "new_cad_solid_volume_mm3_with_quantities": 445834.12,
-    "cad_solid_volume_reduction_percent": 49.65,
-    "meaning": "Analytic CAD solid volume, including print quantities; not mass or sliced filament."
-  },
-  "comparison_to_v0_3": {
-    "old_base_footprint_mm": [
-      170,
-      190
-    ],
-    "new_base_footprint_mm": [
-      170.0,
-      160.0
-    ],
-    "footprint_area_reduction_percent": 15.79,
-    "old_cad_solid_volume_mm3_with_quantities": 444606.27,
-    "new_cad_solid_volume_mm3_with_quantities": 445834.12,
-    "cad_solid_volume_reduction_percent": -0.28,
-    "meaning": "Analytic CAD solid volume including quantities; not grams or sliced filament."
-  },
-  "shared_parts_vs_v0_3": {
-    "carrier": {
-      "quantity": 1,
-      "analytic_volume_unchanged": false,
-      "print_bounds_unchanged": true
-    },
-    "rim_rail": {
-      "quantity": 2,
-      "analytic_volume_unchanged": false,
-      "print_bounds_unchanged": false
-    },
-    "side_guide": {
-      "quantity": 1,
-      "analytic_volume_unchanged": false,
-      "print_bounds_unchanged": true
-    },
-    "nfc_guide": {
-      "quantity": 1,
-      "analytic_volume_unchanged": false,
-      "print_bounds_unchanged": false
-    },
-    "nfc_pod": {
-      "quantity": 1,
-      "analytic_volume_unchanged": false,
-      "print_bounds_unchanged": true
-    },
-    "nfc_pod_cover": {
-      "quantity": 1,
-      "analytic_volume_unchanged": false,
-      "print_bounds_unchanged": false
+    "nfc_cover": {
+      "rotation_degrees_xyz": [
+        0,
+        -90,
+        0
+      ],
+      "bed_face": "Entire flat front face",
+      "flat_bed_contact_mm2": 14691.642,
+      "support_intent": "No supports intended; inspect sliced result and bridge quality."
     }
+  },
+  "printed_part_intersections": {},
+  "component_intersections": {
+    "pn532_pcb": {},
+    "pn532_components": {},
+    "load_cell": {},
+    "fixed_cell_fasteners": {},
+    "moving_cell_fasteners": {},
+    "stop_fasteners": {},
+    "nfc_height_fasteners": {},
+    "nfc_cover_fasteners": {},
+    "esp32_pcb": {},
+    "esp32_components": {},
+    "esp32_header_wires": {},
+    "hx711_pcb": {},
+    "hx711_components": {},
+    "led_strip": {},
+    "led_pixels": {},
+    "oled_glass": {},
+    "oled_pcb": {},
+    "oled_components": {},
+    "feet": {},
+    "nfc_wire_loop": {},
+    "nfc_wire_tail": {},
+    "spool_left_flange": {},
+    "spool_right_flange": {},
+    "spool_hub": {},
+    "spool_filament": {}
+  },
+  "spool_envelope_checks": [
+    {
+      "diameter_mm": 160.0,
+      "width_mm": 50.0,
+      "floor_gap_mm": 3.055535,
+      "positive_volume_intersections": {}
+    },
+    {
+      "diameter_mm": 160.0,
+      "width_mm": 80.0,
+      "floor_gap_mm": 3.055535,
+      "positive_volume_intersections": {}
+    },
+    {
+      "diameter_mm": 160.0,
+      "width_mm": 100.0,
+      "floor_gap_mm": 3.055535,
+      "positive_volume_intersections": {}
+    },
+    {
+      "diameter_mm": 200.0,
+      "width_mm": 50.0,
+      "floor_gap_mm": 6.149546,
+      "positive_volume_intersections": {}
+    },
+    {
+      "diameter_mm": 200.0,
+      "width_mm": 80.0,
+      "floor_gap_mm": 6.149546,
+      "positive_volume_intersections": {}
+    },
+    {
+      "diameter_mm": 200.0,
+      "width_mm": 100.0,
+      "floor_gap_mm": 6.149546,
+      "positive_volume_intersections": {}
+    },
+    {
+      "diameter_mm": 220.0,
+      "width_mm": 50.0,
+      "floor_gap_mm": 7.696551,
+      "positive_volume_intersections": {}
+    },
+    {
+      "diameter_mm": 220.0,
+      "width_mm": 80.0,
+      "floor_gap_mm": 7.696551,
+      "positive_volume_intersections": {}
+    },
+    {
+      "diameter_mm": 220.0,
+      "width_mm": 100.0,
+      "floor_gap_mm": 7.696551,
+      "positive_volume_intersections": {}
+    }
+  ],
+  "pod_adjustment_checks": [
+    {
+      "height_mm": 85,
+      "positive_volume_intersections": {}
+    },
+    {
+      "height_mm": 95,
+      "positive_volume_intersections": {}
+    },
+    {
+      "height_mm": 110,
+      "positive_volume_intersections": {}
+    },
+    {
+      "height_mm": 130,
+      "positive_volume_intersections": {}
+    },
+    {
+      "height_mm": 150,
+      "positive_volume_intersections": {}
+    },
+    {
+      "height_mm": 160,
+      "positive_volume_intersections": {}
+    },
+    {
+      "height_mm": 170,
+      "positive_volume_intersections": {}
+    }
+  ],
+  "service_lift_checks": [
+    {
+      "lift_mm": 1,
+      "positive_volume_intersections": {}
+    },
+    {
+      "lift_mm": 5,
+      "positive_volume_intersections": {}
+    },
+    {
+      "lift_mm": 15,
+      "positive_volume_intersections": {}
+    },
+    {
+      "lift_mm": 35,
+      "positive_volume_intersections": {}
+    },
+    {
+      "lift_mm": 60,
+      "positive_volume_intersections": {}
+    }
+  ],
+  "boot_access": {
+    "probe_diameter_mm": 3,
+    "hole_diameter_mm": 6.0,
+    "spool_removed": true,
+    "button_position_provisional": true,
+    "positive_volume_intersections": {}
+  },
+  "source_sha256": {
+    "build_simple.py": "b32793c5552dfb63a69c7585519cd275a9b1d1500ec92b89928c694948c81185",
+    "simple_geometry.py": "92a4bc86d85cc20dd2fc2f6fca3f95a2e779fbc7638e4f0ecf2f82d5cbd11f6c",
+    "simple-parameters.json": "8d68f823bb3193902047ea2f5af75e6c1aa86543e764dcdc645bdeb63188b55c",
+    "variants/oled-led/parameters.json": "a433349c6c11221c705f16ffa2390f3b91a5d0619b2a646d4d20ccd680d44819"
   }
 }

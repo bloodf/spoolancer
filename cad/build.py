@@ -27,6 +27,10 @@ parser=argparse.ArgumentParser()
 parser.add_argument('--variant',choices=['headless','touch-8048','headless-led','oled-led'])
 ARGS=parser.parse_args()
 VARIANT=ARGS.variant or 'headless'
+if VARIANT in ('headless-led', 'oled-led'):
+    from build_simple import generate
+    generate(VARIANT)
+    raise SystemExit(0)
 TARGET=HERE/'variants'/VARIANT if ARGS.variant else HERE
 P=json.loads((HERE/'parameters.json').read_text())
 if VARIANT!='headless':

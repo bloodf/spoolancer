@@ -1,0 +1,127 @@
+{
+  "bed_contact_area_mm2": 13968.063,
+  "bed_contact_bounds_xy_mm": [
+    -76.6500015258789,
+    -50.0,
+    76.6500015258789,
+    50.0
+  ],
+  "bed_contact_triangle_count": 182,
+  "exit_code": 0,
+  "exported_settings_sha256": "3ff005d1354b839072dfb77ba206f6b2f448a03f0362790e8423c693ffd1abb7",
+  "filament_g": 103.82,
+  "filament_mm": 33987.67,
+  "fingerprint": {
+    "profile_sha256": {
+      "filament": "a7a7664e2ead562fb40db43717ce5ad19c959d4d4fced9fda998177647a73125",
+      "machine": "a0710ec6d0f441fa8be6b64a2889cef257915d181099bed908b1be9327ee9153",
+      "process": "0754c797b619555c5546a45e7bc866a9358a7877dba5b759b839583632d6c1ad"
+    },
+    "script_sha256": "6859692ce2fa6e100bd5be040946528e03a1a31e4910d3749e02ff7998254905",
+    "stl_sha256": "34307a369c2b38490cd02cbe4f9a96c666ed1469d7f999fdf7d67022344db60d"
+  },
+  "first_layer_deposited_area_estimate_mm2": 13190.91,
+  "first_layer_model_extrusion_volume_mm3": 2638.182,
+  "first_layer_toolpath_bounds_xy_mm": [
+    51.5,
+    76.15,
+    204.5,
+    175.85
+  ],
+  "layer_count": 216,
+  "log_diagnostics": [],
+  "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "metadata_warnings": [
+    {
+      "error_code": "1000C001",
+      "level": "3",
+      "msg": "bed_temperature_too_high_than_filament"
+    }
+  ],
+  "model_time_s": 9477,
+  "name": "nfc_tower",
+  "physical_validation": false,
+  "plate_metadata": {
+    "enable_filament_dynamic_map": "false",
+    "extruder_type": "0",
+    "filament_maps": "1",
+    "first_layer_time": "0.000000",
+    "has_filament_switcher": "false",
+    "index": "1",
+    "label_object_enabled": "true",
+    "limit_filament_maps": "0",
+    "nozzle_diameters": "0.4",
+    "nozzle_volume_type": "0",
+    "outside": "false",
+    "prediction": "9853",
+    "printer_model_id": "",
+    "support_used": "true",
+    "timelapse_type": "0",
+    "weight": "103.82"
+  },
+  "project_sha256": "5287de557036faf67469e50e20565186c2eb8a13fdc95f8bccdb380b45c9815b",
+  "quantity": 1,
+  "slicer_object_footprints": [
+    {
+      "area": 13968.064453125,
+      "bbox": [
+        51.349999999999994,
+        78.0,
+        204.64999999999998,
+        178.0
+      ],
+      "id": 27,
+      "layer_height": 0.20000000298023224,
+      "name": "nfc_tower.stl"
+    }
+  ],
+  "stl_bounds_mm": [
+    [
+      -76.6500015258789,
+      -50.0,
+      0.0
+    ],
+    [
+      76.6500015258789,
+      50.0,
+      30.0
+    ]
+  ],
+  "stl_dimensions_mm": [
+    153.3,
+    100.0,
+    30.0
+  ],
+  "success": true,
+  "support_extrusion_volume_mm3": 2236.73442,
+  "support_features_filament_mm": {
+    "Support": 685.51813,
+    "Support interface": 244.40798
+  },
+  "support_filament_mm": 929.92611,
+  "total_estimated_time_s": 9853,
+  "verified_process_overrides": {
+    "bottom_shell_layers": "5",
+    "bridge_no_support": "0",
+    "brim_type": "no_brim",
+    "curr_bed_type": "Textured PEI Plate",
+    "enable_arc_fitting": "0",
+    "enable_support": "1",
+    "initial_layer_print_height": "0.2",
+    "layer_height": "0.2",
+    "raft_layers": "0",
+    "skirt_loops": "0",
+    "sparse_infill_density": "20%",
+    "sparse_infill_pattern": "gyroid",
+    "support_bottom_z_distance": "0.2",
+    "support_interface_bottom_layers": "2",
+    "support_interface_top_layers": "2",
+    "support_on_build_plate_only": "0",
+    "support_style": "default",
+    "support_threshold_angle": "30",
+    "support_top_z_distance": "0.2",
+    "support_type": "normal(auto)",
+    "top_shell_layers": "5",
+    "wall_loops": "4"
+  }
+}

@@ -90,8 +90,12 @@ def note(fig,y,title,body):
 
 
 if VARIANT in ('headless-led','oled-led'):
-    from exploded_render import render_variant
     validation=json.loads((TARGET/'exports/validation.json').read_text())
+    if validation['revision'].startswith('v0.8'):
+        from render_simple import render_variant
+        P.update(json.loads((HERE/'simple-parameters.json').read_text()))
+    else:
+        from exploded_render import render_variant
     render_variant(PREV,S,P,validation,VARIANT)
     raise SystemExit(0)
 

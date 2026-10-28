@@ -1,16 +1,36 @@
 # Spoolancer verification status
 
-## Glued-rail assembly option, 27 October 2026
+## v0.8 six-piece print redesign, 28 October 2026
 
-The [glue assembly guide](GLUE-ASSEMBLY.md) documents an 18-screw option for the existing v0.7 LED/OLED print sets. It omits two rail screws, two ordinary nuts and two washers; the other joints remain mechanically fastened. The 20-screw CAD reference assemblies and their existing validation reports are unchanged. Published v0.7.0 ZIPs predate this supplementary guide.
+The current LED and OLED/LED mechanical sets have **six printed pieces and twelve screws**. The fixed-width cradle replaces separate rails, thin frames, sliding width guides and the main lid. One broad glued joint attaches the reader tower; the cassette retains height adjustment. The original headless and integrated-touch CAD and all firmware are unchanged.
+
+| Check | Evidence | Limit |
+| --- | --- | --- |
+| Printable files | Six single-solid STEP/STL pairs per variant; reopened meshes are closed, have no detected self-intersections, rest at Z=0 and agree with STEP dimensions/volumes | Mesh/solid checks do not prove a successful print |
+| Assembly | Native FreeCAD and assembly STEP reopen; printed parts and component references have no detected positive-volume collisions | Board, connector and cell envelopes are provisional |
+| Spool and reader fit | Nine full-cylinder spool cases (160/200/220 mm diameters × 50/80/100 mm widths), seven reader heights and the provisional BOOT probe clear modeled parts | Physical tag position, stability, cable forces and off-center scale accuracy are untested |
+| Service | Five sampled vertical lifts clear modeled fixed parts after removing the spool and moving-end screws and disconnecting the reader lead | The loose spacer must be supported; real connector handling is untested |
+| Print poses | All six parts have broad flat undersides; the rear cover prints flat, with about 14,692 mm² bed contact | First-layer adhesion and surface finish remain untested |
+| Slicing | 60 successful offline slices: 36 v0.7 baseline and 24 v0.8, across LED/OLED and P1S/U1 profiles. Four new parts generated no supports; base and tower retain localized supports | No job was sent to a printer; P1S profile temperature warning retained |
+| Material and supports | New complete builds estimate 511–521 g PETG; support volume falls 83.4–86.3%, while filament rises 15.2–16.1% | Same diagnostic settings within each printer; these are slicer estimates, not weighed parts or strength results |
+| Views | Nine CAD-derived images per variant, including assembled, exploded, component locations and actual print poses; source/image hashes recorded | Rendered electronics and cable routes are simplified references |
+| Viewer | Exact asset checks pass; LED has 20 labeled groups, OLED has 21, both with six printed instances. Transform/visibility tests pass | Browser presentation and physical operation are separate checks |
+
+Sources: [printability report](../analysis/printability-v0.8/README.md), [LED geometry](../cad/variants/headless-led/exports/validation.json), [OLED geometry](../cad/variants/oled-led/exports/validation.json), [reopened LED files](../cad/variants/headless-led/exports/export-verification.json), [reopened OLED files](../cad/variants/oled-led/exports/export-verification.json) and [assembly guide](ASSEMBLY.md).
+
+**Physical printing, fit, bond strength, weighing accuracy, seated NFC and stability remain unvalidated.** The 1 mm initial stop gap is untuned. The CAD controls describe supported JSON inputs separately from dimensions fixed in the editable generator. This update performs no device flash.
+
+## Historical glued-rail assembly option, 27 October 2026
+
+The [glue assembly guide](https://github.com/bloodf/spoolancer/blob/b4534d792bfe316cf2ef9fed4b145b440af3957d/docs/GLUE-ASSEMBLY.md) documents an 18-screw option for the existing v0.7 LED/OLED print sets. It omits two rail screws, two ordinary nuts and two washers; the other joints remain mechanically fastened. The 20-screw CAD reference assemblies and their existing validation reports are unchanged. Published v0.7.0 ZIPs predate this supplementary guide.
 
 Read-only inspection of the shared rail/carrier geometry confirmed flat mating faces and two 30 × 6 mm placement regions per rail, clear of the key pockets and holes. Permanent rails preserve guide-nut loading, carrier-to-cell screw access and the existing lid service path. Individual rail removal is no longer a service operation. This is geometric evidence only: **no glue, printed bond, cure time, joint strength or weighing performance has been physically tested**. No CAD geometry, firmware or device state changed for this documentation update.
 
-## v0.7 simplified fasteners, 27 October 2026
+## Historical v0.7 simplified fasteners, 27 October 2026
 
-The current LED-only and OLED-plus-LED models reduce the screw count from 28 to 20. They use three dimensional sizes and four purchasing lines: 12 metal M3 × 12, four nylon M3 × 12, two M4 × 25 and two M5 × 12. The matching lists contain 16 nuts and 16 washers. The original headless/touch models keep their previous hardware.
+The v0.7 LED-only and OLED-plus-LED models reduce the screw count from 28 to 20. They use three dimensional sizes and four purchasing lines: 12 metal M3 × 12, four nylon M3 × 12, two M4 × 25 and two M5 × 12. The matching lists contain 16 nuts and 16 washers. The original headless/touch models keep their previous hardware.
 
-The lid uses rigid rear hooks and two front screws. Each keyed rim rail has one central screw; guides retain two each. Raised stop posts use the common M3 × 12 length. PCB-edge retention removes the PN532 mounting screws, and each NFC cover uses a rigid tongue with one nylon screw. The current [BOM](BOM.md#current-ledoled-fasteners) and [assembly guide](ASSEMBLY.md) describe these joints.
+The lid uses rigid rear hooks and two front screws. Each keyed rim rail has one central screw; guides retain two each. Raised stop posts use the common M3 × 12 length. PCB-edge retention removes the PN532 mounting screws, and each NFC cover uses a rigid tongue with one nylon screw. The [v0.7 BOM](https://github.com/bloodf/spoolancer/blob/v0.7.0-alpha.1/docs/BOM.md) and [assembly guide](https://github.com/bloodf/spoolancer/blob/v0.7.0-alpha.1/docs/ASSEMBLY.md) describe these joints.
 
 Both complete CAD builds, reopened exports and regenerated assembly assets pass the local checks below. These results do not establish hosted-browser, mobile-device or physical-build behavior.
 
@@ -26,7 +46,7 @@ Both complete CAD builds, reopened exports and regenerated assembly assets pass 
 | Interactive viewer | Exact generated model bytes match both final CAD scenes; model/visibility behavior tests pass. LED-only has 29 labeled groups and OLED has 31, each with ten printed instances | Local asset and logic checks; hosted-browser and mobile-device behavior are separate checks |
 | Unchanged components | Firmware, web interface and original headless/touch CAD have no changes; all 17 original preview images retain their hashes | Earlier hardware and software evidence keeps its original scope |
 
-Sources: [LED validation](../cad/variants/headless-led/exports/validation.json), [OLED validation](../cad/variants/oled-led/exports/validation.json), [LED export checks](../cad/variants/headless-led/exports/export-verification.json), [OLED export checks](../cad/variants/oled-led/exports/export-verification.json), [LED render manifest](../cad/variants/headless-led/previews/render-manifest.json), [OLED render manifest](../cad/variants/oled-led/previews/render-manifest.json), [viewer checks](../viewer/README.md), [current hardware schedule](BOM.md#current-ledoled-fasteners) and [service instructions](ASSEMBLY.md#service-the-current-ledoled-reader).
+Sources: [LED validation](https://github.com/bloodf/spoolancer/blob/v0.7.0-alpha.1/cad/variants/headless-led/exports/validation.json), [OLED validation](https://github.com/bloodf/spoolancer/blob/v0.7.0-alpha.1/cad/variants/oled-led/exports/validation.json), [LED export checks](https://github.com/bloodf/spoolancer/blob/v0.7.0-alpha.1/cad/variants/headless-led/exports/export-verification.json), [OLED export checks](https://github.com/bloodf/spoolancer/blob/v0.7.0-alpha.1/cad/variants/oled-led/exports/export-verification.json), [LED render manifest](https://github.com/bloodf/spoolancer/blob/v0.7.0-alpha.1/cad/variants/headless-led/previews/render-manifest.json), [OLED render manifest](https://github.com/bloodf/spoolancer/blob/v0.7.0-alpha.1/cad/variants/oled-led/previews/render-manifest.json), [viewer checks](../viewer/README.md), [current hardware schedule](BOM.md#current-ledoled-fasteners) and [v0.7 service instructions](https://github.com/bloodf/spoolancer/blob/v0.7.0-alpha.1/docs/ASSEMBLY.md#service-the-current-ledoled-reader).
 
 The reduced screw count uses reinforced printed posts and locating keys. Production CAD solid volume is **445,142.83 mm³ for LED-only** and **445,834.12 mm³ for OLED**, compared with 431,404.83 and 432,096.12 mm³ in v0.6, about **3.2% more solid geometry**. There are still ten printed pieces. These are CAD volume totals with production quantities, not sliced filament mass, support usage, print-time estimates or physical measurements.
 

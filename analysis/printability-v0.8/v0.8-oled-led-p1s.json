@@ -1,0 +1,833 @@
+{
+  "all_slices_succeeded": true,
+  "baseline_commit": null,
+  "limitations": [
+    "Offline toolpaths and estimates only; no printer was contacted.",
+    "Supports are enabled for diagnosis, with the bundled 30 degree threshold. Zero generated support is not proof of physical print quality or strength.",
+    "No brim or raft is used, so support/brim cannot conceal a poor STL bed pose.",
+    "STL bed contact is the area of coplanar triangles at the lowest Z, not an adhesion measurement.",
+    "First-layer deposited-area estimate is positive model XY extrusion volume divided by 0.2 mm; it is not a polygon union and does not account for path overlap.",
+    "Support volume sums positive XY extrusion assigned Support or Support interface by Orca. It excludes stationary unretraction and startup purge.",
+    "Each part is sliced separately; summed times include repeated machine startup overhead. Actual multi-part plate arrangement may differ.",
+    "The two printers use their bundled PETG presets, which differ in speed and density. Revision comparisons are valid within each printer profile, not as printer speed benchmarks.",
+    "Warnings are those exported by the CLI and 3MF metadata. Their absence does not prove absence of every GUI diagnostic, floating feature, warping risk, or weak layer orientation."
+  ],
+  "orientation_preserved": true,
+  "partial_part_selection": null,
+  "parts": {
+    "base": {
+      "bed_contact_area_mm2": 28677.281,
+      "bed_contact_bounds_xy_mm": [
+        -85.0,
+        -85.0,
+        85.0,
+        85.0
+      ],
+      "bed_contact_triangle_count": 178,
+      "exit_code": 0,
+      "exported_settings_sha256": "3ff005d1354b839072dfb77ba206f6b2f448a03f0362790e8423c693ffd1abb7",
+      "filament_g": 179.9,
+      "filament_mm": 58894.23,
+      "fingerprint": {
+        "profile_sha256": {
+          "filament": "a7a7664e2ead562fb40db43717ce5ad19c959d4d4fced9fda998177647a73125",
+          "machine": "a0710ec6d0f441fa8be6b64a2889cef257915d181099bed908b1be9327ee9153",
+          "process": "0754c797b619555c5546a45e7bc866a9358a7877dba5b759b839583632d6c1ad"
+        },
+        "script_sha256": "6859692ce2fa6e100bd5be040946528e03a1a31e4910d3749e02ff7998254905",
+        "stl_sha256": "8d28f10489c50a8bd4d652ec9ab70f3f829ef717d9f8cfd38a077c000d7309dc"
+      },
+      "first_layer_deposited_area_estimate_mm2": 27176.391,
+      "first_layer_model_extrusion_volume_mm3": 5435.278,
+      "first_layer_toolpath_bounds_xy_mm": [
+        43.15,
+        41.15,
+        212.85,
+        210.85
+      ],
+      "layer_count": 229,
+      "log_diagnostics": [],
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "metadata_warnings": [
+        {
+          "error_code": "1000C001",
+          "level": "3",
+          "msg": "bed_temperature_too_high_than_filament"
+        }
+      ],
+      "model_time_s": 16873,
+      "name": "base",
+      "physical_validation": false,
+      "plate_metadata": {
+        "enable_filament_dynamic_map": "false",
+        "extruder_type": "0",
+        "filament_maps": "1",
+        "first_layer_time": "0.000000",
+        "has_filament_switcher": "false",
+        "index": "1",
+        "label_object_enabled": "true",
+        "limit_filament_maps": "0",
+        "nozzle_diameters": "0.4",
+        "nozzle_volume_type": "0",
+        "outside": "false",
+        "prediction": "17249",
+        "printer_model_id": "",
+        "support_used": "true",
+        "timelapse_type": "0",
+        "weight": "179.90"
+      },
+      "project_sha256": "506c6d6a61b8b4fdbc4256ae91d29cb97a0d700419603899d4e7f77d3b72ec12",
+      "quantity": 1,
+      "slicer_object_footprints": [
+        {
+          "area": 28677.283203125,
+          "bbox": [
+            43.0,
+            43.0,
+            213.0,
+            213.0
+          ],
+          "id": 27,
+          "layer_height": 0.20000000298023224,
+          "name": "base.stl"
+        }
+      ],
+      "stl_bounds_mm": [
+        [
+          -85.0,
+          -85.0,
+          0.0
+        ],
+        [
+          85.0,
+          85.0,
+          32.0
+        ]
+      ],
+      "stl_dimensions_mm": [
+        170.0,
+        170.0,
+        32.0
+      ],
+      "success": true,
+      "support_extrusion_volume_mm3": 2159.77459,
+      "support_features_filament_mm": {
+        "Support": 782.73347,
+        "Support interface": 115.19646
+      },
+      "support_filament_mm": 897.92993,
+      "total_estimated_time_s": 17249,
+      "verified_process_overrides": {
+        "bottom_shell_layers": "5",
+        "bridge_no_support": "0",
+        "brim_type": "no_brim",
+        "curr_bed_type": "Textured PEI Plate",
+        "enable_arc_fitting": "0",
+        "enable_support": "1",
+        "initial_layer_print_height": "0.2",
+        "layer_height": "0.2",
+        "raft_layers": "0",
+        "skirt_loops": "0",
+        "sparse_infill_density": "20%",
+        "sparse_infill_pattern": "gyroid",
+        "support_bottom_z_distance": "0.2",
+        "support_interface_bottom_layers": "2",
+        "support_interface_top_layers": "2",
+        "support_on_build_plate_only": "0",
+        "support_style": "default",
+        "support_threshold_angle": "30",
+        "support_top_z_distance": "0.2",
+        "support_type": "normal(auto)",
+        "top_shell_layers": "5",
+        "wall_loops": "4"
+      }
+    },
+    "cell_spacer": {
+      "bed_contact_area_mm2": 714.793,
+      "bed_contact_bounds_xy_mm": [
+        -14.0,
+        -13.5,
+        14.0,
+        13.5
+      ],
+      "bed_contact_triangle_count": 178,
+      "exit_code": 0,
+      "exported_settings_sha256": "3ff005d1354b839072dfb77ba206f6b2f448a03f0362790e8423c693ffd1abb7",
+      "filament_g": 7.38,
+      "filament_mm": 2416.62,
+      "fingerprint": {
+        "profile_sha256": {
+          "filament": "a7a7664e2ead562fb40db43717ce5ad19c959d4d4fced9fda998177647a73125",
+          "machine": "a0710ec6d0f441fa8be6b64a2889cef257915d181099bed908b1be9327ee9153",
+          "process": "0754c797b619555c5546a45e7bc866a9358a7877dba5b759b839583632d6c1ad"
+        },
+        "script_sha256": "6859692ce2fa6e100bd5be040946528e03a1a31e4910d3749e02ff7998254905",
+        "stl_sha256": "2df0fb35ef0cc733227819e47d40da01269379318a5140aa8b4db18e50d832d4"
+      },
+      "first_layer_deposited_area_estimate_mm2": 666.235,
+      "first_layer_model_extrusion_volume_mm3": 133.247,
+      "first_layer_toolpath_bounds_xy_mm": [
+        114.15,
+        112.65,
+        141.85,
+        139.35
+      ],
+      "layer_count": 79,
+      "log_diagnostics": [],
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "metadata_warnings": [
+        {
+          "error_code": "1000C001",
+          "level": "3",
+          "msg": "bed_temperature_too_high_than_filament"
+        }
+      ],
+      "model_time_s": 1208,
+      "name": "cell_spacer",
+      "physical_validation": false,
+      "plate_metadata": {
+        "enable_filament_dynamic_map": "false",
+        "extruder_type": "0",
+        "filament_maps": "1",
+        "first_layer_time": "0.000000",
+        "has_filament_switcher": "false",
+        "index": "1",
+        "label_object_enabled": "true",
+        "limit_filament_maps": "0",
+        "nozzle_diameters": "0.4",
+        "nozzle_volume_type": "0",
+        "outside": "false",
+        "prediction": "1584",
+        "printer_model_id": "",
+        "support_used": "true",
+        "timelapse_type": "0",
+        "weight": "7.38"
+      },
+      "project_sha256": "996db69560f8c54a03d95997a21553c209ffa8d0f0fcc510014b72755eb383c2",
+      "quantity": 1,
+      "slicer_object_footprints": [
+        {
+          "area": 714.79296875,
+          "bbox": [
+            114.0,
+            114.5,
+            142.0,
+            141.5
+          ],
+          "id": 27,
+          "layer_height": 0.20000000298023224,
+          "name": "cell_spacer.stl"
+        }
+      ],
+      "stl_bounds_mm": [
+        [
+          -14.0,
+          -13.5,
+          0.0
+        ],
+        [
+          14.0,
+          13.5,
+          15.800000190734863
+        ]
+      ],
+      "stl_dimensions_mm": [
+        28.0,
+        27.0,
+        15.8
+      ],
+      "success": true,
+      "support_extrusion_volume_mm3": 0.0,
+      "support_features_filament_mm": {},
+      "support_filament_mm": 0.0,
+      "total_estimated_time_s": 1584,
+      "verified_process_overrides": {
+        "bottom_shell_layers": "5",
+        "bridge_no_support": "0",
+        "brim_type": "no_brim",
+        "curr_bed_type": "Textured PEI Plate",
+        "enable_arc_fitting": "0",
+        "enable_support": "1",
+        "initial_layer_print_height": "0.2",
+        "layer_height": "0.2",
+        "raft_layers": "0",
+        "skirt_loops": "0",
+        "sparse_infill_density": "20%",
+        "sparse_infill_pattern": "gyroid",
+        "support_bottom_z_distance": "0.2",
+        "support_interface_bottom_layers": "2",
+        "support_interface_top_layers": "2",
+        "support_on_build_plate_only": "0",
+        "support_style": "default",
+        "support_threshold_angle": "30",
+        "support_top_z_distance": "0.2",
+        "support_type": "normal(auto)",
+        "top_shell_layers": "5",
+        "wall_loops": "4"
+      }
+    },
+    "cradle": {
+      "bed_contact_area_mm2": 21510.095,
+      "bed_contact_bounds_xy_mm": [
+        -77.69999694824219,
+        -70.0,
+        77.69999694824219,
+        70.0
+      ],
+      "bed_contact_triangle_count": 614,
+      "exit_code": 0,
+      "exported_settings_sha256": "3ff005d1354b839072dfb77ba206f6b2f448a03f0362790e8423c693ffd1abb7",
+      "filament_g": 173.46,
+      "filament_mm": 56785.78,
+      "fingerprint": {
+        "profile_sha256": {
+          "filament": "a7a7664e2ead562fb40db43717ce5ad19c959d4d4fced9fda998177647a73125",
+          "machine": "a0710ec6d0f441fa8be6b64a2889cef257915d181099bed908b1be9327ee9153",
+          "process": "0754c797b619555c5546a45e7bc866a9358a7877dba5b759b839583632d6c1ad"
+        },
+        "script_sha256": "6859692ce2fa6e100bd5be040946528e03a1a31e4910d3749e02ff7998254905",
+        "stl_sha256": "90d6d0d0502d18776142a93549cdb30a26c8592e2190f47fd8f7e086cab080af"
+      },
+      "first_layer_deposited_area_estimate_mm2": 20379.351,
+      "first_layer_model_extrusion_volume_mm3": 4075.87,
+      "first_layer_toolpath_bounds_xy_mm": [
+        50.45,
+        56.15,
+        205.55,
+        195.85
+      ],
+      "layer_count": 290,
+      "log_diagnostics": [],
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "metadata_warnings": [
+        {
+          "error_code": "1000C001",
+          "level": "3",
+          "msg": "bed_temperature_too_high_than_filament"
+        }
+      ],
+      "model_time_s": 19982,
+      "name": "cradle",
+      "physical_validation": false,
+      "plate_metadata": {
+        "enable_filament_dynamic_map": "false",
+        "extruder_type": "0",
+        "filament_maps": "1",
+        "first_layer_time": "0.000000",
+        "has_filament_switcher": "false",
+        "index": "1",
+        "label_object_enabled": "true",
+        "limit_filament_maps": "0",
+        "nozzle_diameters": "0.4",
+        "nozzle_volume_type": "0",
+        "outside": "false",
+        "prediction": "20358",
+        "printer_model_id": "",
+        "support_used": "true",
+        "timelapse_type": "0",
+        "weight": "173.46"
+      },
+      "project_sha256": "1583e9c333c98ab35ad6f788306d61ada1693b77c120625bad3bdfb59cd90169",
+      "quantity": 1,
+      "slicer_object_footprints": [
+        {
+          "area": 21510.09765625,
+          "bbox": [
+            50.3,
+            58.0,
+            205.7,
+            198.0
+          ],
+          "id": 27,
+          "layer_height": 0.20000000298023224,
+          "name": "cradle.stl"
+        }
+      ],
+      "stl_bounds_mm": [
+        [
+          -77.69999694824219,
+          -70.0,
+          0.0
+        ],
+        [
+          77.69999694824219,
+          70.0,
+          58.0
+        ]
+      ],
+      "stl_dimensions_mm": [
+        155.39999,
+        140.0,
+        58.0
+      ],
+      "success": true,
+      "support_extrusion_volume_mm3": 0.0,
+      "support_features_filament_mm": {},
+      "support_filament_mm": 0.0,
+      "total_estimated_time_s": 20358,
+      "verified_process_overrides": {
+        "bottom_shell_layers": "5",
+        "bridge_no_support": "0",
+        "brim_type": "no_brim",
+        "curr_bed_type": "Textured PEI Plate",
+        "enable_arc_fitting": "0",
+        "enable_support": "1",
+        "initial_layer_print_height": "0.2",
+        "layer_height": "0.2",
+        "raft_layers": "0",
+        "skirt_loops": "0",
+        "sparse_infill_density": "20%",
+        "sparse_infill_pattern": "gyroid",
+        "support_bottom_z_distance": "0.2",
+        "support_interface_bottom_layers": "2",
+        "support_interface_top_layers": "2",
+        "support_on_build_plate_only": "0",
+        "support_style": "default",
+        "support_threshold_angle": "30",
+        "support_top_z_distance": "0.2",
+        "support_type": "normal(auto)",
+        "top_shell_layers": "5",
+        "wall_loops": "4"
+      }
+    },
+    "nfc_cassette": {
+      "bed_contact_area_mm2": 2676.936,
+      "bed_contact_bounds_xy_mm": [
+        -23.600000381469727,
+        -41.0,
+        23.600000381469727,
+        41.0
+      ],
+      "bed_contact_triangle_count": 200,
+      "exit_code": 0,
+      "exported_settings_sha256": "3ff005d1354b839072dfb77ba206f6b2f448a03f0362790e8423c693ffd1abb7",
+      "filament_g": 15.16,
+      "filament_mm": 4963.51,
+      "fingerprint": {
+        "profile_sha256": {
+          "filament": "a7a7664e2ead562fb40db43717ce5ad19c959d4d4fced9fda998177647a73125",
+          "machine": "a0710ec6d0f441fa8be6b64a2889cef257915d181099bed908b1be9327ee9153",
+          "process": "0754c797b619555c5546a45e7bc866a9358a7877dba5b759b839583632d6c1ad"
+        },
+        "script_sha256": "6859692ce2fa6e100bd5be040946528e03a1a31e4910d3749e02ff7998254905",
+        "stl_sha256": "2e1914d18bbcc0d90d9b6eb812d4b4ba2b7ae3b4e123d520f8f04c2f4f6bffda"
+      },
+      "first_layer_deposited_area_estimate_mm2": 2517.454,
+      "first_layer_model_extrusion_volume_mm3": 503.491,
+      "first_layer_toolpath_bounds_xy_mm": [
+        87.15,
+        102.55,
+        168.85,
+        149.45
+      ],
+      "layer_count": 57,
+      "log_diagnostics": [],
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "metadata_warnings": [
+        {
+          "error_code": "1000C001",
+          "level": "3",
+          "msg": "bed_temperature_too_high_than_filament"
+        }
+      ],
+      "model_time_s": 1658,
+      "name": "nfc_cassette",
+      "physical_validation": false,
+      "plate_metadata": {
+        "enable_filament_dynamic_map": "false",
+        "extruder_type": "0",
+        "filament_maps": "1",
+        "first_layer_time": "0.000000",
+        "has_filament_switcher": "false",
+        "index": "1",
+        "label_object_enabled": "true",
+        "limit_filament_maps": "0",
+        "nozzle_diameters": "0.4",
+        "nozzle_volume_type": "0",
+        "outside": "false",
+        "prediction": "2034",
+        "printer_model_id": "",
+        "support_used": "true",
+        "timelapse_type": "0",
+        "weight": "15.16"
+      },
+      "project_sha256": "6e606db8b8eb1bd53b56305caed4030833354dbbe193acff5e0d8cb3d1024500",
+      "quantity": 1,
+      "slicer_object_footprints": [
+        {
+          "area": 2676.936279296875,
+          "bbox": [
+            87.0,
+            104.39999999999999,
+            169.0,
+            151.6
+          ],
+          "id": 27,
+          "layer_height": 0.20000000298023224,
+          "name": "nfc_cassette.stl"
+        }
+      ],
+      "stl_bounds_mm": [
+        [
+          -23.600000381469727,
+          -41.0,
+          0.0
+        ],
+        [
+          23.600000381469727,
+          41.0,
+          11.399999618530273
+        ]
+      ],
+      "stl_dimensions_mm": [
+        47.2,
+        82.0,
+        11.4
+      ],
+      "success": true,
+      "support_extrusion_volume_mm3": 0.0,
+      "support_features_filament_mm": {},
+      "support_filament_mm": 0.0,
+      "total_estimated_time_s": 2034,
+      "verified_process_overrides": {
+        "bottom_shell_layers": "5",
+        "bridge_no_support": "0",
+        "brim_type": "no_brim",
+        "curr_bed_type": "Textured PEI Plate",
+        "enable_arc_fitting": "0",
+        "enable_support": "1",
+        "initial_layer_print_height": "0.2",
+        "layer_height": "0.2",
+        "raft_layers": "0",
+        "skirt_loops": "0",
+        "sparse_infill_density": "20%",
+        "sparse_infill_pattern": "gyroid",
+        "support_bottom_z_distance": "0.2",
+        "support_interface_bottom_layers": "2",
+        "support_interface_top_layers": "2",
+        "support_on_build_plate_only": "0",
+        "support_style": "default",
+        "support_threshold_angle": "30",
+        "support_top_z_distance": "0.2",
+        "support_type": "normal(auto)",
+        "top_shell_layers": "5",
+        "wall_loops": "4"
+      }
+    },
+    "nfc_cover": {
+      "bed_contact_area_mm2": 14691.662,
+      "bed_contact_bounds_xy_mm": [
+        -73.6500015258789,
+        -50.0,
+        73.6500015258789,
+        50.0
+      ],
+      "bed_contact_triangle_count": 178,
+      "exit_code": 0,
+      "exported_settings_sha256": "3ff005d1354b839072dfb77ba206f6b2f448a03f0362790e8423c693ffd1abb7",
+      "filament_g": 41.14,
+      "filament_mm": 13466.88,
+      "fingerprint": {
+        "profile_sha256": {
+          "filament": "a7a7664e2ead562fb40db43717ce5ad19c959d4d4fced9fda998177647a73125",
+          "machine": "a0710ec6d0f441fa8be6b64a2889cef257915d181099bed908b1be9327ee9153",
+          "process": "0754c797b619555c5546a45e7bc866a9358a7877dba5b759b839583632d6c1ad"
+        },
+        "script_sha256": "6859692ce2fa6e100bd5be040946528e03a1a31e4910d3749e02ff7998254905",
+        "stl_sha256": "157b9b4d6043d4069faae984025addfd4e710767693f49058046cc06e84c40bd"
+      },
+      "first_layer_deposited_area_estimate_mm2": 13910.612,
+      "first_layer_model_extrusion_volume_mm3": 2782.122,
+      "first_layer_toolpath_bounds_xy_mm": [
+        54.5,
+        76.15,
+        201.5,
+        175.85
+      ],
+      "layer_count": 15,
+      "log_diagnostics": [],
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "metadata_warnings": [
+        {
+          "error_code": "1000C001",
+          "level": "3",
+          "msg": "bed_temperature_too_high_than_filament"
+        }
+      ],
+      "model_time_s": 3522,
+      "name": "nfc_cover",
+      "physical_validation": false,
+      "plate_metadata": {
+        "enable_filament_dynamic_map": "false",
+        "extruder_type": "0",
+        "filament_maps": "1",
+        "first_layer_time": "0.000000",
+        "has_filament_switcher": "false",
+        "index": "1",
+        "label_object_enabled": "true",
+        "limit_filament_maps": "0",
+        "nozzle_diameters": "0.4",
+        "nozzle_volume_type": "0",
+        "outside": "false",
+        "prediction": "3898",
+        "printer_model_id": "",
+        "support_used": "true",
+        "timelapse_type": "0",
+        "weight": "41.14"
+      },
+      "project_sha256": "c30ffc58ac41d394856fcdf60fafea34741464ffc63ab9af481b818db49e805a",
+      "quantity": 1,
+      "slicer_object_footprints": [
+        {
+          "area": 14691.6611328125,
+          "bbox": [
+            54.349999999999994,
+            78.0,
+            201.64999999999998,
+            178.0
+          ],
+          "id": 27,
+          "layer_height": 0.20000000298023224,
+          "name": "nfc_cover.stl"
+        }
+      ],
+      "stl_bounds_mm": [
+        [
+          -73.6500015258789,
+          -50.0,
+          0.0
+        ],
+        [
+          73.6500015258789,
+          50.0,
+          3.0
+        ]
+      ],
+      "stl_dimensions_mm": [
+        147.3,
+        100.0,
+        3.0
+      ],
+      "success": true,
+      "support_extrusion_volume_mm3": 0.0,
+      "support_features_filament_mm": {},
+      "support_filament_mm": 0.0,
+      "total_estimated_time_s": 3898,
+      "verified_process_overrides": {
+        "bottom_shell_layers": "5",
+        "bridge_no_support": "0",
+        "brim_type": "no_brim",
+        "curr_bed_type": "Textured PEI Plate",
+        "enable_arc_fitting": "0",
+        "enable_support": "1",
+        "initial_layer_print_height": "0.2",
+        "layer_height": "0.2",
+        "raft_layers": "0",
+        "skirt_loops": "0",
+        "sparse_infill_density": "20%",
+        "sparse_infill_pattern": "gyroid",
+        "support_bottom_z_distance": "0.2",
+        "support_interface_bottom_layers": "2",
+        "support_interface_top_layers": "2",
+        "support_on_build_plate_only": "0",
+        "support_style": "default",
+        "support_threshold_angle": "30",
+        "support_top_z_distance": "0.2",
+        "support_type": "normal(auto)",
+        "top_shell_layers": "5",
+        "wall_loops": "4"
+      }
+    },
+    "nfc_tower": {
+      "bed_contact_area_mm2": 13968.063,
+      "bed_contact_bounds_xy_mm": [
+        -76.6500015258789,
+        -50.0,
+        76.6500015258789,
+        50.0
+      ],
+      "bed_contact_triangle_count": 182,
+      "exit_code": 0,
+      "exported_settings_sha256": "3ff005d1354b839072dfb77ba206f6b2f448a03f0362790e8423c693ffd1abb7",
+      "filament_g": 103.82,
+      "filament_mm": 33987.67,
+      "fingerprint": {
+        "profile_sha256": {
+          "filament": "a7a7664e2ead562fb40db43717ce5ad19c959d4d4fced9fda998177647a73125",
+          "machine": "a0710ec6d0f441fa8be6b64a2889cef257915d181099bed908b1be9327ee9153",
+          "process": "0754c797b619555c5546a45e7bc866a9358a7877dba5b759b839583632d6c1ad"
+        },
+        "script_sha256": "6859692ce2fa6e100bd5be040946528e03a1a31e4910d3749e02ff7998254905",
+        "stl_sha256": "34307a369c2b38490cd02cbe4f9a96c666ed1469d7f999fdf7d67022344db60d"
+      },
+      "first_layer_deposited_area_estimate_mm2": 13190.91,
+      "first_layer_model_extrusion_volume_mm3": 2638.182,
+      "first_layer_toolpath_bounds_xy_mm": [
+        51.5,
+        76.15,
+        204.5,
+        175.85
+      ],
+      "layer_count": 216,
+      "log_diagnostics": [],
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "metadata_warnings": [
+        {
+          "error_code": "1000C001",
+          "level": "3",
+          "msg": "bed_temperature_too_high_than_filament"
+        }
+      ],
+      "model_time_s": 9477,
+      "name": "nfc_tower",
+      "physical_validation": false,
+      "plate_metadata": {
+        "enable_filament_dynamic_map": "false",
+        "extruder_type": "0",
+        "filament_maps": "1",
+        "first_layer_time": "0.000000",
+        "has_filament_switcher": "false",
+        "index": "1",
+        "label_object_enabled": "true",
+        "limit_filament_maps": "0",
+        "nozzle_diameters": "0.4",
+        "nozzle_volume_type": "0",
+        "outside": "false",
+        "prediction": "9853",
+        "printer_model_id": "",
+        "support_used": "true",
+        "timelapse_type": "0",
+        "weight": "103.82"
+      },
+      "project_sha256": "5287de557036faf67469e50e20565186c2eb8a13fdc95f8bccdb380b45c9815b",
+      "quantity": 1,
+      "slicer_object_footprints": [
+        {
+          "area": 13968.064453125,
+          "bbox": [
+            51.349999999999994,
+            78.0,
+            204.64999999999998,
+            178.0
+          ],
+          "id": 27,
+          "layer_height": 0.20000000298023224,
+          "name": "nfc_tower.stl"
+        }
+      ],
+      "stl_bounds_mm": [
+        [
+          -76.6500015258789,
+          -50.0,
+          0.0
+        ],
+        [
+          76.6500015258789,
+          50.0,
+          30.0
+        ]
+      ],
+      "stl_dimensions_mm": [
+        153.3,
+        100.0,
+        30.0
+      ],
+      "success": true,
+      "support_extrusion_volume_mm3": 2236.73442,
+      "support_features_filament_mm": {
+        "Support": 685.51813,
+        "Support interface": 244.40798
+      },
+      "support_filament_mm": 929.92611,
+      "total_estimated_time_s": 9853,
+      "verified_process_overrides": {
+        "bottom_shell_layers": "5",
+        "bridge_no_support": "0",
+        "brim_type": "no_brim",
+        "curr_bed_type": "Textured PEI Plate",
+        "enable_arc_fitting": "0",
+        "enable_support": "1",
+        "initial_layer_print_height": "0.2",
+        "layer_height": "0.2",
+        "raft_layers": "0",
+        "skirt_loops": "0",
+        "sparse_infill_density": "20%",
+        "sparse_infill_pattern": "gyroid",
+        "support_bottom_z_distance": "0.2",
+        "support_interface_bottom_layers": "2",
+        "support_interface_top_layers": "2",
+        "support_on_build_plate_only": "0",
+        "support_style": "default",
+        "support_threshold_angle": "30",
+        "support_top_z_distance": "0.2",
+        "support_type": "normal(auto)",
+        "top_shell_layers": "5",
+        "wall_loops": "4"
+      }
+    }
+  },
+  "physical_validation": false,
+  "printed_piece_count": 6,
+  "profile": {
+    "bundled_preset_sha256": {
+      "BBL/filament/Generic PETG @base.json": "a8742f2dc6f1d73f8affe69eb12fefe3e16f0da5e7054c09cea400c145398708",
+      "BBL/filament/P1P/Generic PETG @BBL P1P.json": "4b73469fed06486de21920e58ad228ac74e0f969b2df25ff7baa09a7f333e1e8",
+      "BBL/filament/fdm_filament_common.json": "05725cc129f96ea903dc77c40d248fa1bd0137cfc41216d09d952cfdd37d3683",
+      "BBL/filament/fdm_filament_pet.json": "9d49bae4fd046871c7ea9254af61c9c2e02fa343e15b3ff8d755ab0dd49bebe4",
+      "BBL/machine/Bambu Lab P1S 0.4 nozzle.json": "3e72ef1682406940986edb1ebd7d3b2c99afe59789b9c9389ffbdf6831e07b6a",
+      "BBL/machine/fdm_bbl_3dp_001_common.json": "e90597a202d5461a2f8636a06c35409cffc79a2c1991bb726c6e465e9a0bd26c",
+      "BBL/machine/fdm_machine_common.json": "cdcaa5e5061934a9b960c94e203cc7d1e3b869a407182644f2dda9fdcbf5c2b3",
+      "BBL/process/0.20mm Standard @BBL X1C.json": "a306d938ac9850823a892f57644e3188033901b2e7eb13649b92cfa8d1d346ea",
+      "BBL/process/fdm_process_common.json": "398fcb322a7f459edab00cb2daf524345a19b8cef074415af52f377f91e4bd5b",
+      "BBL/process/fdm_process_single_0.20.json": "b26b4c110e0f44dc25985af0acb2deb00d7d1b3eba57b8d2241ad8106fc8e034",
+      "BBL/process/fdm_process_single_common.json": "59fc5ca43dcf9850076708b8ca14b7f9098fe90b9b32ceffc6741b4fcaf3e73e"
+    },
+    "filament": "Generic PETG @BBL P1P",
+    "filament_density_g_cm3": 1.27,
+    "filament_diameter_mm": 1.75,
+    "machine": "Bambu Lab P1S 0.4 nozzle",
+    "process_base": "0.20mm Standard @BBL X1C",
+    "process_overrides": {
+      "bottom_shell_layers": "5",
+      "bridge_no_support": "0",
+      "brim_type": "no_brim",
+      "curr_bed_type": "Textured PEI Plate",
+      "enable_arc_fitting": "0",
+      "enable_support": "1",
+      "initial_layer_print_height": "0.2",
+      "layer_height": "0.2",
+      "raft_layers": "0",
+      "skirt_loops": "0",
+      "sparse_infill_density": "20%",
+      "sparse_infill_pattern": "gyroid",
+      "support_bottom_z_distance": "0.2",
+      "support_interface_bottom_layers": "2",
+      "support_interface_top_layers": "2",
+      "support_on_build_plate_only": "0",
+      "support_style": "default",
+      "support_threshold_angle": "30",
+      "support_top_z_distance": "0.2",
+      "support_type": "normal(auto)",
+      "top_shell_layers": "5",
+      "wall_loops": "4"
+    },
+    "resolved_sha256": {
+      "filament": "a7a7664e2ead562fb40db43717ce5ad19c959d4d4fced9fda998177647a73125",
+      "machine": "a0710ec6d0f441fa8be6b64a2889cef257915d181099bed908b1be9327ee9153",
+      "process": "0754c797b619555c5546a45e7bc866a9358a7877dba5b759b839583632d6c1ad"
+    }
+  },
+  "revision": "v0.8",
+  "slicer": "OrcaSlicer-2.4.1:",
+  "support_enabled": true,
+  "totals_with_quantities": {
+    "filament_g": 520.86,
+    "filament_mm": 170514.69,
+    "model_time_s": 52720,
+    "support_extrusion_volume_mm3": 4396.509,
+    "support_filament_mm": 1827.856,
+    "total_estimated_time_s": 54976
+  },
+  "validation_sha256": "4280f51d11a64f6b26d63b70a53db3fe71d3ed5723eb768d7dd72b8b5628c6c8",
+  "variant": "oled-led"
+}

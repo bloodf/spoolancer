@@ -1,0 +1,183 @@
+{
+  "comparisons": {
+    "headless-led/p1s": {
+      "filament_change_percent": 16.14,
+      "metadata_warnings": [
+        "bed_temperature_too_high_than_filament"
+      ],
+      "parts_with_generated_support": [
+        "base",
+        "nfc_tower"
+      ],
+      "parts_without_generated_support": [
+        "cell_spacer",
+        "cradle",
+        "nfc_cassette",
+        "nfc_cover"
+      ],
+      "source_reports_sha256": {
+        "v0.7-headless-led-p1s.json": "e14a87242771980657f272012a3df3186e0421ac98e0b5f3a3e6eb9313257e9a",
+        "v0.8-headless-led-p1s.json": "98692fb9532f33f1aedb15acff379811971db73e7ddfafe5b9e24e3a677933ee"
+      },
+      "support_volume_reduction_percent": 86.31,
+      "total_estimated_time_change_percent": -2.04,
+      "v0_7": {
+        "filament_g": 448.72,
+        "filament_mm": 146897.59,
+        "model_time_s": 52298,
+        "printed_pieces": 10,
+        "support_extrusion_volume_mm3": 26276.395,
+        "support_filament_mm": 10924.456,
+        "total_estimated_time_s": 56059
+      },
+      "v0_8": {
+        "filament_g": 521.16,
+        "filament_mm": 170610.75,
+        "model_time_s": 52658,
+        "printed_pieces": 6,
+        "support_extrusion_volume_mm3": 3596.891,
+        "support_filament_mm": 1495.413,
+        "total_estimated_time_s": 54914
+      }
+    },
+    "headless-led/u1": {
+      "filament_change_percent": 15.49,
+      "metadata_warnings": [],
+      "parts_with_generated_support": [
+        "base",
+        "nfc_tower"
+      ],
+      "parts_without_generated_support": [
+        "cell_spacer",
+        "cradle",
+        "nfc_cassette",
+        "nfc_cover"
+      ],
+      "source_reports_sha256": {
+        "v0.7-headless-led-u1.json": "128b007b036a8babcd8a14855cf591da6dda96b36b4d8cb0a0a43e591775da4c",
+        "v0.8-headless-led-u1.json": "df9a590c4e65d51ff9abe8a54c0826ff3515e58b98aaeaca00eb5f025dbff543"
+      },
+      "support_volume_reduction_percent": 86.27,
+      "total_estimated_time_change_percent": -9.54,
+      "v0_7": {
+        "filament_g": 443.0,
+        "filament_mm": 147341.89,
+        "model_time_s": null,
+        "printed_pieces": 10,
+        "support_extrusion_volume_mm3": 26044.251,
+        "support_filament_mm": 10827.941,
+        "total_estimated_time_s": 69965
+      },
+      "v0_8": {
+        "filament_g": 511.61,
+        "filament_mm": 170162.6,
+        "model_time_s": null,
+        "printed_pieces": 6,
+        "support_extrusion_volume_mm3": 3575.383,
+        "support_filament_mm": 1486.472,
+        "total_estimated_time_s": 63293
+      }
+    },
+    "oled-led/p1s": {
+      "filament_change_percent": 15.86,
+      "metadata_warnings": [
+        "bed_temperature_too_high_than_filament"
+      ],
+      "parts_with_generated_support": [
+        "base",
+        "nfc_tower"
+      ],
+      "parts_without_generated_support": [
+        "cell_spacer",
+        "cradle",
+        "nfc_cassette",
+        "nfc_cover"
+      ],
+      "source_reports_sha256": {
+        "v0.7-oled-led-p1s.json": "3127613f89dcf05725965180a0394297afed55c4b7f1fe5692816d9c9ae04371",
+        "v0.8-oled-led-p1s.json": "ce8e64e7e20b690cf8a434b95cb6bae07ca8d732e538be8a9ab7d46f4304380d"
+      },
+      "support_volume_reduction_percent": 83.48,
+      "total_estimated_time_change_percent": -2.46,
+      "v0_7": {
+        "filament_g": 449.55,
+        "filament_mm": 147167.76,
+        "model_time_s": 52602,
+        "printed_pieces": 10,
+        "support_extrusion_volume_mm3": 26611.319,
+        "support_filament_mm": 11063.701,
+        "total_estimated_time_s": 56363
+      },
+      "v0_8": {
+        "filament_g": 520.86,
+        "filament_mm": 170514.69,
+        "model_time_s": 52720,
+        "printed_pieces": 6,
+        "support_extrusion_volume_mm3": 4396.509,
+        "support_filament_mm": 1827.856,
+        "total_estimated_time_s": 54976
+      }
+    },
+    "oled-led/u1": {
+      "filament_change_percent": 15.22,
+      "metadata_warnings": [],
+      "parts_with_generated_support": [
+        "base",
+        "nfc_tower"
+      ],
+      "parts_without_generated_support": [
+        "cell_spacer",
+        "cradle",
+        "nfc_cassette",
+        "nfc_cover"
+      ],
+      "source_reports_sha256": {
+        "v0.7-oled-led-u1.json": "7ece01e1d34350410c6b48d5a49f32ff8e3485783e0e7533aaad310f0e90c06a",
+        "v0.8-oled-led-u1.json": "8e4c16c70f7470fce4daec7be0e73d35919173730014239ae74eb71e48363619"
+      },
+      "support_volume_reduction_percent": 83.41,
+      "total_estimated_time_change_percent": -10.19,
+      "v0_7": {
+        "filament_g": 443.82,
+        "filament_mm": 147612.55,
+        "model_time_s": null,
+        "printed_pieces": 10,
+        "support_extrusion_volume_mm3": 26367.848,
+        "support_filament_mm": 10962.477,
+        "total_estimated_time_s": 70616
+      },
+      "v0_8": {
+        "filament_g": 511.37,
+        "filament_mm": 170080.7,
+        "model_time_s": null,
+        "printed_pieces": 6,
+        "support_extrusion_volume_mm3": 4374.269,
+        "support_filament_mm": 1818.61,
+        "total_estimated_time_s": 63418
+      }
+    }
+  },
+  "count_of_successful_separate_part_slices": 60,
+  "limits": [
+    "Support volume is a slicer diagnostic; small accessible pockets still need support removal or an explicitly chosen bridge strategy.",
+    "No support-free or physical strength claim. Fewer thicker parts cost more estimated filament.",
+    "Times sum separate jobs and are estimates; printer startup macros and real printing conditions may differ.",
+    "Arrange may rotate within the XY plane; all 60 project transforms preserve the exported bed face without tilt, inversion or scaling."
+  ],
+  "no_printer_contacted": true,
+  "orientation_verification_sha256": "ae4a89a7529d05562815d52f1092bc451c0314640a627e11a5e909b53dabf037",
+  "physical_validation": false,
+  "same_profiles_per_revision": true,
+  "support_location_evidence": "Feature positions interpreted from positive support-toolpath coordinates in headless-led/P1S diagnostic G-code and cad/simple_geometry.py. Each report retains exact G-code project hash.",
+  "v0_8_support_locations": {
+    "base": [
+      "Front LED apertures; OLED window on screen variant",
+      "Underside load-cell screw counterbores"
+    ],
+    "nfc_tower": [
+      "Wide front-slot counterbore shoulders",
+      "Bottom cable-exit roof",
+      "Cover-fastener and side-loaded nut pockets"
+    ]
+  }
+}

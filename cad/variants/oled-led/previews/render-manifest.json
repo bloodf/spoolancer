@@ -1,21 +1,24 @@
 {
   "variant": "oled-led",
-  "revision": "v0.7-oled-led-simplified-fasteners-fit-prototype",
+  "revision": "v0.8-print-first-fit-prototype",
   "source": "actual CAD tessellation",
-  "scene_sha256": "cdb34c1d3df2a10f3a00567ab064385f7a5fe315a96405aa705dc6657e19a275",
-  "part_map_sha256": "16d1367c29578c2d3620262d316374e6d9740666257c92978a209648fed75eb8",
-  "renderer_sha256": "54c315fc11d5e5ec6c1eec585a68239e311ac8d579fb11c5dd9f75446b86fc23",
-  "numbered_printed_instances": 10,
-  "numbered_hardware_groups": 11,
+  "scene_sha256": "1eeeae777d02d53da960ea15c9e77d211135661e11dbdd01708cd610e72dd2db",
+  "print_scene_sha256": "ef898ded83b464cef703747fded722317649bb23bb6b28c90c14460e5b8d7e46",
+  "part_map_sha256": "44aef91b3f8668e3b185ba40477fae41f9f98e573bda4bddcc62e83d4932c2dd",
+  "renderer_sha256": "e262d1311f20baccbc9b67c7e668ac662ac08b2a54b3ad3d45065f51598eb0d8",
+  "drawing_helpers_sha256": "54c315fc11d5e5ec6c1eec585a68239e311ac8d579fb11c5dd9f75446b86fc23",
+  "numbered_printed_instances": 6,
+  "numbered_hardware_groups": 12,
   "physical_validation": false,
   "images": {
-    "assembled.png": "b5a1515ea4d126f3b0ed3708d29b52cc922d6ee1f8a27c50922b3b6c7fd22a90",
-    "cradle.png": "7bf5782e48d0456b6d9bf79c376e64c4b590addba335a01d26a055bbbef1168d",
-    "exploded.png": "3981cf815a6e76b28f880da572c29b487ff54c7b8d7d2b3c23a0c4345fe206ee",
-    "component-locations.png": "56e734802ea4d296ce6e95696edf568d1d18c198552f34d094d8dffbd94f235e",
-    "service-interior.png": "80d9a47b1393cc18c9ecf793075f10f9eb5064de3ba25d03682452421cf60345",
-    "indicator-detail.png": "485ca1e0c9edf24b9de2828d33478081c4054b19a6a9760f5e2213fa77262b8f",
-    "edge-detail.png": "0e61696778ea4b1611bb395bd377de00eac5a1999b56fb495902cbfc69c85173",
-    "cable-routing.png": "8933ccf993e3e8b1d35fd0138fa1aa2597d994f783c903455b15ed42ffba4a4c"
+    "assembled.png": "d5e3c86d46cec0cb9c07d6ceaaea8d034d90e40d929178783596baccacf99059",
+    "cradle.png": "b953dc1660d14ee2134a025bbb470e5ece56ab79797268fda02241694323c8ac",
+    "exploded.png": "da721afd2f9ebeafd7d7061e69b9e19d5a2272b2cde338f7791416e6a395a6ac",
+    "component-locations.png": "2ddc866db4e909a81dd4797d0e8dddf01e23d4e80117dd7e2b8e7ef4b34304ee",
+    "service-interior.png": "d0c679ec43d9493bf37e20904d3f7585716b9ef3c9e0a70e29afc01748dc09ca",
+    "indicator-detail.png": "7b0ea7191ed6532bc8b63d58cbe5801a5bcb4180ed00644220c2177bc58a7f97",
+    "edge-detail.png": "fa2c3d5e3abb9b4a88dd51ea8786775931741fb747d91e18c356218562e8df3f",
+    "cable-routing.png": "4dff5c95287fb6e9b49e050a1646694a79b2f5b0fb9a89cf3a7649e8499f313a",
+    "print-orientations.png": "bf2c879e31ac744b6fe9fe085cb59ada78afbe7332d75cf3724e49c3fe22906e"
   }
 }

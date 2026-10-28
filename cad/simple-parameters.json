@@ -1,0 +1,45 @@
+{
+  "revision": "v0.8-print-first-fit-prototype",
+  "spool_widths": [
+    50.0,
+    80.0,
+    100.0
+  ],
+  "spool_diameters": [
+    160.0,
+    200.0,
+    220.0
+  ],
+  "reference_spool_width": 80.0,
+  "reference_spool_diameter": 200.0,
+  "spool_right_face": 51.5,
+  "ramp_angle_degrees": 30.0,
+  "ramp_inner_y": 30.0,
+  "ramp_outer_y": 65.0,
+  "ramp_inner_height": 8.0,
+  "stop_positions": [
+    [
+      -62.0,
+      -60.0
+    ],
+    [
+      -62.0,
+      60.0
+    ],
+    [
+      62.0,
+      -60.0
+    ],
+    [
+      62.0,
+      60.0
+    ]
+  ],
+  "nfc_reference_height": 130.0,
+  "boot_center_estimate": [
+    -33.0,
+    -6.0,
+    12.6
+  ],
+  "boot_access_diameter": 6.0
+}

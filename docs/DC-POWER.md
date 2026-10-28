@@ -1,6 +1,6 @@
 # 12 V input for the LED and OLED variants
 
-The `headless-led` and `oled-led` cases use a user-drilled DC jack opening and have no external USB cutouts. A separate small tool opening reaches onboard BOOT. Remove the cover to connect a programming cable. For the current v0.7 cases, remove the spool, move the guides to the 50 mm setting, remove the two front screws, slide the lid about 1.4 mm forward to release its rear hooks, then lift it clear.
+The `headless-led` and `oled-led` v0.8 cases have no external USB cutouts. A top tool hole in the cradle provides provisional access to onboard BOOT after removing the spool. To reach the USB ports, remove the two moving-end M4 screws, support the loose load-cell spacer, disconnect the reader lead and lift the cradle. The fixed-end M5 screws stay installed.
 
 **12 V is the input to a buck converter, never the supply to the ESP32 or the 5 V LED strip.** Use a regulated fixed 5 V converter rated for at least 2 A continuous at 12 V input. The owner will glue an insulated converter assembly to a fixed enclosure wall; no dedicated converter mount is required. Its actual dimensions, heat dissipation and wiring must clear the moving assembly. A converter and jack have not yet been physically verified in this enclosure.
 
@@ -21,7 +21,7 @@ All grounds join. Check jack polarity with a meter; a centre-positive supply is 
 
 Use one controller supply path at a time. The [Espressif development-board guide](https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32s3/esp32-s3-devkitc-1/user_guide_v1.1.html#power-supply-options) treats USB, 5 V header and 3.3 V header supplies as alternatives. The owned V6.0.0 clone's protection circuit is unverified, so do not assume it isolates two sources.
 
-The preferred service connection is a removable internal USB-C power plug into COM if the actual angled plug fits the new case. Disconnect it and replace it with the computer's data cable when programming. The CAD plug is a provisional clearance reference, not a qualified cable recommendation.
+The preferred service connection is a removable internal USB-C power plug into COM if the actual angled plug fits the new case. Disconnect it and replace it with the computer's data cable when programming. The v0.8 model does not include a qualified USB plug or bend envelope; check the complete plug and wire clearance in the actual enclosure.
 
 If using the board's **5V and GND header** instead, use a removable two-wire connector. Before attaching a computer USB cable, disconnect the 12 V supply **and the converter's 5 V connection to the board**. Removing only the 12 V input can still leave a path for USB to feed backward into the converter. Keep the LED harness disconnected during USB-only controller programming unless its separate power arrangement has been checked; an unpowered strip must not be fed through its data input.
 
@@ -44,6 +44,6 @@ The OLED firmware uses SDA on GPIO4 and SCL on GPIO5. Confirm the module's 3.3 V
 
 ## Mechanical and electrical checks
 
-Drill with all electronics removed. Check both sides of the chosen wall for the jack's complete body, nut and wire bend radius; do not cut the load-cell supports, BOOT passage or cover posts. The jack opening has deliberately not been generated in CAD.
+Drill with all electronics removed. Check both sides of the chosen wall for the jack's complete body, nut and wire bend radius; do not cut the load-cell supports, load-cell mounts or stop posts. The jack opening has deliberately not been generated in CAD.
 
 Before permanent assembly, verify converter output under the combined Wi-Fi, NFC, OLED and LED load, check temperatures, and compare repeatable scale readings with LEDs/display on and off. CAD clearance and a successful USB firmware boot do not verify the 12 V power path or weighing accuracy.

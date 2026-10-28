@@ -50,6 +50,8 @@ jobs:
           package-manager-cache: false
       - name: Check generated meshes against CAD scenes
         run: python3 tools/build_viewer.py --check
+      - name: Verify CAD delivery and print poses
+        run: python3 tools/check_cad_delivery.py
       - name: Check viewer syntax and component behavior
         run: |
           node --check viewer/app.js
