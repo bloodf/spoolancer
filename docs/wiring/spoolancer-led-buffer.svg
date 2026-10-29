@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1240" viewBox="0 0 1600 1240" role="img" aria-label="Spoolancer 74AHCT125 DIP-14 LED level shifter wiring detail">
+<title>Spoolancer 74AHCT125 DIP-14 LED level shifter wiring detail</title>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="context-stroke"/></marker></defs>
+<rect width="1600" height="1240" fill="white"/>
+<text x="60" y="70" font-family="Arial, Helvetica, sans-serif" font-size="39" fill="#142d42" font-weight="700" text-anchor="start">SPOOLANCER / LED BUFFER DETAIL</text>
+<text x="60" y="113" font-family="Arial, Helvetica, sans-serif" font-size="25" fill="#506475" font-weight="400" text-anchor="start">74AHCT125 · non-inverting buffer · top view of a 14-pin DIP package</text>
+<text x="60" y="151" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#506475" font-weight="400" text-anchor="start">Match the exact IC marking and datasheet. Do not substitute a generic I²C level-shifter module.</text>
+<rect x="575" y="215" width="450" height="595" rx="20" fill="#edf8f6" stroke="#007d78" stroke-width="2"/>
+<path d="M755 215 Q755 265 800 265 Q845 265 845 215" fill="none" stroke="#007d78" stroke-width="3"/>
+<text x="800" y="307" font-family="Arial, Helvetica, sans-serif" font-size="36" fill="#007d78" font-weight="700" text-anchor="middle">74AHCT125</text>
+<text x="800" y="344" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#506475" font-weight="700" text-anchor="middle">NOTCH AT TOP</text>
+<line x1="515" y1="390" x2="575" y2="390" stroke="#48535c" stroke-width="4"/>
+<text x="595" y="398" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#48535c" font-weight="700" text-anchor="start">1</text>
+<text x="642" y="398" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#142d42" font-weight="400" text-anchor="start">/1OE</text>
+<text x="495" y="398" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#48535c" font-weight="700" text-anchor="end">GND</text>
+<line x1="515" y1="450" x2="575" y2="450" stroke="#007d78" stroke-width="4"/>
+<text x="595" y="458" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#007d78" font-weight="700" text-anchor="start">2</text>
+<text x="642" y="458" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#142d42" font-weight="400" text-anchor="start">1A</text>
+<text x="495" y="458" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#007d78" font-weight="700" text-anchor="end">GPIO6 through J2</text>
+<line x1="515" y1="510" x2="575" y2="510" stroke="#007d78" stroke-width="4"/>
+<text x="595" y="518" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#007d78" font-weight="700" text-anchor="start">3</text>
+<text x="642" y="518" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#142d42" font-weight="400" text-anchor="start">1Y</text>
+<text x="495" y="518" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#007d78" font-weight="700" text-anchor="end">330 Ω → first LED DIN</text>
+<line x1="515" y1="570" x2="575" y2="570" stroke="#c6323d" stroke-width="4"/>
+<text x="595" y="578" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#c6323d" font-weight="700" text-anchor="start">4</text>
+<text x="642" y="578" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#142d42" font-weight="400" text-anchor="start">/2OE</text>
+<text x="495" y="578" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#c6323d" font-weight="700" text-anchor="end">5 V</text>
+<line x1="515" y1="630" x2="575" y2="630" stroke="#48535c" stroke-width="4"/>
+<text x="595" y="638" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#48535c" font-weight="700" text-anchor="start">5</text>
+<text x="642" y="638" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#142d42" font-weight="400" text-anchor="start">2A</text>
+<text x="495" y="638" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#48535c" font-weight="700" text-anchor="end">GND</text>
+<line x1="515" y1="690" x2="575" y2="690" stroke="#506475" stroke-width="4"/>
+<text x="595" y="698" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#506475" font-weight="700" text-anchor="start">6</text>
+<text x="642" y="698" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#142d42" font-weight="400" text-anchor="start">2Y</text>
+<text x="495" y="698" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#506475" font-weight="700" text-anchor="end">NC</text>
+<line x1="515" y1="750" x2="575" y2="750" stroke="#48535c" stroke-width="4"/>
+<text x="595" y="758" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#48535c" font-weight="700" text-anchor="start">7</text>
+<text x="642" y="758" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#142d42" font-weight="400" text-anchor="start">GND</text>
+<text x="495" y="758" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#48535c" font-weight="700" text-anchor="end">GND</text>
+<line x1="1025" y1="390" x2="1085" y2="390" stroke="#c6323d" stroke-width="4"/>
+<text x="1005" y="398" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#c6323d" font-weight="700" text-anchor="end">14</text>
+<text x="950" y="398" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#142d42" font-weight="400" text-anchor="end">VCC</text>
+<text x="1105" y="398" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#c6323d" font-weight="700" text-anchor="start">5 V</text>
+<line x1="1025" y1="450" x2="1085" y2="450" stroke="#c6323d" stroke-width="4"/>
+<text x="1005" y="458" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#c6323d" font-weight="700" text-anchor="end">13</text>
+<text x="950" y="458" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#142d42" font-weight="400" text-anchor="end">/4OE</text>
+<text x="1105" y="458" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#c6323d" font-weight="700" text-anchor="start">5 V</text>
+<line x1="1025" y1="510" x2="1085" y2="510" stroke="#48535c" stroke-width="4"/>
+<text x="1005" y="518" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#48535c" font-weight="700" text-anchor="end">12</text>
+<text x="950" y="518" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#142d42" font-weight="400" text-anchor="end">4A</text>
+<text x="1105" y="518" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#48535c" font-weight="700" text-anchor="start">GND</text>
+<line x1="1025" y1="570" x2="1085" y2="570" stroke="#506475" stroke-width="4"/>
+<text x="1005" y="578" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#506475" font-weight="700" text-anchor="end">11</text>
+<text x="950" y="578" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#142d42" font-weight="400" text-anchor="end">4Y</text>
+<text x="1105" y="578" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#506475" font-weight="700" text-anchor="start">NC</text>
+<line x1="1025" y1="630" x2="1085" y2="630" stroke="#c6323d" stroke-width="4"/>
+<text x="1005" y="638" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#c6323d" font-weight="700" text-anchor="end">10</text>
+<text x="950" y="638" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#142d42" font-weight="400" text-anchor="end">/3OE</text>
+<text x="1105" y="638" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#c6323d" font-weight="700" text-anchor="start">5 V</text>
+<line x1="1025" y1="690" x2="1085" y2="690" stroke="#48535c" stroke-width="4"/>
+<text x="1005" y="698" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#48535c" font-weight="700" text-anchor="end">9</text>
+<text x="950" y="698" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#142d42" font-weight="400" text-anchor="end">3A</text>
+<text x="1105" y="698" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#48535c" font-weight="700" text-anchor="start">GND</text>
+<line x1="1025" y1="750" x2="1085" y2="750" stroke="#506475" stroke-width="4"/>
+<text x="1005" y="758" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#506475" font-weight="700" text-anchor="end">8</text>
+<text x="950" y="758" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#142d42" font-weight="400" text-anchor="end">3Y</text>
+<text x="1105" y="758" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#506475" font-weight="700" text-anchor="start">NC</text>
+<text x="60" y="863" font-family="Arial, Helvetica, sans-serif" font-size="25" fill="#142d42" font-weight="700" text-anchor="start">SUPPORT COMPONENTS</text>
+<rect x="60" y="893" width="470" height="175" rx="14" fill="white" stroke="#cfdae0" stroke-width="2"/>
+<text x="84" y="930" font-family="Arial, Helvetica, sans-serif" font-size="25" fill="#142d42" font-weight="700" text-anchor="start">10 kΩ pull-down</text>
+<text x="84" y="969" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#007d78" font-weight="400" text-anchor="start">Pin 2 / 1A → 10 kΩ → GND</text>
+<text x="84" y="1010" font-family="Arial, Helvetica, sans-serif" font-size="21" fill="#506475" font-weight="400" text-anchor="start">Keeps input low during ESP reset.</text>
+<text x="84" y="1045" font-family="Arial, Helvetica, sans-serif" font-size="21" fill="#506475" font-weight="400" text-anchor="start">The GPIO6 wire also joins pin 2.</text>
+<rect x="565" y="893" width="470" height="175" rx="14" fill="white" stroke="#cfdae0" stroke-width="2"/>
+<text x="589" y="930" font-family="Arial, Helvetica, sans-serif" font-size="25" fill="#142d42" font-weight="700" text-anchor="start">100 nF ceramic bypass</text>
+<text x="589" y="969" font-family="Arial, Helvetica, sans-serif" font-size="21" fill="#c6323d" font-weight="400" text-anchor="start">Pin 14 / VCC ↔ capacitor ↔ pin 7</text>
+<text x="589" y="1010" font-family="Arial, Helvetica, sans-serif" font-size="21" fill="#506475" font-weight="400" text-anchor="start">Mount close to the IC supply pins.</text>
+<text x="589" y="1045" font-family="Arial, Helvetica, sans-serif" font-size="21" fill="#506475" font-weight="400" text-anchor="start">Non-polarized; either way round.</text>
+<rect x="1070" y="893" width="470" height="175" rx="14" fill="white" stroke="#cfdae0" stroke-width="2"/>
+<text x="1094" y="930" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#142d42" font-weight="700" text-anchor="start">1000 µF / 10 V bulk capacitor</text>
+<text x="1094" y="969" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#c6323d" font-weight="400" text-anchor="start">Strip 5V → (+) capacitor (−) → GND</text>
+<text x="1094" y="1010" font-family="Arial, Helvetica, sans-serif" font-size="21" fill="#506475" font-weight="400" text-anchor="start">Mount near the first pixel.</text>
+<text x="1094" y="1045" font-family="Arial, Helvetica, sans-serif" font-size="21" fill="#506475" font-weight="400" text-anchor="start">Electrolytic polarity matters.</text>
+<text x="60" y="1112" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#506475" font-weight="400" text-anchor="start">NC = leave unconnected. /OE is active low: pin 1 is enabled; unused channels are disabled.</text>
+<text x="60" y="1155" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#142d42" font-weight="700" text-anchor="start">330 Ω goes in series between pin 3 and the first pixel DIN, close to the first pixel.</text>
+<text x="60" y="1198" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#c6323d" font-weight="700" text-anchor="start">Buffer + strip use buck 5 V and common GND. Disconnect J1 and J2 before computer USB power.</text>
+</svg>

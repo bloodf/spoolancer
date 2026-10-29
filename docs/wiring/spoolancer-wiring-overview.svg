@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1800" height="1790" viewBox="0 0 1800 1790" role="img" aria-label="Spoolancer standalone ESP32-S3 full wiring overview">
+<title>Spoolancer standalone ESP32-S3 full wiring overview</title>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="context-stroke"/></marker></defs>
+<rect width="1800" height="1790" fill="white"/>
+<text x="60" y="70" font-family="Arial, Helvetica, sans-serif" font-size="43" fill="#142d42" font-weight="700" text-anchor="start">SPOOLANCER / WIRING</text>
+<text x="60" y="112" font-family="Arial, Helvetica, sans-serif" font-size="25" fill="#506475" font-weight="400" text-anchor="start">ESP32-S3 N16R8 · PN532 · HX711 · 0.96-inch OLED · five addressable RGB LEDs</text>
+<rect x="1435" y="35" width="305" height="36" rx="7" fill="white" stroke="#007d78" stroke-width="2"/>
+<text x="1587.5" y="60" font-family="Arial, Helvetica, sans-serif" font-size="19" fill="#007d78" font-weight="700" text-anchor="middle">OLED + LED profile</text>
+<text x="60" y="164" font-family="Arial, Helvetica, sans-serif" font-size="26" fill="#142d42" font-weight="700" text-anchor="start">1  POWER — regulate 12 V to 5 V before connecting electronics</text>
+<rect x="60" y="204" width="250" height="170" rx="14" fill="white" stroke="#cfdae0" stroke-width="2"/>
+<text x="82" y="245" font-family="Arial, Helvetica, sans-serif" font-size="28" fill="#142d42" font-weight="700" text-anchor="start">12 V DC jack</text>
+<text x="82" y="284" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#c96411" font-weight="400" text-anchor="start">Positive</text>
+<text x="82" y="337" font-family="Arial, Helvetica, sans-serif" font-size="21" fill="#48535c" font-weight="400" text-anchor="start">Negative / return</text>
+<rect x="430" y="204" width="300" height="170" rx="14" fill="white" stroke="#cfdae0" stroke-width="2"/>
+<text x="455" y="245" font-family="Arial, Helvetica, sans-serif" font-size="28" fill="#142d42" font-weight="700" text-anchor="start">Buck converter</text>
+<text x="455" y="285" font-family="Arial, Helvetica, sans-serif" font-size="21" fill="#c96411" font-weight="400" text-anchor="start">IN+</text>
+<text x="455" y="337" font-family="Arial, Helvetica, sans-serif" font-size="21" fill="#48535c" font-weight="400" text-anchor="start">IN−</text>
+<text x="706" y="285" font-family="Arial, Helvetica, sans-serif" font-size="21" fill="#c6323d" font-weight="400" text-anchor="end">OUT+ 5.0 V</text>
+<text x="706" y="337" font-family="Arial, Helvetica, sans-serif" font-size="21" fill="#48535c" font-weight="400" text-anchor="end">OUT−</text>
+<line x1="310" y1="279" x2="430" y2="279" stroke="#c96411" stroke-width="5"/>
+<text x="370" y="265" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#c96411" font-weight="700" text-anchor="middle">12 V</text>
+<line x1="310" y1="330" x2="430" y2="330" stroke="#48535c" stroke-width="4"/>
+<rect x="865" y="204" width="875" height="190" rx="14" fill="#edf8f6" stroke="#cfdae0" stroke-width="2"/>
+<line x1="730" y1="279" x2="900" y2="279" stroke="#c6323d" stroke-width="5"/>
+<path d="M900 250 V355" fill="none" stroke="#c6323d" stroke-width="5"/>
+<circle cx="900" cy="250" r="6" fill="#c6323d"/>
+<line x1="900" y1="250" x2="947" y2="250" stroke="#c6323d" stroke-width="5"/>
+<circle cx="900" cy="302" r="6" fill="#c6323d"/>
+<line x1="900" y1="302" x2="947" y2="302" stroke="#c6323d" stroke-width="5"/>
+<circle cx="900" cy="355" r="6" fill="#c6323d"/>
+<line x1="900" y1="355" x2="947" y2="355" stroke="#c6323d" stroke-width="5"/>
+<rect x="947" y="228" width="70" height="43" rx="5" fill="white" stroke="#c6323d" stroke-width="2"/>
+<text x="982" y="257" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#c6323d" font-weight="700" text-anchor="middle">J1</text>
+<line x1="1017" y1="250" x2="1050" y2="250" stroke="#c6323d" stroke-width="5"/>
+<text x="1066" y="258" font-family="Arial, Helvetica, sans-serif" font-size="25" fill="#142d42" font-weight="700" text-anchor="start">ESP32 5V / VIN (5 V input)</text>
+<text x="966" y="310" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#142d42" font-weight="400" text-anchor="start">LED strip 5V — power the strip directly from the buck</text>
+<text x="966" y="363" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#142d42" font-weight="400" text-anchor="start">74AHCT125 pin 14 VCC — 5 V, same supply as LEDs</text>
+<text x="875" y="424" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#506475" font-weight="400" text-anchor="start">J1 is a removable 2-wire 5V + GND connection to the ESP32.</text>
+<path d="M730 330 H804 V466 H60" fill="none" stroke="#48535c" stroke-width="4"/>
+<line x1="804" y1="466" x2="1740" y2="466" stroke="#48535c" stroke-width="4"/>
+<circle cx="804" cy="466" r="6" fill="#48535c"/>
+<text x="60" y="499" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#48535c" font-weight="700" text-anchor="start">COMMON GND: buck OUT−, ESP32, PN532, HX711, OLED, buffer and strip.</text>
+<text x="60" y="551" font-family="Arial, Helvetica, sans-serif" font-size="26" fill="#142d42" font-weight="700" text-anchor="start">2  SIGNALS + 3.3 V MODULE POWER</text>
+<rect x="60" y="580" width="360" height="785" rx="14" fill="#edf8f6" stroke="#cfdae0" stroke-width="2"/>
+<text x="86" y="622" font-family="Arial, Helvetica, sans-serif" font-size="32" fill="#142d42" font-weight="700" text-anchor="start">ESP32-S3</text>
+<text x="86" y="656" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#506475" font-weight="400" text-anchor="start">Use printed GPIO labels.</text>
+<text x="86" y="689" font-family="Arial, Helvetica, sans-serif" font-size="21" fill="#506475" font-weight="400" text-anchor="start">This is not physical pin order.</text>
+<rect x="990" y="580" width="750" height="242" rx="14" fill="white" stroke="#cfdae0" stroke-width="2"/>
+<text x="1016" y="617" font-family="Arial, Helvetica, sans-serif" font-size="29" fill="#142d42" font-weight="700" text-anchor="start">PN532 V3 · UART / HSU</text>
+<text x="1715" y="617" font-family="Arial, Helvetica, sans-serif" font-size="21" fill="#007d78" font-weight="700" text-anchor="end">DIP 1 OFF · 2 OFF</text>
+<text x="715" y="648" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#196cba" font-weight="700" text-anchor="end">ESP32 3V3</text>
+<line x1="735" y1="657" x2="990" y2="657" stroke="#196cba" stroke-width="4" marker-end="url(#arrow)"/>
+<text x="1016" y="665" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#196cba" font-weight="700" text-anchor="start">VCC</text>
+<text x="715" y="688" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#48535c" font-weight="700" text-anchor="end">ESP32 GND</text>
+<line x1="735" y1="697" x2="990" y2="697" stroke="#48535c" stroke-width="4" marker-end="url(#arrow)"/>
+<text x="1016" y="705" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#48535c" font-weight="700" text-anchor="start">GND</text>
+<text x="403" y="728" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#007d78" font-weight="700" text-anchor="end">GPIO18 · RX</text>
+<line x1="990" y1="737" x2="420" y2="737" stroke="#007d78" stroke-width="4" marker-end="url(#arrow)"/>
+<text x="1016" y="745" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#007d78" font-weight="700" text-anchor="start">TXD</text>
+<text x="403" y="768" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#007d78" font-weight="700" text-anchor="end">GPIO17 · TX</text>
+<line x1="420" y1="777" x2="990" y2="777" stroke="#007d78" stroke-width="4" marker-end="url(#arrow)"/>
+<text x="1016" y="785" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#007d78" font-weight="700" text-anchor="start">RXD</text>
+<text x="1208" y="696" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#506475" font-weight="400" text-anchor="start">3.3 V supply and logic</text>
+<text x="1208" y="739" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#506475" font-weight="400" text-anchor="start">TX crosses to RX.</text>
+<text x="1208" y="779" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#506475" font-weight="400" text-anchor="start">Use the TXD / RXD header labels.</text>
+<rect x="990" y="858" width="300" height="239" rx="14" fill="white" stroke="#cfdae0" stroke-width="2"/>
+<text x="1016" y="895" font-family="Arial, Helvetica, sans-serif" font-size="29" fill="#142d42" font-weight="700" text-anchor="start">HX711</text>
+<rect x="1490" y="858" width="250" height="239" rx="14" fill="white" stroke="#cfdae0" stroke-width="2"/>
+<text x="1510" y="895" font-family="Arial, Helvetica, sans-serif" font-size="26" fill="#142d42" font-weight="700" text-anchor="start">5 kg load cell</text>
+<text x="403" y="921" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#196cba" font-weight="700" text-anchor="end">3V3</text>
+<line x1="420" y1="930" x2="990" y2="930" stroke="#196cba" stroke-width="4" marker-end="url(#arrow)"/>
+<text x="1012" y="938" font-family="Arial, Helvetica, sans-serif" font-size="21" fill="#196cba" font-weight="700" text-anchor="start">VCC</text>
+<text x="403" y="961" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#48535c" font-weight="700" text-anchor="end">GND</text>
+<line x1="420" y1="970" x2="990" y2="970" stroke="#48535c" stroke-width="4" marker-end="url(#arrow)"/>
+<text x="1012" y="978" font-family="Arial, Helvetica, sans-serif" font-size="21" fill="#48535c" font-weight="700" text-anchor="start">GND</text>
+<text x="403" y="1001" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#007d78" font-weight="700" text-anchor="end">GPIO15</text>
+<line x1="990" y1="1010" x2="420" y2="1010" stroke="#007d78" stroke-width="4" marker-end="url(#arrow)"/>
+<text x="1012" y="1018" font-family="Arial, Helvetica, sans-serif" font-size="21" fill="#007d78" font-weight="700" text-anchor="start">DT / DOUT</text>
+<text x="403" y="1041" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#007d78" font-weight="700" text-anchor="end">GPIO16</text>
+<line x1="420" y1="1050" x2="990" y2="1050" stroke="#007d78" stroke-width="4" marker-end="url(#arrow)"/>
+<text x="1012" y="1058" font-family="Arial, Helvetica, sans-serif" font-size="21" fill="#007d78" font-weight="700" text-anchor="start">SCK / CLK</text>
+<text x="1273" y="938" font-family="Arial, Helvetica, sans-serif" font-size="21" fill="#c6323d" font-weight="700" text-anchor="end">E+</text>
+<line x1="1290" y1="930" x2="1490" y2="930" stroke="#c6323d" stroke-width="4"/>
+<text x="1510" y="938" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#c6323d" font-weight="700" text-anchor="start">Red</text>
+<text x="1273" y="978" font-family="Arial, Helvetica, sans-serif" font-size="21" fill="#48535c" font-weight="700" text-anchor="end">E−</text>
+<line x1="1290" y1="970" x2="1490" y2="970" stroke="#48535c" stroke-width="4"/>
+<text x="1510" y="978" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#48535c" font-weight="700" text-anchor="start">Black</text>
+<text x="1273" y="1018" font-family="Arial, Helvetica, sans-serif" font-size="21" fill="#21815b" font-weight="700" text-anchor="end">A+</text>
+<line x1="1290" y1="1010" x2="1490" y2="1010" stroke="#21815b" stroke-width="4"/>
+<text x="1510" y="1018" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#21815b" font-weight="700" text-anchor="start">Green</text>
+<text x="1273" y="1058" font-family="Arial, Helvetica, sans-serif" font-size="21" fill="#76828c" font-weight="700" text-anchor="end">A−</text>
+<line x1="1290" y1="1050" x2="1490" y2="1050" stroke="#76828c" stroke-width="4"/>
+<text x="1510" y="1058" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#76828c" font-weight="700" text-anchor="start">White</text>
+<text x="990" y="1132" font-family="Arial, Helvetica, sans-serif" font-size="21" fill="#506475" font-weight="400" text-anchor="start">Load-cell colours apply to the selected Bit Maker 1381 cell.</text>
+<rect x="990" y="1170" width="750" height="195" rx="14" fill="white" stroke="#cfdae0" stroke-width="2"/>
+<text x="1016" y="1210" font-family="Arial, Helvetica, sans-serif" font-size="29" fill="#142d42" font-weight="700" text-anchor="start">0.96-inch I²C OLED</text>
+<text x="1715" y="1210" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#007d78" font-weight="700" text-anchor="end">128 × 64</text>
+<text x="403" y="1229" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#196cba" font-weight="700" text-anchor="end">3V3</text>
+<line x1="420" y1="1236" x2="990" y2="1236" stroke="#196cba" stroke-width="4" marker-end="url(#arrow)"/>
+<text x="1016" y="1244" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#196cba" font-weight="700" text-anchor="start">VDD / VCC</text>
+<text x="403" y="1266" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#48535c" font-weight="700" text-anchor="end">GND</text>
+<line x1="420" y1="1273" x2="990" y2="1273" stroke="#48535c" stroke-width="4" marker-end="url(#arrow)"/>
+<text x="1016" y="1281" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#48535c" font-weight="700" text-anchor="start">GND</text>
+<text x="403" y="1303" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#007d78" font-weight="700" text-anchor="end">GPIO4</text>
+<line x1="420" y1="1310" x2="990" y2="1310" stroke="#007d78" stroke-width="4" marker-end="url(#arrow)"/>
+<text x="1016" y="1318" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#007d78" font-weight="700" text-anchor="start">SDA</text>
+<text x="403" y="1340" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#007d78" font-weight="700" text-anchor="end">GPIO5</text>
+<line x1="420" y1="1347" x2="990" y2="1347" stroke="#007d78" stroke-width="4" marker-end="url(#arrow)"/>
+<text x="1016" y="1355" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#007d78" font-weight="700" text-anchor="start">SCK / SCL</text>
+<text x="1290" y="1273" font-family="Arial, Helvetica, sans-serif" font-size="21" fill="#506475" font-weight="400" text-anchor="start">Default firmware: SSD1306, 0x3C.</text>
+<text x="1290" y="1310" font-family="Arial, Helvetica, sans-serif" font-size="21" fill="#506475" font-weight="400" text-anchor="start">Match the actual controller/address.</text>
+<text x="60" y="1420" font-family="Arial, Helvetica, sans-serif" font-size="26" fill="#142d42" font-weight="700" text-anchor="start">3  FIVE RGB LEDS — see the separate buffer detail for all 14 IC pins</text>
+<rect x="60" y="1450" width="1680" height="170" rx="14" fill="#edf8f6" stroke="#cfdae0" stroke-width="2"/>
+<text x="85" y="1504" font-family="Arial, Helvetica, sans-serif" font-size="27" fill="#142d42" font-weight="700" text-anchor="start">GPIO6</text>
+<line x1="192" y1="1496" x2="254" y2="1496" stroke="#007d78" stroke-width="4" marker-end="url(#arrow)"/>
+<rect x="259" y="1474" width="70" height="44" rx="6" fill="white" stroke="#007d78" stroke-width="2"/>
+<text x="294" y="1505" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#007d78" font-weight="700" text-anchor="middle">J2</text>
+<line x1="329" y1="1496" x2="401" y2="1496" stroke="#007d78" stroke-width="4" marker-end="url(#arrow)"/>
+<rect x="409" y="1468" width="365" height="61" rx="8" fill="white" stroke="#007d78" stroke-width="2"/>
+<text x="591" y="1507" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#007d78" font-weight="700" text-anchor="middle">74AHCT125 · 3.3 V → 5 V</text>
+<line x1="774" y1="1496" x2="848" y2="1496" stroke="#007d78" stroke-width="4" marker-end="url(#arrow)"/>
+<rect x="856" y="1474" width="137" height="44" rx="4" fill="white" stroke="#007d78" stroke-width="2"/>
+<text x="924" y="1504" font-family="Arial, Helvetica, sans-serif" font-size="25" fill="#007d78" font-weight="700" text-anchor="middle">330 Ω</text>
+<line x1="993" y1="1496" x2="1081" y2="1496" stroke="#007d78" stroke-width="4" marker-end="url(#arrow)"/>
+<text x="1093" y="1505" font-family="Arial, Helvetica, sans-serif" font-size="25" fill="#142d42" font-weight="700" text-anchor="start">DIN → [1] → [2] → [3] → [4] → [5]</text>
+<text x="84" y="1565" font-family="Arial, Helvetica, sans-serif" font-size="23" fill="#142d42" font-weight="400" text-anchor="start">Buffer: 100 nF bypass + 10 kΩ input pull-down. Strip: 1000 µF / 10 V across 5V (+) and GND (−).</text>
+<text x="84" y="1598" font-family="Arial, Helvetica, sans-serif" font-size="22" fill="#506475" font-weight="400" text-anchor="start">J2 disconnects the GPIO6 lead. Last pixel DOUT stays unconnected. Strip arrows point away from DIN.</text>
+<text x="60" y="1664" font-family="Arial, Helvetica, sans-serif" font-size="26" fill="#142d42" font-weight="700" text-anchor="start">BOOT is already on the board: no external button or extra wiring.</text>
+<text x="60" y="1706" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="#c6323d" font-weight="700" text-anchor="start">Before computer USB: switch off 12 V, disconnect J1 (buck → ESP) and J2 (GPIO6 → buffer).</text>
+<text x="60" y="1750" font-family="Arial, Helvetica, sans-serif" font-size="21" fill="#506475" font-weight="400" text-anchor="start">Signal map only. Module pin order varies; match printed labels. Physical wiring and operation still require verification.</text>
+</svg>

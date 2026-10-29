@@ -26,13 +26,13 @@ Gather the [bill of materials](BOM.md), calipers, a multimeter, soldering tools 
 1. Measure your board, connectors, load-cell holes and thread depths against the [mechanical references](MECHANICAL-SOURCES.md).
 2. For v0.8, compare those measurements with the complete base, spacer and reader cassette. There are no separate fit coupons. Keep the six individual files in their exported poses and inspect the [print guide](PRINTING.md). Legacy fit samples apply only to their own revisions.
 3. Verify that the top BOOT access hole aligns with your actual board before fixing the board down. Remove the spool and use a blunt nonconductive probe; the button location is provisional. The old USB-opening BOOT access applies only to the legacy case.
-4. Edit the current [simple geometry and dimensions](../cad/README.md#edit-and-regenerate) if measurements differ, then regenerate the whole matching set.
+4. Edit the current [simple geometry and dimensions](../cad/README.md#edit-and-regenerate-the-current-models) if measurements differ, then regenerate the whole matching set.
 
 ## 3. Wire and install the firmware
 
-Follow the complete [variant-specific wiring table](../WIRING.md#shared-peripherals-different-pins). Set both PN532 switches OFF for UART/HSU before powering it. PN532 and HX711 use 3.3 V supply and logic with common ground.
+Follow the [complete wiring guide](../WIRING.md), including its [connection drawing](wiring/spoolancer-wiring-overview.svg) and [LED buffer detail](wiring/spoolancer-led-buffer.svg). The standalone LED/OLED build is the main guide; the integrated touch map is a separate appendix. Set both PN532 switches OFF for UART/HSU before powering it. PN532 and HX711 use 3.3 V supply and logic with common ground.
 
-Power the headless board through its **COM USB-C port**, using a regulated 5 V USB supply and a USB data cable for flashing. The touch board uses its own USB input. Peripheral power comes from verified 3V3/GND connections on the selected controller. Check the rail with Wi-Fi and NFC active before closing the enclosure.
+For normal operation, the LED/OLED case uses 12 V through the converter to the board's 5 V header. For flashing, follow the [J1/J2 power-isolation sequence](../WIRING.md#10-usb-programming-and-service), then use a USB data cable in **COM**. The legacy USB-powered headless board also uses COM; the touch board uses its own USB input. Peripheral power comes from verified 3V3/GND connections on the selected controller. Check the rail with Wi-Fi and NFC active before closing the enclosure.
 
 Use the [firmware installation guide](../firmware/README.md#build-and-install) to build and upload **both** the application and web filesystem for your chosen environment. Verify detected 16 MB flash and 8 MB PSRAM. The source build is not a substitute for testing the real board, sensor and reader.
 
