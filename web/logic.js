@@ -35,7 +35,7 @@ export function measurement(status, spool, fresh) {
   if (!fresh || !status) return result;
   const scale = status.scale || {};
   if (scale.fresh !== true) return { ...result, state: 'waiting', label: 'Waiting for scale', message: 'The load-cell reading is stale. Check the scale connection.' };
-  if (scale.calibrated !== true) return { ...result, state: 'uncalibrated', label: 'Calibration needed', message: 'Calibrate with a known reference mass in Settings.' };
+  if (scale.calibrated !== true) return { ...result, state: 'uncalibrated', label: 'Calibration needed', message: 'Open Calibration to zero the empty cradle and calibrate with a known reference mass.' };
   if (!finite(scale.gross_g)) return { ...result, state: 'waiting', label: 'Waiting for weight', message: 'The device has not returned a valid measurement.' };
   result.gross = scale.gross_g;
   if (scale.stable !== true) return { ...result, state: 'unstable', label: 'Settling', message: 'Keep the spool still. Wait for a stable reading.' };
@@ -57,6 +57,20 @@ export function tagWriteGuard(status, expectedUid, fresh) {
   if (tag?.present !== true || !tag.uid) return 'No tag is present. Position a writable inventory tag at the reader.';
   if (tag.writable !== true) return 'This tag is read-only or unsupported. Original printer tags are never written.';
   if (expectedUid && tag.uid !== expectedUid) return 'The tag changed. Cancel and preview the new tag before writing.';
+  return '';
+}
+
+export function scaleZeroGuard(status, fresh) {
+  if (fresh !== true || !status) return 'Reconnect to the device before zeroing the scale.';
+  if (status.scale?.fresh !== true) return 'Wait for fresh load-cell readings. Check the HX711 connection if they do not arrive.';
+  if (status.scale.stable !== true) return 'Keep the empty cradle still and wait for a stable reading before zeroing.';
+  return '';
+}
+
+export function scaleCalibrationGuard(status, fresh, zeroed = false) {
+  if (fresh !== true || !status) return 'Reconnect to the device before calibrating the scale.';
+  if (status.scale?.fresh !== true) return 'Wait for fresh load-cell readings. Check the HX711 connection if they do not arrive.';
+  if (zeroed !== true || status.scale.zero_set !== true) return 'Zero the empty cradle in this calibration session before adding the reference mass.';
   return '';
 }
 

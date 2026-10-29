@@ -34,6 +34,14 @@ The spool editor offers ten named color swatches, a native custom color picker a
 
 The header's **Appearance** selector offers System, Light and Dark. System follows the browser's operating-system preference, including changes while the page is open. The responsive layout supports phone and 800 × 480 browser viewports with scrolling dialogs. This is a browser interface, not a native touchscreen runtime.
 
+## Guided scale calibration
+
+The **Calibration** tab and the **Calibrate scale** links on Scale and Settings open `#calibration`. The three steps are zero, known reference and independent verification. Zero must succeed in the current browser session before span calibration is enabled, even if a previous zero is stored on the device. Session lock/reload and **Start again** reset that browser progress; they do not erase device calibration.
+
+Zero requires fresh, stable readings. Calibration requires fresh readings, `scale.zero_set:true`, a successful zero in this browser flow and a numeric reference from 100 to 2,000 g. The UI deliberately leaves reference stability to the firmware, since ordinary `scale.stable` can depend on an old factor from a replaced cell. Successful saves show explicit feedback; the live check waits for fresh samples and does not claim accuracy verification.
+
+A compatible 20 kg load cell uses the same reference-weight workflow. Its capacity is not an input. The normal gross-spool limit remains 2 kg. The demo models zero state, stale readings, motion rejection and reference limits without accessing hardware. See the [user procedure](../docs/WEB-INTERFACE.md#calibrate-the-scale).
+
 ## Screenless and integrated-touch first setup
 
 The headless build advertises its temporary setup network without a password. The page prominently warns **Temporary setup network has no password; use it in a trusted location** and states that Wi-Fi credentials use local HTTP.
@@ -61,7 +69,7 @@ Responses are JSON. A failed request uses a non-success HTTP status and `{ "erro
 | `POST /api/spoolman/test` | Test the saved server with `{}` |
 | `POST /api/spoolman/sync` | Create or update the linked spool using `{spool_id, confirm:true}` |
 
-`/api/status` must include `mode:"device"`, `device.name`, `scale.{gross_g,stable,calibrated,fresh}`, `nfc.{present,uid,type,writable}`, `active_spool_id`, `network.{connected,ip}` and `spoolman.configured`. The UI also displays optional `nfc.last_message`, `nfc.last_error`, `spoolman.pending`, `spoolman.last_message` and `spoolman.last_error`. Current status identifies `device.variant` as `headless`, `touch-8048` or `st7789`. The first two use the open setup flow; only the screenless build reports `device.headless:true`. Both additionally supply `setup.{ap_active,open_network,via_ap,enrollment_required,enrollment_armed,enrollment_seconds,ap_seconds,warning}`. The UI refreshes that status after each enrollment attempt and does not reuse an arm window. A browser refresh failure or an ADC `fresh:false` state suppresses live weight. The browser polls status every 1.5 seconds without overlapping requests.
+`/api/status` must include `mode:"device"`, `device.name`, `scale.{gross_g,stable,calibrated,fresh,zero_set}`, `nfc.{present,uid,type,writable}`, `active_spool_id`, `network.{connected,ip}` and `spoolman.configured`. The UI also displays optional `nfc.last_message`, `nfc.last_error`, `spoolman.pending`, `spoolman.last_message` and `spoolman.last_error`. Current status identifies `device.variant` as `headless`, `touch-8048` or `st7789`. The first two use the open setup flow; only the screenless build reports `device.headless:true`. Both additionally supply `setup.{ap_active,open_network,via_ap,enrollment_required,enrollment_armed,enrollment_seconds,ap_seconds,warning}`. The UI refreshes that status after each enrollment attempt and does not reuse an arm window. A browser refresh failure or an ADC `fresh:false` state suppresses live weight. The browser polls status every 1.5 seconds without overlapping requests.
 
 Spool records contain `id`, `name`, `brand`, `material`, six-digit hex `color`, nullable `empty_weight_g`, required `initial_weight_g`, `density_g_cm3`, `diameter_mm`, optional `spoolman_id` and optional last saved `remaining_weight_g`. The agreed inventory limits are name 64 UTF-8 bytes, brand 60 bytes, material 30 bytes on-device, tare 0–2,000 g or unknown, initial filament 1–5,000 g, density 0.1–5 g/cm³ and diameter 0.5–5 mm. Larger nominal inventory values do not increase the scale's 2,000 g gross operating target.
 

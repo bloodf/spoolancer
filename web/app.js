@@ -1,7 +1,7 @@
-import { validateSpool, measurement, tagWriteGuard, grams, validSpoolmanUrl, COMMON_MATERIALS, COLOR_SWATCHES, normalizeHex, materialSelection, resolveMaterial, THEME_STORAGE_KEY, normalizeTheme, resolveTheme, readThemePreference, saveThemePreference, pairingState, sessionBody, usesOpenSetup } from './logic.js';
+import { validateSpool, measurement, tagWriteGuard, grams, validSpoolmanUrl, COMMON_MATERIALS, COLOR_SWATCHES, normalizeHex, materialSelection, resolveMaterial, THEME_STORAGE_KEY, normalizeTheme, resolveTheme, readThemePreference, saveThemePreference, pairingState, sessionBody, usesOpenSetup, scaleZeroGuard, scaleCalibrationGuard } from './logic.js';
 
 const $ = selector => document.querySelector(selector);
-const state = { token: '', status: null, spools: [], lastSeen: 0, busy: false, configDirty: false, privateLoaded: false, action: null, demo: false, lastPrivate: 0 };
+const state = { token: '', status: null, spools: [], lastSeen: 0, busy: false, configDirty: false, privateLoaded: false, action: null, demo: false, lastPrivate: 0, calibrationZeroed: false, calibrationReference: null };
 const isFresh = () => Date.now() - state.lastSeen < 4500;
 const activeSpool = () => state.spools.find(s => String(s.id) === String(state.status?.active_spool_id));
 const currentMeasurement = () => measurement(state.status, activeSpool(), isFresh());
@@ -71,6 +71,9 @@ function requirePair() {
 
 function lock(preserveEdits = false) {
   state.token = '';
+  state.calibrationZeroed = false;
+  state.calibrationReference = null;
+  $('#calibration-result').textContent = '';
   state.spools = [];
   state.privateLoaded = false;
   if (!preserveEdits || !state.configDirty) { state.configDirty = false; $('#config-form').reset(); }
@@ -197,14 +200,45 @@ function render() {
   $('#save-measurement').disabled = !m.canSync || state.busy;
   $('#device-ip').textContent = fresh ? status?.network?.ip || 'Not assigned' : 'Unavailable';
   $('#wifi-state').textContent = fresh ? status?.network?.connected ? 'Connected' : status?.setup?.ap_active ? 'Temporary setup network' : 'Not connected' : 'Unknown';
-  for (const selector of ['#tare-button', '#tare-settings']) $(selector).disabled = !fresh || state.busy;
+  $('#tare-button').disabled = !!scaleZeroGuard(status, fresh) || state.busy;
   for (const input of $('#config-form').querySelectorAll('input,button')) input.disabled = !state.token || !fresh || state.busy;
-  for (const input of $('#calibration-form').querySelectorAll('input,button')) input.disabled = !state.token || !fresh || state.busy;
+  renderCalibration();
   if ($('#action-dialog').open && state.action) {
     const issue = state.action.guard?.() || '';
     $('#action-error').textContent = issue || state.action.error || '';
     $('#action-confirm').disabled = !!issue || state.busy;
   }
+}
+
+function renderCalibration() {
+  const fresh = isFresh();
+  const scale = state.status?.scale || {};
+  const sensorFresh = fresh && scale.fresh === true;
+  const calibrated = fresh && scale.calibrated === true;
+  const zeroIssue = !state.token ? 'Pair with the device first.' : scaleZeroGuard(state.status, fresh);
+  const calibrationIssue = !state.token ? 'Pair with the device first.' : scaleCalibrationGuard(state.status, fresh, state.calibrationZeroed);
+  $('#calibration-status').textContent = !fresh ? 'Device unavailable' : calibrated ? 'Calibration stored' : 'Calibration needed';
+  $('#calibration-status').className = `pill ${!fresh ? 'error' : calibrated ? '' : 'warning'}`;
+  $('#calibration-sensor').textContent = !fresh ? 'Reconnect to get current sensor readings.' : sensorFresh ? 'Sensor readings available.' : 'Waiting for fresh sensor readings. Keep the cradle still; check the HX711 wiring if this continues.';
+  $('#calibration-access').textContent = !state.token ? 'Pair with the device to calibrate.' : state.busy ? 'Waiting for the device to complete the action.' : state.demo ? 'Preview changes last only until this page is reloaded.' : 'Calibration is saved on the ESP32 and survives a restart.';
+  $('#calibration-pair').hidden = !!state.token;
+  $('#calibration-pair').disabled = !fresh || state.busy;
+  $('#calibration-restart').disabled = state.busy;
+  $('#tare-calibration').disabled = !!zeroIssue || state.busy;
+  $('#calibration-zero-help').textContent = zeroIssue || (state.calibrationZeroed ? 'Empty-cradle zero saved in this session. Continue to step 2.' : 'Start here each time you calibrate.');
+  $('#reference-mass').disabled = !state.token || !fresh || state.busy;
+  $('#calibration-submit').disabled = !!calibrationIssue || state.busy;
+  $('#calibration-reference-help').textContent = calibrationIssue || (state.calibrationReference !== null ? `Calibration saved using ${grams(state.calibrationReference)} g. Check the result in step 3.` : 'Keep the reference still. The device checks the sensor before saving.');
+  $('#calibration-step-zero').classList.toggle('complete', state.calibrationZeroed);
+  $('#calibration-step-reference').classList.toggle('complete', state.calibrationReference !== null);
+  const hasReading = !state.busy && sensorFresh && calibrated && typeof scale.gross_g === 'number' && Number.isFinite(scale.gross_g);
+  $('#calibration-reading').textContent = hasReading ? grams(scale.gross_g) : '—';
+  $('#calibration-reading-state').textContent = !fresh ? 'No live connection.' : state.busy ? 'Waiting for the action to finish.' : !sensorFresh ? 'Waiting for new sensor readings.' : !calibrated ? 'Complete steps 1 and 2 to see grams.' : `${state.demo ? 'Simulated' : 'Live'} gross weight · ${scale.stable === true ? 'stable' : 'settling'}${state.calibrationReference === null ? '. Uses the previously stored calibration.' : '.'}`;
+}
+
+function calibrationResult(message, error = false) {
+  $('#calibration-result').textContent = `${state.demo ? 'Demo: ' : ''}${message}`;
+  $('#calibration-result').className = error ? 'form-error' : 'inline-result';
 }
 
 function renderPairing() {
@@ -405,7 +439,18 @@ function measurementGuard(id) {
 }
 
 function showTare() {
-  confirmAction({ title: 'Zero the empty scale', description: 'Remove the spool and anything else resting on the cradle. Leave the printed cradle, guides and reader installed. This changes scale zero, not the saved empty-spool weight.', label: 'Scale is empty · zero now', guard: () => !isFresh() ? 'Reconnect to the scale first.' : '', run: () => mutation('/api/scale/tare', {}, 'Scale zero updated.') });
+  confirmAction({ title: 'Zero the empty scale', description: 'Remove the spool and anything else resting on the cradle. Leave the printed cradle, reader and wiring installed. This changes scale zero, not the saved empty-spool weight.', label: 'Scale is empty · zero now', guard: () => scaleZeroGuard(state.status, isFresh()), run: async () => {
+    state.calibrationZeroed = false;
+    state.calibrationReference = null;
+    try {
+      const result = await mutation('/api/scale/tare', {}, 'Scale zero updated.');
+      if (!result) return;
+      state.calibrationZeroed = true;
+      calibrationResult('Empty-cradle zero saved. Place your known reference weight on the cradle, then complete step 2.');
+      render();
+      return result;
+    } catch (error) { calibrationResult(error.message, true); throw error; }
+  } });
 }
 
 function showWrite() {
@@ -425,7 +470,7 @@ function showSync() {
 
 function setView() {
   const requested = location.hash.slice(1);
-  const view = ['scale', 'inventory', 'settings'].includes(requested) ? requested : 'scale';
+  const view = ['scale', 'calibration', 'inventory', 'settings'].includes(requested) ? requested : 'scale';
   for (const section of document.querySelectorAll('.view')) section.hidden = section.id !== `view-${view}`;
   for (const link of document.querySelectorAll('[data-view]')) {
     if (link.dataset.view === view) link.setAttribute('aria-current', 'page');
@@ -491,7 +536,15 @@ $('#select-spool').addEventListener('click', () => chooseSpool($('#active-select
 $('#active-select').addEventListener('change', render);
 $('#inventory-search').addEventListener('input', renderInventory);
 $('#tare-button').addEventListener('click', showTare);
-$('#tare-settings').addEventListener('click', showTare);
+$('#tare-calibration').addEventListener('click', showTare);
+$('#calibration-pair').addEventListener('click', requirePair);
+$('#calibration-restart').addEventListener('click', () => {
+  state.calibrationZeroed = false;
+  state.calibrationReference = null;
+  $('#calibration-result').textContent = '';
+  render();
+  $('#tare-calibration').focus();
+});
 $('#write-tag').addEventListener('click', showWrite);
 $('#link-tag').addEventListener('click', () => {
   const spool = activeSpool();
@@ -549,7 +602,16 @@ $('#calibration-form').addEventListener('submit', event => {
   event.preventDefault();
   const reference = Number(event.currentTarget.elements.reference_g.value);
   if (!Number.isFinite(reference) || reference < 100 || reference > 2000) { notice('Enter a known reference mass from 100 to 2,000 g.', true); return; }
-  confirmAction({ title: 'Calibrate the scale?', description: 'Place only this known reference mass on the zeroed cradle. Keep it still. Calibration changes the weight conversion used for every spool.', rows: [['Reference mass', `${grams(reference)} g`]], label: 'Calibrate now', guard: () => !isFresh() ? 'Reconnect to the device first.' : '', run: () => mutation('/api/scale/calibrate', { reference_g: reference }, 'The device saved the calibration.') });
+  confirmAction({ title: 'Save this calibration?', description: 'Place only this known reference weight on the zeroed cradle and keep it still. Use its actual weight, not the load cell capacity. This changes the weight conversion for every spool.', rows: [['Reference weight', `${grams(reference)} g`]], label: 'Save calibration', guard: () => scaleCalibrationGuard(state.status, isFresh(), state.calibrationZeroed), run: async () => {
+    try {
+      const result = await mutation('/api/scale/calibrate', { reference_g: reference }, 'The device saved the calibration.');
+      if (!result) return;
+      state.calibrationReference = reference;
+      calibrationResult(`Calibration saved using ${grams(reference)} g${state.demo ? ' in this preview only' : ' on the device'}. Remove the reference and check zero, then verify with another known weight.`);
+      render();
+      return result;
+    } catch (error) { calibrationResult(error.message, true); throw error; }
+  } });
 });
 window.addEventListener('hashchange', setView);
 
@@ -567,6 +629,9 @@ if (demoRequested && ['localhost', '127.0.0.1', '[::1]'].includes(location.hostn
   $('#demo-scenario').addEventListener('change', async event => {
     const resetSession = event.target.value === 'headless-setup' || state.status?.device?.headless;
     demo.setScenario(event.target.value);
+    state.calibrationZeroed = false;
+    state.calibrationReference = null;
+    $('#calibration-result').textContent = '';
     if (resetSession) lock();
     $('#pair-form [name=pin]').placeholder = event.target.value === 'headless-setup' ? 'Choose 8 digits' : 'Demo PIN: 12345678';
     $('#footer-mode').textContent = event.target.value === 'headless-setup' ? 'Demo only · choose your own preview PIN' : 'Demo only · PIN 12345678';

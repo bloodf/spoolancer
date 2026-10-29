@@ -53,8 +53,8 @@ The temporary setup network has no password, and setup uses HTTP. Use it in a tr
 
 ## 5. Calibrate and measure a spool
 
-1. With the complete cradle, NFC pod and wiring installed, empty the cradle, let it settle and zero it.
-2. Calibrate with a known 100–2,000 g mass. Check other known masses and repeated placements using the [validation procedure](HARDWARE-VALIDATION.md#weighing).
+1. Open **Calibration** in the webpage and pair with the device. With the complete cradle, NFC pod and wiring installed, empty the cradle, let it settle and click **Zero empty scale**.
+2. Place a known 100–2,000 g mass, enter its actual weight and choose **Save calibration**. Check other known masses and repeated placements using the [validation procedure](HARDWARE-VALIDATION.md#weighing).
 3. Create a spool with its name, brand, material, color and known empty-spool weight. Unknown empty-spool weight cannot produce a trustworthy remaining-filament figure.
 4. Select that record, place the spool upright, align its tag with the side reader and release the spool. Wait for a stable reading before saving.
 5. Optionally link a tag or configure Spoolman. Start with a disposable Spoolman record and verify the resulting weight before using your inventory.

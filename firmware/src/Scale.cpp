@@ -58,5 +58,7 @@ bool Scale::calibrate(double reference) {
   if (!zeroSet || !fresh() || !Domain::inRange(reference, 100, 2000)) return false;
   const double delta = mean() - zero;
   if (std::abs(delta) < 1000 || range() > std::max(500.0, std::abs(delta) * .005)) return false;
-  countsPerGram = delta / reference; resetWindow(); return calibrated();
+  const double candidate = delta / reference;
+  if (!std::isfinite(candidate) || std::abs(candidate) < 1) return false;
+  countsPerGram = candidate; resetWindow(); return true;
 }

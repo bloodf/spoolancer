@@ -18,11 +18,11 @@
     <a class="brand" href="#scale" aria-label="Spoolancer scale"><span class="brand-mark" aria-hidden="true"><img src="./favicon.svg" width="43" height="43" alt=""></span><span>Spoolancer<small id="device-name">Spool scale</small></span></a>
     <div class="header-actions"><span id="connection" class="connection"><i aria-hidden="true"></i><span>Connecting</span></span><label class="theme-control"><span class="sr-only">Appearance</span><select id="theme-select" aria-label="Appearance"><option value="system">System</option><option value="light">Light</option><option value="dark">Dark</option></select></label><button id="pair-button" class="button small secondary">Pair device</button></div>
   </header>
-  <nav class="tabs" aria-label="Main navigation"><a href="#scale" data-view="scale" aria-current="page">Scale</a><a href="#inventory" data-view="inventory">Inventory <span id="spool-count">0</span></a><a href="#settings" data-view="settings">Settings</a></nav>
+  <nav class="tabs" aria-label="Main navigation"><a href="#scale" data-view="scale" aria-current="page">Scale</a><a href="#calibration" data-view="calibration">Calibration</a><a href="#inventory" data-view="inventory">Inventory <span id="spool-count">0</span></a><a href="#settings" data-view="settings">Settings</a></nav>
   <main>
     <div id="notice" class="notice" role="status" hidden><span></span><button aria-label="Dismiss message" type="button">×</button></div>
     <section id="view-scale" class="view" aria-labelledby="scale-title">
-      <div class="page-heading"><div><p class="eyebrow">Measure & identify</p><h1 id="scale-title">Weigh a spool.</h1><p>Place it in the cradle. Scan its tag or choose a saved spool.</p></div><button class="button secondary" id="refresh-button">Refresh</button></div>
+      <div class="page-heading"><div><p class="eyebrow">Measure & identify</p><h1 id="scale-title">Weigh a spool.</h1><p>Place it in the cradle. Scan its tag or choose a saved spool.</p></div><div class="button-row"><a class="button secondary" href="#calibration">Calibrate scale</a><button class="button secondary" id="refresh-button">Refresh</button></div></div>
       <div class="scale-layout">
         <article class="weight-card" aria-labelledby="weight-label">
           <div class="card-top"><span id="weight-label" class="eyebrow">Gross spool weight</span><span id="scale-state" class="pill">Connecting</span></div>
@@ -55,6 +55,43 @@
         </article>
       </div>
     </section>
+    <section id="view-calibration" class="view" aria-labelledby="calibration-title" hidden>
+      <div class="page-heading"><div><p class="eyebrow">Scale setup</p><h1 id="calibration-title">Calibrate your scale.</h1><p>Zero the empty cradle, add a known weight, then check the reading.</p></div><button id="calibration-restart" class="button secondary" type="button">Start again</button></div>
+      <div class="calibration-summary">
+        <div><span id="calibration-status" class="pill neutral">Checking calibration</span><p id="calibration-sensor" class="helper">Waiting for the device.</p></div>
+        <div><p id="calibration-access" class="helper">Pair with the device to calibrate.</p><button id="calibration-pair" class="button small secondary" type="button">Pair to calibrate</button></div>
+      </div>
+      <ol class="calibration-steps">
+        <li class="card" id="calibration-step-zero">
+          <span class="step-number" aria-hidden="true">1</span><h2>Zero the empty cradle</h2>
+          <p class="helper">Remove the spool and anything resting on it. Leave the cradle, reader and wiring installed, and let everything settle.</p>
+          <button class="button secondary full" id="tare-calibration" type="button" aria-describedby="calibration-zero-help">Zero empty scale</button>
+          <p id="calibration-zero-help" class="step-help">Start here each time you calibrate.</p>
+          <p class="fine-print">This sets the scale's zero. It does not change any spool's saved empty weight.</p>
+        </li>
+        <li class="card" id="calibration-step-reference">
+          <span class="step-number" aria-hidden="true">2</span><h2>Add a known weight</h2>
+          <p class="helper">Place a calibration weight, or an object weighed on a trusted scale, on the cradle. Enter its actual weight and keep it still.</p>
+          <form id="calibration-form">
+            <label for="reference-mass">Reference weight <span class="label-unit">g</span></label>
+            <input id="reference-mass" name="reference_g" type="number" min="100" max="2000" step="0.1" inputmode="decimal" required placeholder="For example, 1000" aria-describedby="reference-help calibration-reference-help">
+            <p id="reference-help" class="fine-print">100 to 2,000 g. A spool's nominal filament weight is not a calibration weight.</p>
+            <button id="calibration-submit" class="button full" type="submit">Save calibration</button>
+          </form>
+          <p id="calibration-reference-help" class="step-help">Complete step 1 first.</p>
+        </li>
+        <li class="card" id="calibration-step-check">
+          <span class="step-number" aria-hidden="true">3</span><h2>Check the result</h2>
+          <p class="helper">Remove the reference weight and check that the reading returns near zero. Then compare it with another known weight.</p>
+          <div class="calibration-reading"><span id="calibration-reading">—</span><span>g</span></div>
+          <p id="calibration-reading-state" class="step-help">A live reading appears after calibration.</p>
+          <p class="fine-print">Saving calibration does not verify accuracy. Check repeatability before weighing your spools.</p>
+          <a class="text-button" href="#scale">Back to weighing</a>
+        </li>
+      </ol>
+      <p id="calibration-result" class="inline-result" role="status"></p>
+      <p class="calibration-note helper">Using a compatible 20 kg load cell? Enter the reference object's weight, not the sensor capacity. Recalibrate after changing the cell or mounting. The application's gross spool limit remains 2,000 g.</p>
+    </section>
     <section id="view-inventory" class="view" aria-labelledby="inventory-title" hidden>
       <div class="page-heading"><div><p class="eyebrow">Your collection</p><h1 id="inventory-title">Spool inventory</h1><p>Keep each spool's identity and empty weight together.</p></div><button id="new-spool" class="button">+ Add spool</button></div>
       <div class="inventory-toolbar"><label class="search-field">Find a spool<input id="inventory-search" type="search" placeholder="Name, brand or material" autocomplete="off"></label><span id="inventory-total" class="helper">Loading inventory</span></div>
@@ -70,7 +107,7 @@
           <div class="section-rule"></div><h3>Spoolman</h3><label>Server URL<input name="spoolman_url" type="url" placeholder="http://192.168.1.50:7912" maxlength="200" autocomplete="off"></label><p class="fine-print">Use http:// with the server's numeric IPv4 address. Port is optional; hostnames and HTTPS are not supported. Leave blank to disable synchronization.</p>
           <div class="button-row"><button class="button" type="submit">Save settings</button><button class="button secondary" type="button" id="test-spoolman">Test saved server</button></div><p id="config-result" class="inline-result" role="status"></p>
         </form>
-        <div class="settings-side"><article class="card"><h2>Scale calibration</h2><p class="helper">First remove the spool and zero the empty cradle. Then place a known reference mass on it and wait for the reading to settle.</p><button class="button secondary" id="tare-settings">Zero empty scale</button><form id="calibration-form"><label>Reference mass <span class="label-unit">g</span><input name="reference_g" type="number" min="100" max="2000" step="0.1" inputmode="decimal" required placeholder="1000"></label><button class="button" type="submit">Calibrate with this mass</button></form><p class="fine-print">A nominal 1 kg filament spool is not a known calibration mass. Calibration needs the actual scale and cannot be verified by this interface alone.</p></article>
+        <div class="settings-side"><article class="card"><h2>Scale calibration</h2><p class="helper">Use the guided calibration page to zero the cradle, save a known reference weight and check the result.</p><a class="button secondary full" href="#calibration">Calibrate scale</a></article>
           <article class="card"><h2>Connection</h2><dl class="details-list"><div><dt>Device address</dt><dd id="device-ip">—</dd></div><div><dt>Wi-Fi</dt><dd id="wifi-state">Unknown</dd></div><div><dt>Browser access</dt><dd id="session-state">View only</dd></div></dl><p id="pairing-help" class="fine-print">Pair using the PIN shown by your device or Serial output. The session stays in this tab’s memory and is cleared on reload.</p></article></div>
       </div>
     </section>

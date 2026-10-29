@@ -1,10 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { measurement, tagWriteGuard, validateSpool, validSpoolmanUrl, normalizeHex, materialSelection, resolveMaterial, normalizeTheme, resolveTheme, readThemePreference, saveThemePreference, THEME_STORAGE_KEY, pairingState, sessionBody } from '../logic.js';
+import { measurement, scaleCalibrationGuard, scaleZeroGuard, tagWriteGuard, validateSpool, validSpoolmanUrl, normalizeHex, materialSelection, resolveMaterial, normalizeTheme, resolveTheme, readThemePreference, saveThemePreference, THEME_STORAGE_KEY, pairingState, sessionBody } from '../logic.js';
 import { createDemo } from '../demo.js';
 
 const spool = { id: 'a', name: 'Green PLA', material: 'PLA', brand: 'Generic', color: '#306040', empty_weight_g: 250, initial_weight_g: 1000, density_g_cm3: 1.24, diameter_mm: 1.75, spoolman_id: null };
-const status = { scale: { calibrated: true, stable: true, fresh: true, gross_g: 842 }, nfc: { present: true, uid: '04:AA', writable: true } };
+const status = { scale: { calibrated: true, zero_set: true, stable: true, fresh: true, gross_g: 842 }, nfc: { present: true, uid: '04:AA', writable: true } };
 
 test('remaining weight uses measured gross minus known tare', () => {
   const m = measurement(status, spool, true);
@@ -26,6 +26,37 @@ test('cached or uncalibrated weight is never shown as a live measurement', () =>
     assert.equal(m.remaining, null);
     assert.equal(m.canSync, false);
   }
+  assert.match(measurement({ scale: { ...status.scale, calibrated: false } }, spool, true).message, /Open Calibration/);
+});
+
+test('scale zero requires a connected device and fresh, stable sensor readings', () => {
+  assert.equal(scaleZeroGuard(status, true), '');
+  assert.equal(scaleZeroGuard({ scale: { ...status.scale, calibrated: false, zero_set: false } }, true), '');
+  for (const value of [false, undefined, 'true']) assert.match(scaleZeroGuard(status, value), /Reconnect/);
+  assert.match(scaleZeroGuard(null, true), /Reconnect/);
+  for (const value of [false, undefined, 'true']) {
+    assert.match(scaleZeroGuard({ scale: { ...status.scale, fresh: value } }, true), /fresh/);
+    assert.match(scaleZeroGuard({ scale: { ...status.scale, stable: value } }, true), /still/);
+  }
+});
+
+test('calibration requires a live zero completed in this browser flow', () => {
+  assert.equal(scaleCalibrationGuard(status, true, true), '');
+  for (const value of [false, undefined, 'true']) assert.match(scaleCalibrationGuard(status, value, true), /Reconnect/);
+  assert.match(scaleCalibrationGuard(null, true, true), /Reconnect/);
+  for (const value of [false, undefined, 'true']) {
+    assert.match(scaleCalibrationGuard({ scale: { ...status.scale, fresh: value } }, true, true), /fresh/);
+    assert.match(scaleCalibrationGuard({ scale: { ...status.scale, zero_set: value } }, true, true), /Zero the empty cradle/);
+    assert.match(scaleCalibrationGuard(status, true, value), /Zero the empty cradle/);
+  }
+  assert.match(scaleCalibrationGuard(status, true), /Zero the empty cradle/);
+});
+
+test('replacement-cell calibration leaves reference stability assessment to the device', () => {
+  const replacement = { scale: { ...status.scale, stable: false, gross_g: null } };
+  assert.equal(scaleCalibrationGuard(replacement, true, true), '');
+  assert.equal(scaleCalibrationGuard({ scale: { ...replacement.scale, calibrated: false } }, true, true), '');
+  assert.match(scaleZeroGuard(replacement, true), /still/);
 });
 
 test('unstable weight can show gross but cannot save remaining', () => {
@@ -137,10 +168,50 @@ test('original tag can identify a local profile without being written', async ()
   assert.equal(final.nfc.writable, false);
 });
 
-test('demo calibration rejects references below the firmware minimum', async () => {
+test('demo calibration accepts only finite numeric references from 100 to 2000 g', async () => {
   const demo = await pairedDemo();
-  await assert.rejects(demo.post('/api/scale/calibrate', { reference_g: 99 }), /100/);
-  assert.equal((await demo.post('/api/scale/calibrate', { reference_g: 100 })).ok, true);
+  for (const reference_g of [99, 2000.1, 0, -100, null, undefined, '1000', Infinity, NaN]) {
+    await assert.rejects(demo.post('/api/scale/calibrate', { reference_g }), /100/);
+  }
+  for (const reference_g of [100, 1000, 2000]) assert.equal((await demo.post('/api/scale/calibrate', { reference_g })).ok, true);
+});
+
+test('demo first calibration zeroes an empty cradle before accepting a reference', async () => {
+  const demo = await pairedDemo();
+  demo.setScenario('uncalibrated');
+  let state = await demo.request('/api/status');
+  assert.equal(state.scale.zero_set, false);
+  assert.equal(state.scale.gross_g, null);
+  await assert.rejects(demo.post('/api/scale/calibrate', { reference_g: 1000 }), /Zero the empty cradle/);
+  assert.equal((await demo.post('/api/scale/tare', {})).ok, true);
+  state = await demo.request('/api/status');
+  assert.equal(state.scale.zero_set, true);
+  assert.equal(state.scale.calibrated, false);
+  assert.equal(state.scale.gross_g, null);
+  assert.equal(state.active_spool_id, null);
+  const result = await demo.post('/api/scale/calibrate', { reference_g: 1000 });
+  assert.equal(result.ok, true);
+  assert.match(result.message, /No physical calibration/);
+  state = await demo.request('/api/status');
+  assert.equal(state.scale.calibrated, true);
+  assert.equal(state.scale.gross_g, 1000);
+  assert.equal(state.active_spool_id, null);
+  await demo.post('/api/scale/tare', {});
+  assert.equal((await demo.request('/api/status')).scale.gross_g, 0);
+});
+
+test('demo rejects zero and calibration during simulated disconnection, stale data or motion', async () => {
+  const demo = await pairedDemo();
+  for (const [scenario, message] of [['offline', /disconnected/], ['stale', /fresh/], ['moving', /still/]]) {
+    demo.setScenario(scenario);
+    await assert.rejects(demo.post('/api/scale/tare', {}), message);
+    await assert.rejects(demo.post('/api/scale/calibrate', { reference_g: 1000 }), message);
+    if (scenario !== 'offline') {
+      const state = await demo.request('/api/status');
+      assert.equal(state.scale.gross_g, 842);
+      assert.equal(state.active_spool_id, 'demo-1');
+    }
+  }
 });
 
 test('Spoolman address matches bounded numeric-IPv4 HTTP support', () => {

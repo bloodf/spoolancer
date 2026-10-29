@@ -1,4 +1,4 @@
-import { measurement, tagWriteGuard, validateSpool } from './logic.js';
+import { measurement, scaleCalibrationGuard, scaleZeroGuard, tagWriteGuard, validateSpool } from './logic.js';
 
 const copy = value => structuredClone(value);
 const fail = (message, status = 400) => { const error = new Error(message); error.status = status; throw error; };
@@ -11,7 +11,7 @@ export function createDemo({ now = Date.now } = {}) {
   ];
   const status = {
     mode: 'demo', device: { name: 'Studio scale' },
-    scale: { gross_g: 842, calibrated: true, stable: true, fresh: true },
+    scale: { gross_g: 842, calibrated: true, zero_set: true, stable: true, fresh: true },
     nfc: { present: true, uid: '04:A1:B2:C3:D4:E5:F6', type: 'NTAG216', writable: true, spool_id: 'demo-1', last_message: 'Spoolancer inventory tag detected. The values in this preview are simulated.', last_error: '' },
     active_spool_id: 'demo-1', network: { connected: true, ip: '192.168.1.42' },
     spoolman: { configured: true, pending: false, last_message: 'Demo server configured. No network requests are sent.', last_error: '' },
@@ -38,14 +38,15 @@ export function createDemo({ now = Date.now } = {}) {
       apExpires = now() + 600000;
       enrollmentExpires = 0;
     }
-    status.scale = { gross_g: 842, calibrated: true, stable: true, fresh: true };
+    status.scale = { gross_g: 842, calibrated: true, zero_set: true, stable: true, fresh: true };
     status.active_spool_id = 'demo-1';
     status.nfc = { present: true, uid: '04:A1:B2:C3:D4:E5:F6', type: 'NTAG216', writable: true, spool_id: 'demo-1', last_message: 'Spoolancer inventory tag detected. The values in this preview are simulated.', last_error: '' };
     profiles[0].empty_weight_g = 250;
     status.spoolman.last_error = '';
     status.spoolman.pending = false;
     if (value === 'moving') status.scale.stable = false;
-    if (value === 'uncalibrated') status.scale.calibrated = false;
+    if (value === 'uncalibrated') Object.assign(status.scale, { calibrated: false, zero_set: false, gross_g: null });
+    if (value === 'stale') status.scale.fresh = false;
     if (value === 'unknown') profiles[0].empty_weight_g = null;
     if (value === 'removed') status.nfc = { present: false, uid: '', writable: false, type: '', last_message: 'No tag present.' };
     if (value === 'readonly') status.nfc = { present: true, uid: '12:34:56:78', type: 'MIFARE Classic', writable: false, last_message: 'UID detected only. Proprietary material decoding is not implemented.', last_error: '' };
@@ -109,15 +110,21 @@ export function createDemo({ now = Date.now } = {}) {
       return { ok: true };
     }
     if (path === '/api/scale/tare') {
-      status.scale.gross_g = 0;
+      const error = scaleZeroGuard(status, true);
+      if (error) fail(error, 409);
+      status.scale.zero_set = true;
+      status.scale.gross_g = status.scale.calibrated ? 0 : null;
       status.active_spool_id = null;
-      return { ok: true, message: 'Demo scale zeroed. Choose Ready in the demo controls to restore the simulated load.' };
+      return { ok: true, message: 'Scale zeroed in this preview. Enter a reference weight in Calibration to try the next step.' };
     }
     if (path === '/api/scale/calibrate') {
       if (!Number.isFinite(body.reference_g) || body.reference_g < 100 || body.reference_g > 2000) fail('Reference mass must be 100–2,000 g.');
+      const error = scaleCalibrationGuard(status, true, true);
+      if (error) fail(error, 409);
+      if (scenario === 'moving') fail('The simulated reference mass is moving. Keep it still before calibrating.', 409);
       status.scale.calibrated = true;
       status.scale.gross_g = body.reference_g;
-      return { ok: true, message: 'Demo calibration updated. No physical calibration was performed.' };
+      return { ok: true, message: 'Calibration updated in this preview. No physical calibration was performed.' };
     }
     if (path === '/api/nfc/read') {
       if (!status.nfc.present) fail('No tag is present.');

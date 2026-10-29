@@ -58,4 +58,20 @@ void scaleDriverTests() {
   assert(!scale.fresh());
   now += 600;
   assert(!scale.fresh() && std::isnan(scale.gross()));
+
+  Scale recalibrated; recalibrated.begin();
+  window(recalibrated, 100000);
+  assert(recalibrated.tare());
+  window(recalibrated, 600000);
+  assert(recalibrated.calibrate(1000) && recalibrated.countsPerGram == 500);
+  window(recalibrated, 101000);
+  assert(!recalibrated.calibrate(2000));
+  assert(recalibrated.calibrated() && recalibrated.countsPerGram == 500);
+  assert(recalibrated.fresh() && recalibrated.stable());
+  assert(recalibrated.mean() == 101000 && recalibrated.gross() == 2);
+  window(recalibrated, -400000);
+  assert(recalibrated.calibrate(1000) && recalibrated.countsPerGram == -500);
+  assert(!recalibrated.fresh());
+  window(recalibrated, -25000);
+  assert(recalibrated.stable() && recalibrated.gross() == 250);
 }

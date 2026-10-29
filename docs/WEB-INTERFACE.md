@@ -9,7 +9,8 @@ Every build serves the full local web interface from its ESP32. A phone or compu
 | Read/write an inventory tag | UID/profile preview and confirmation | Native read/write controls and confirmation |
 | Save measurement, sync, zero | Yes | Yes; conditions rechecked before acting |
 | Name, brand, material, color, tare and starting-weight editing | Full editor | Use the browser |
-| Calibration-reference entry, Wi-Fi and Spoolman setup | Full settings | Use the browser |
+| Scale calibration | Dedicated Calibration page | Use the browser |
+| Wi-Fi and Spoolman setup | Settings | Use the browser |
 | Appearance | Light / Dark / System | Light / Dark, stored separately on device |
 
 Native touchscreen operation is implemented but physically untested. Browser checks and a successful firmware build cannot establish display/touch behavior on the purchased board.
@@ -26,6 +27,20 @@ Both current builds use onboard BOOT on GPIO0 **while firmware is running**. RST
 **Temporary setup network has no password; use it in a trusted location.** PIN and Wi-Fi credentials use local HTTP and can be observed by someone nearby. Physical arming and time limits restrict enrollment but do not encrypt traffic.
 
 ![Explicit desktop preview of setup](web-setup.png)
+
+## Calibrate the scale
+
+Open **Calibration** in the main navigation, or **Calibrate scale** on the Scale or Settings page. Pair with the device before making changes.
+
+1. Remove the spool and any other load. Leave the complete cradle, reader and wiring installed. When sensor readings are fresh and stable, click **Zero empty scale** and confirm. This step must succeed in the current browser session before calibration is enabled.
+2. Place a known reference weight on the cradle. Enter its actual mass from **100 to 2,000 g**, then click **Save calibration** and confirm. Keep it still while the device checks and saves the calibration.
+3. Remove the reference and check that the live gross reading returns near zero. Verify with another known mass and repeated placements before relying on measurements.
+
+A nominal 1 kg filament spool is not a known calibration mass. For a compatible 20 kg cell, enter the reference weight, not 20,000 g; no capacity setting is required. The application's gross-spool limit remains 2 kg. Use **Start again** after a cell or mounting change; this restarts the browser steps without erasing the device's stored calibration.
+
+The page shows device connectivity, sensor freshness, saved-calibration status and live gross weight. Calibration uses the device's reference-specific stability check; the existing calibration's ordinary stability flag does not block replacement-cell calibration. The device saves zero and the conversion factor in NVS. Rejected factor validation preserves the previous factor, and a storage failure is reported instead of claiming success. A saved calibration is not proof of physical accuracy.
+
+After a browser reload or session lock, zero the empty cradle again before another calibration. Offline and stale sensor states disable changes. After saving, wait for new sensor samples before checking the reading. In the desktop demo, all of these actions are simulated and last only until reload.
 
 ## Daily use
 
