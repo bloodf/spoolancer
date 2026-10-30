@@ -29,10 +29,11 @@ StatusModel::Event event;
 uint32_t lastRender = 0, lastOled = 0;
 bool screenAvailable = false;
 #ifdef SPOOLANCER_OLED
+// Wire owns the pins; U8g2 pin arguments would reconfigure an active I2C bus.
 #ifdef SPOOLANCER_OLED_SH1106
-U8G2_SH1106_128X64_NONAME_F_HW_I2C oled(U8G2_R0, U8X8_PIN_NONE, Pins::oledScl, Pins::oledSda);
+U8G2_SH1106_128X64_NONAME_F_HW_I2C oled(U8G2_R0, U8X8_PIN_NONE);
 #else
-U8G2_SSD1306_128X64_NONAME_F_HW_I2C oled(U8G2_R0, U8X8_PIN_NONE, Pins::oledScl, Pins::oledSda);
+U8G2_SSD1306_128X64_NONAME_F_HW_I2C oled(U8G2_R0, U8X8_PIN_NONE);
 #endif
 void drawScreen(const Snapshot &snapshot, const StatusModel::View &view) {
   // Stop using a disconnected/stuck bus; reboot after repairing the connection.
@@ -64,11 +65,15 @@ void drawScreen(const Snapshot &snapshot, const StatusModel::View &view) {
 #endif
 }
 void begin() {
+  Serial.printf("Status UI: initializing LED output on GPIO%d\n", Pins::statusLed);
   pixels.begin(); pixels.setBrightness(SPOOLANCER_LED_BRIGHTNESS); pixels.clear(); pixels.show();
+  Serial.println("Status UI: initial LED transfer complete");
 #ifdef SPOOLANCER_OLED
+  Serial.printf("Status UI: probing OLED on SDA%d/SCL%d\n", Pins::oledSda, Pins::oledScl);
   Wire.begin(Pins::oledSda, Pins::oledScl); Wire.setTimeOut(10);
   Wire.beginTransmission(SPOOLANCER_OLED_ADDRESS);
   if (Wire.endTransmission() == 0) {
+    Serial.println("Status UI: OLED acknowledged; initializing display");
     oled.setI2CAddress(SPOOLANCER_OLED_ADDRESS * 2); oled.setBusClock(100000);
     oled.begin(); screenAvailable = true;
   }

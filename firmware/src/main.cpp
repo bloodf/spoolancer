@@ -939,8 +939,12 @@ void setup() {
 #ifdef SPOOLANCER_HEADLESS
   if (pin.isEmpty()) startAp();
 #endif
-  connectWifi(); setupRoutes();
+  connectWifi();
+  Serial.println("Startup: configuring web routes");
+  setupRoutes();
+  Serial.println("Startup: initializing status UI");
   StatusUi::begin(); renderStatusUi(true);
+  Serial.println("Startup: status UI ready");
   if (MDNS.begin("spoolancer")) MDNS.addService("http", "tcp", 80);
   nfc.begin([] { scale.tick(); renderStatusUi(); });
 #ifdef SPOOLANCER_TOUCH

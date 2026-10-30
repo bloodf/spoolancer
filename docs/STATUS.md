@@ -1,5 +1,9 @@
 # Spoolancer verification status
 
+## OLED startup repair, 30 October 2026
+
+A connected OLED acknowledged at `0x3c` but stalled during display initialization, preventing the main loop from serving HTTP or updating the LED status. Removing duplicate U8g2 pin configuration while retaining `Wire.begin(4, 5)` cleared that stall on the attached board. The application-only upload passed flash hash verification; post-fix serial output reached OLED initialization, status UI readiness and application readiness with both filesystems mounted. All five firmware profiles compiled. The owner confirmed that the OLED and webpage work; LED output, detailed UI actions and the soldered power circuit still need separate confirmation. See the [device record](DEVICE-BOOT.md#oled-initialization-repair-30-october-2026).
+
 ## v0.8 six-piece print redesign, 28 October 2026
 
 The current LED and OLED/LED mechanical sets have **six printed pieces and twelve screws**. The fixed-width cradle replaces separate rails, thin frames, sliding width guides and the main lid. One broad glued joint attaches the reader tower; the cassette retains height adjustment. The original headless and integrated-touch CAD and all firmware are unchanged.

@@ -32,10 +32,31 @@ The flash count is exactly 16 MiB; the reported PSRAM count is approximately 8 M
 
 The OLED did not acknowledge at the configured address. Its presence, wiring and controller identity were not established; absence at one address does not diagnose the cause. No display image or physical LED output was observed.
 
+## OLED initialization repair, 30 October 2026
+
+After the peripherals were soldered, the same board advertised its setup network but stopped before the ready message. A 45-second serial capture did not reach OLED status or application readiness. A diagnostic application then showed that the initial LED transfer completed and the OLED acknowledged at `0x3c`, but execution stopped inside `oled.begin()`.
+
+The firmware had initialized `Wire` on GPIO4/5 and also supplied those pins to the U8g2 constructor. In the installed U8g2/Arduino combination, display initialization reconfigured those explicit pins as ordinary outputs; the subsequent `Wire.begin()` returned early because the bus was already initialized. The corrected constructors leave pin configuration to the existing `Wire.begin(4, 5)`. The SH1106 alternative uses the same correction. Startup markers now identify the last completed stage if a peripheral blocks initialization.
+
+The corrected OLED/LED application was written at `0x10000` with flash hash verification. No filesystem, partition table, NVS or inventory image was written. The existing calibration webpage remains installed. The uploaded application is 961,456 bytes with SHA-256 `70aa7361c0f18ae4940c30c2a3c0642776633982ebcc6efef165748f43a1c925`.
+
+The post-fix serial capture reported:
+
+```text
+Status UI: initial LED transfer complete
+Status UI: probing OLED on SDA4/SCL5
+Status UI: OLED acknowledged; initializing display
+Status OLED: I2C acknowledged; verify controller and image (address 0x3c)
+Startup: status UI ready
+Spoolancer ready. Variant: oled-led; assets: ready; inventory: ready; setup AP: [omitted]; address: 192.168.4.1
+```
+
+All five firmware profiles compiled. This establishes that the observed initialization stall cleared on this board. The owner then confirmed that the OLED and webpage work. That report establishes basic visible display and browser access; physical LED colors, detailed page actions, safe power wiring and weighing accuracy remain separate checks. The owner reported USB-only power, direct GPIO6-to-DIN wiring, and the converter output still connected to the board's 5 V rail; that arrangement differs from the power/buffer circuit in [the wiring guide](../WIRING.md#10-usb-programming-and-service).
+
 ## Still untested
 
-- Real HTTP requests, PIN enrollment, BOOT timing/access, Wi-Fi association and recovery.
-- OLED rendering, LED color/order/current and combined peripheral power behavior.
+- PIN enrollment, BOOT timing/access, Wi-Fi association and recovery, and HTTP actions beyond opening the page.
+- Detailed OLED states, LED color/order/current and combined peripheral power behavior.
 - The 12 V jack, buck converter, internal power plug and enclosure fit.
 - HX711 readings, calibration, independent known weights and mechanical stability.
 - PN532 operation, seated tags, writes/read-back and stock-printer tag identity.

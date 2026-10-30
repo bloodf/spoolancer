@@ -1,6 +1,6 @@
 # Spoolancer device firmware
 
-This is an Arduino/PlatformIO implementation for ESP32-S3 N16R8 hardware. The builds use 16 MB flash and octal PSRAM, read the HX711, communicate with the PN532 over HSU, and serve the local web interface. One `spoolancer-oled-led` board was flashed on 27 October 2026 and reported successful USB startup, detected memory and mounted storage. **OLED/LED operation, weighing, NFC and real Spoolman behavior remain unvalidated.** See the [boot record](../docs/DEVICE-BOOT.md) and [full evidence record](../docs/STATUS.md).
+This is an Arduino/PlatformIO implementation for ESP32-S3 N16R8 hardware. The builds use 16 MB flash and octal PSRAM, read the HX711, communicate with the PN532 over HSU, and serve the local web interface. One `spoolancer-oled-led` board was flashed on 27 October 2026 and reported successful USB startup, detected memory and mounted storage. On 30 October, a connected OLED exposed an initialization stall; the corrected application reached normal startup, and the owner confirmed that the OLED and webpage work. **LED operation, detailed display states, weighing, NFC and real Spoolman behavior remain unvalidated.** See the [boot record](../docs/DEVICE-BOOT.md) and [full evidence record](../docs/STATUS.md).
 
 | Build environment | Controls |
 |---|---|
