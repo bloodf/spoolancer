@@ -293,6 +293,7 @@ function renderFirmware() {
   $('#firmware-version').textContent = current === 'Unknown' ? '—' : current;
   const canCheck = fresh && !!state.token && !state.busy;
   $('#firmware-check').disabled = !canCheck;
+  $('#firmware-upload').disabled = !canCheck;
   const info = firmwareInfo, apply = $('#firmware-apply'), notes = $('#firmware-notes'), result = $('#firmware-result');
   if (!info) { $('#firmware-latest').textContent = 'Not checked'; apply.hidden = true; notes.hidden = true; result.textContent = ''; return; }
   if (info.error) {
@@ -324,6 +325,36 @@ async function applyFirmware() {
     notice(result.message || 'Update started; the device will reboot.');
   } catch (error) { notice(error.message || 'Could not start the update.', true); }
   finally { setBusy(false); }
+}
+async function uploadFirmware() {
+  if (!requirePair()) return;
+  const file = $('#firmware-file').files[0];
+  if (!file) { notice('Choose a firmware .bin file first.', true); return; }
+  if (state.demo) { notice('Firmware upload is simulated in the demo; no device was flashed.'); return; }
+  if (!confirm(`Flash "${file.name}" (${Math.round(file.size / 1024)} KB) to this device now? Make sure it is the image built for this board. The device reboots into it; a wrong image is recoverable over USB.`)) return;
+  setBusy(true);
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 120000);
+  try {
+    const form = new FormData();
+    form.append('firmware', file, file.name);
+    const response = await fetch('/api/update/upload?confirm=true', {
+      method: 'POST', cache: 'no-store', credentials: 'omit', signal: controller.signal,
+      headers: state.token ? { Authorization: `Bearer ${state.token}` } : {}, body: form,
+    });
+    let data;
+    try { data = await response.json(); } catch { throw new Error('The device returned an unreadable response.'); }
+    if (!response.ok || data.error) {
+      const problem = new Error(typeof data.error === 'string' ? data.error : `Upload failed (${response.status}).`);
+      problem.status = response.status; throw problem;
+    }
+    firmwareInfo = { ...(firmwareInfo || {}), message: data.message || 'Firmware uploaded; the device will reboot.' };
+    notice(data.message || 'Firmware uploaded; the device will reboot.');
+  } catch (error) {
+    if (error.status === 401) { lock(true); notice('Pair with the device again and retry the upload.', true); }
+    else if (error.name === 'AbortError') notice('The upload timed out. Check the connection and retry.', true);
+    else notice(error.message || 'Could not upload the firmware.', true);
+  } finally { clearTimeout(timeout); setBusy(false); }
 }
 async function runDiagnostic(component) {
   if (!requirePair()) return;
@@ -1205,6 +1236,7 @@ $('#test-spoolman').addEventListener('click', async () => {
 for (const component of ['nfc', 'leds', 'scale']) $(`#test-${component}`).addEventListener('click', () => { void runDiagnostic(component); });
 $('#firmware-check').addEventListener('click', () => { void checkFirmware(); });
 $('#firmware-apply').addEventListener('click', () => { void applyFirmware(); });
+$('#firmware-upload').addEventListener('click', () => { void uploadFirmware(); });
 
 $('#calibration-form').addEventListener('submit', event => {
   event.preventDefault();

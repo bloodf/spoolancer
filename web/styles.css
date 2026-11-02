@@ -365,3 +365,6 @@ noscript { display: block; background: var(--warning-bg); padding: 20px; }
 .led-legend dt { font-size: 14px; font-weight: 600; margin-bottom: 5px; }
 .led-legend dd { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.5; }
 .settings-nav { flex-wrap: wrap; }
+
+.firmware-upload { display: grid; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border, rgba(127,127,127,0.25)); }
+.firmware-upload input[type="file"] { font-size: 0.85rem; color: var(--muted); }

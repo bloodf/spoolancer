@@ -232,6 +232,7 @@ Status identifies `device.variant` as `headless`, `oled-led`, `touch-8048`, or `
 | `POST /api/spoolman/sync` | `{spool_id,confirm:true}`; local save then create or absolute update |
 | `GET /api/update` | Check GitHub for the latest release. Returns `{current,variant,latest,update_available,notes_url,has_filesystem}`, or `{current,variant,error}` when no release is reachable |
 | `POST /api/update` | `{confirm:true}`; download and flash the release image for this board, then reboot. Refused when already current or offline |
+| `POST /api/update/upload?confirm=true` | Multipart upload (`firmware` part) of a firmware `.bin` for this board; streamed into the inactive OTA slot, verified, then the device reboots. Requires a session and `confirm=true` |
 
 Config save returns `reconnect_required`, `ap_ssid`, `ip` and a human-readable `message`. Reconnect occurs after the response; firmware does not reboot. An omitted or blank Wi-Fi password keeps it only when the SSID is unchanged. A changed secured SSID requires a fresh password; `wifi_open:true` deliberately selects an open network. Passphrases accept 8–63 UTF-8 bytes or a 64-digit hexadecimal key. SSIDs preserve exact spaces and are bounded to 32 UTF-8 bytes. The old `clear_wifi_password` field remains compatible for the unchanged network.
 
@@ -240,6 +241,8 @@ Text limits are UTF-8 **bytes** on the device: name64, brand60, material30, devi
 ## Over-the-air updates
 
 Settings → Hardware tests → **Firmware update** checks the project's GitHub releases and, when a newer one exists, installs it over Wi-Fi. The device asks `https://api.github.com/repos/bloodf/spoolancer/releases/latest`, downloads the two assets named for its own board variant — `spoolancer-<variant>-littlefs.bin` (web UI and assets) then `spoolancer-<variant>-firmware.bin` (the app) — flashes them to the inactive OTA slot and the filesystem partition, and reboots. The variant string matches `device.variant` (`headless`, `headless-led`, `oled-led`, `touch-8048`, `st7789`). The running version is reported as `device.firmware` and is set at build time from the release tag (`0.0.0-dev` for local builds).
+
+The same card also accepts a firmware `.bin` you downloaded yourself (for example a release asset, or a local build) and flashes it over `POST /api/update/upload`, for offline or pre-release installs. Pick the image built for this board; the upload always asks for confirmation first.
 
 Recovery: the two app partitions (`ota_0`/`ota_1`) mean a bad app image leaves the previous one in place; a failed filesystem write only costs the web assets, which a repeated update or a USB `uploadfs` restores. The transport is HTTPS but the certificate chain is not pinned and the image is not signed (`WiFiClientSecure::setInsecure`); the recovery paths above bound the risk. Pin a CA bundle and sign images before trusting this over an untrusted network.
 

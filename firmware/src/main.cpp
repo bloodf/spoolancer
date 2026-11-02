@@ -86,6 +86,7 @@ bool connectionAttempt = false;
 uint32_t nextNfc = 0, nextDisplay = 0, connectStarted = 0, reconnectAt = 0;
 uint32_t nextLogin = 0, pinVisibleUntil = 0;
 Ota::Release otaPending; bool otaRequested = false;
+bool uploadDidStart = false; String uploadError; uint32_t rebootAt = 0;
 unsigned loginFailures = 0, sessionSlot = 0;
 struct WifiNetwork { String ssid; int32_t rssi, channel; bool secure, supported; };
 struct WifiScan {
@@ -1713,6 +1714,33 @@ void setupRoutes() {
     result["message"] = "Update started. The device is downloading " + rel.tag + " and reboots in about a minute. Do not power it off.";
     reply(result);
   });
+  server.on("/api/update/upload", HTTP_POST,
+    [] {  // Completion handler: runs after the whole multipart body is received.
+      if (!uploadDidStart) { error(400, "No firmware file was received."); return; }
+      uploadDidStart = false;
+      if (!uploadError.isEmpty()) { const String e = uploadError; uploadError = ""; error(507, e); return; }
+      JsonDocument r; r["ok"] = true;
+      r["message"] = "Firmware uploaded and verified. The device reboots in a moment to run it.";
+      reply(r);
+      rebootAt = millis() + 1500;  // Reboot after the response is flushed.
+    },
+    [] {  // Upload handler: streams the firmware image straight into the inactive OTA slot.
+      HTTPUpload &up = server.upload();
+      if (up.status == UPLOAD_FILE_START) {
+        uploadDidStart = true; uploadError = "";
+        if (!hasSession()) { uploadError = "Open a device session before uploading firmware."; return; }
+        if (server.arg("confirm") != "true") { uploadError = "Explicit confirmation is required to flash uploaded firmware."; return; }
+        if (!Update.begin(UPDATE_SIZE_UNKNOWN, U_FLASH)) { uploadError = Update.errorString(); }
+      } else if (up.status == UPLOAD_FILE_WRITE) {
+        if (!uploadError.isEmpty()) return;  // Already rejected; drain the body.
+        if (Update.write(up.buf, up.currentSize) != up.currentSize) uploadError = Update.errorString();
+      } else if (up.status == UPLOAD_FILE_END) {
+        if (!uploadError.isEmpty()) { Update.abort(); return; }
+        if (!Update.end(true)) uploadError = Update.errorString();
+      } else if (up.status == UPLOAD_FILE_ABORTED) {
+        Update.abort(); uploadError = "The firmware upload was interrupted.";
+      }
+    });
   server.on("/api/spoolman/discover", HTTP_GET, [] {
     if (!authorized()) return;
     discoveryReply();
@@ -1934,6 +1962,7 @@ void setup() {
 }
 
 void loop() {
+  if (rebootAt && int32_t(millis() - rebootAt) >= 0) ESP.restart();
   if (otaRequested) {
     otaRequested = false;
     appMessage = "Installing firmware update; the device will reboot.";
