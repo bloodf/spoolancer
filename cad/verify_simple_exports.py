@@ -1,4 +1,4 @@
-"""Independently reopen the six printable STEP/STL files and native assembly."""
+"""Independently reopen the printable STEP/STL files and native assembly."""
 import argparse
 import hashlib
 import json
@@ -18,16 +18,38 @@ def verify(variant, output_root=None):
     out = target / 'exports'
     v = json.loads((out / 'validation.json').read_text())
     assert v['revision'].startswith('v0.8') and v['physical_validation'] is False
-    assert set(v['parts']) == {'base', 'cradle', 'cell_spacer', 'nfc_tower', 'nfc_cassette', 'nfc_cover'}
+    expected_parts = {'base', 'cradle', 'cell_spacer', 'nfc_tower', 'nfc_cassette', 'nfc_cover', 'base_top_cover', 'nfc_cable_gate'}
+    assert set(v['parts']) == expected_parts
     assert not v['printed_part_intersections'] and not any(v['component_intersections'].values())
     assert not v['boot_access']['positive_volume_intersections']
+    cover = v['top_cover_checks']
+    assert cover['stationary'] and cover['physical_validation'] is False
+    assert not cover['access_probe_intersections']
+    assert cover['downward_travel_checks'] and all(
+        row['cradle_gap_mm'] > 0 and not row['positive_volume_intersections']
+        for row in cover['downward_travel_checks'])
+    assert cover['spacer_minimum_side_clearance_mm'] > 0
+    assert cover['cable_route_minimum_clearance_mm'] > 0
+    assert cover['glue_rim_contact_area_mm2'] > 0
+    entry = cover['side_entry']
+    assert entry['connected_cable_end_threading_required'] is False
+    assert entry['swept_cable_cover_intersection_mm3'] < .001
+    assert entry['retrofit_path_checks'] and all(
+        not row['positive_volume_intersections'] for row in entry['retrofit_path_checks'])
+    gate = v['cable_gate_checks']
+    assert gate['stationary'] and gate['physical_validation'] is False
+    assert gate['glue_contact_area_mm2'] > 0 and gate['representative_cable_clearance_mm'] > 0
+    assert gate['cradle_clearance_at_1mm_downward_travel_mm'] > 0
+    assert gate['insertion_checks'] and all(
+        not row['positive_volume_intersections'] for row in gate['insertion_checks'])
     for key in ('spool_envelope_checks', 'pod_adjustment_checks', 'service_lift_checks'):
         assert v[key] and not any(row['positive_volume_intersections'] for row in v[key])
     for relative, digest in v['source_sha256'].items():
         assert hashlib.sha256((HERE / relative).read_bytes()).hexdigest() == digest, ('stale CAD source', relative)
     r = {'revision': v['revision'], 'physical_validation': False,
          'freecad_version': '.'.join(App.Version()[:3]), 'stl_files': {}, 'individual_step_files': {},
-         'source_sha256': v['source_sha256'], 'fastener_schedule': v['fastener_schedule']}
+         'source_sha256': v['source_sha256'], 'fastener_schedule': v['fastener_schedule'],
+         'top_cover_checks': cover, 'cable_gate_checks': gate}
     for name, original in v['parts'].items():
         stl, step = out / (name + '.stl'), out / (name + '.step')
         mesh, shape = Mesh.Mesh(str(stl)), Part.read(str(step))
@@ -54,7 +76,8 @@ def verify(variant, output_root=None):
     doc = App.openDocument(str(out / (v['assembly_stem'] + '.FCStd')))
     printed = doc.getObject('PrintedParts').Group
     references = doc.getObject('ReferenceEnvelopes').Group
-    assert len(printed) == 6 and all(o.Shape.isValid() for o in printed + references)
+    assert {o.Name for o in printed} == expected_parts
+    assert all(o.Shape.isValid() for o in printed + references)
     assembled = Part.read(str(out / (v['assembly_stem'] + '-assembly.step')))
     assert assembled.isValid()
     r['freecad'] = {'printed_instances': len(printed), 'reference_groups': len(references), 'reopened_valid': True}
@@ -63,7 +86,7 @@ def verify(variant, output_root=None):
                    'reader_positions': len(v['pod_adjustment_checks']), 'service_lifts': len(v['service_lift_checks'])}
     App.closeDocument(doc.Name)
     (out / 'export-verification.json').write_text(json.dumps(r, indent=2) + '\n')
-    print(json.dumps({'variant': variant, 'reopened_pairs': 6, 'native_assembly': 'valid', 'physical_validation': False}))
+    print(json.dumps({'variant': variant, 'reopened_pairs': len(expected_parts), 'native_assembly': 'valid', 'physical_validation': False}))
 
 
 if __name__ == '__main__':

@@ -1,8 +1,8 @@
 {
-  "revision": "v0.8-print-first-fit-prototype",
+  "revision": "v0.8.1-side-entry-glue-cover-fit-prototype",
   "units": "mm",
   "variant": "oled-led",
-  "assembly_stem": "spoolancer-v0.8-oled-led",
+  "assembly_stem": "spoolancer-v0.8.1-oled-led",
   "physical_validation": false,
   "parts": {
     "base": {
@@ -27,6 +27,56 @@
       "files": {
         "stl": "base.stl",
         "step": "base.step"
+      },
+      "quantity": 1
+    },
+    "base_top_cover": {
+      "solid_valid": true,
+      "solid_count": 1,
+      "closed_mesh": true,
+      "mesh_self_intersections": false,
+      "triangle_count": 1832,
+      "print_z_min_mm": 0.0,
+      "volume_mm3": 77194.186948,
+      "print_bounds_mm": [
+        170.0,
+        170.0,
+        3.0
+      ],
+      "step_bounds_mm": [
+        170.0,
+        170.0,
+        3.0
+      ],
+      "step_z_min_mm": 0,
+      "files": {
+        "stl": "base_top_cover.stl",
+        "step": "base_top_cover.step"
+      },
+      "quantity": 1
+    },
+    "nfc_cable_gate": {
+      "solid_valid": true,
+      "solid_count": 1,
+      "closed_mesh": true,
+      "mesh_self_intersections": false,
+      "triangle_count": 92,
+      "print_z_min_mm": 0.0,
+      "volume_mm3": 598.778088,
+      "print_bounds_mm": [
+        9.5,
+        22.0,
+        4.3
+      ],
+      "step_bounds_mm": [
+        9.5,
+        22.0,
+        4.3
+      ],
+      "step_z_min_mm": 0,
+      "files": {
+        "stl": "nfc_cable_gate.stl",
+        "step": "nfc_cable_gate.step"
       },
       "quantity": 1
     },
@@ -157,10 +207,10 @@
     }
   },
   "geometry_checks": {
-    "stem": "spoolancer-v0.8-oled-led",
+    "stem": "spoolancer-v0.8.1-oled-led",
     "variant": "oled-led",
-    "production_part_count": 6,
-    "revision": "v0.8-print-first-fit-prototype",
+    "production_part_count": 8,
+    "revision": "v0.8.1-side-entry-glue-cover-fit-prototype",
     "fastener_schedule": {
       "total_screws": 12,
       "dimensional_sizes": [
@@ -244,9 +294,9 @@
       "cradle_top": 48.5,
       "moving_head_seat": 43.7
     },
-    "service": "Remove spool and two moving-end M4 screws to lift cradle, spacer and tower; fixed M5 screws remain installed. Disconnect the NFC lead before lifting fully.",
-    "glue_joint": "Broad tower bottom and three-sided nest only. Dry-fit and verify clearance before permanent bonding.",
-    "boot_access": "Remove spool; insert a straight nonconductive probe vertically through the 6 mm cradle hole at X=-33,Y=-6. Estimated button top Z=12.6; verify actual board position before final mounting.",
+    "service": "Remove spool and two moving-end M4 screws to lift cradle, spacer and tower; fixed M5 screws, glued top cover and cable gate remain installed. Disconnect the NFC lead before lifting beyond its slack. Lifting the cradle does not expose the electronics: release the top-cover adhesive joint before removing boards. For retrofit, remove or raise the cradle with enough cable slack, slide the unglued cover around the connected NFC lead above the base and stop heads, then lower it onto the rim. Seat the cable gate from above before replacing the cradle.",
+    "glue_joint": "Tower bottom to its three-sided cradle nest, top-cover underside to the stationary base perimeter rim, and small glue spots under the cable-gate flange onto the fixed cover. The gate is indexed by its tongue, not snap-retained. Dry-fit before bonding. Keep glue out of all openings and the gap to moving parts; never glue or pinch the cable, cradle, spacer, load cell or screws against the fixed cover.",
+    "boot_access": "Remove spool; insert a straight nonconductive probe vertically through the 6 mm cradle hole and aligned 8 mm top-cover hole at X=-33,Y=-6. Estimated button top Z=12.6; verify actual board position before final mounting.",
     "boot_center_estimate_mm": [
       -33.0,
       -6.0,
@@ -257,9 +307,257 @@
       "Generic electronics, LED strip width and connector envelopes require actual-part checks.",
       "Wire depiction is representative; route a gentle slack loop and check weighing zero throughout travel.",
       "Tower face is 3 mm thick; verify NFC read distance with the actual tag before final assembly.",
-      "Screw thread form, cell tapped-hole depths and final stop setting must be checked on received load cell."
+      "Screw thread form, cell tapped-hole depths and final stop setting must be checked on received load cell.",
+      "The top cover clears the modeled OLED PCB by only 0.35 mm; check actual board height, solder joints and wires before gluing. Physical fit is unverified."
     ],
     "physical_validation": false,
+    "top_cover": {
+      "stationary": true,
+      "dimensions_mm": [
+        170,
+        170,
+        3
+      ],
+      "assembly_z_mm": [
+        32.0,
+        35.0
+      ],
+      "corner_clip_mm": 6,
+      "top_perimeter_chamfer_mm": 0.6,
+      "spacer_opening_xy_mm": [
+        -25.0,
+        25.0,
+        -27.5,
+        22.5
+      ],
+      "spacer_minimum_side_clearance_mm": 11.0,
+      "cradle_static_clearance_mm": 5.5,
+      "cable_opening_xy_mm": [
+        64.0,
+        76.0,
+        -8.0,
+        8.0
+      ],
+      "spacer_opening_size_mm": [
+        50.0,
+        50.0
+      ],
+      "boot_to_spacer_opening_web_mm": 4.0,
+      "cable_route_minimum_clearance_mm": 4.0,
+      "stop_access_diameter_mm": 8.0,
+      "stop_head_diameter_mm": 5.5,
+      "stop_head_radial_clearance_mm": 1.25,
+      "boot_access_diameter_mm": 8.0,
+      "glue_rim_contact_area_mm2": 2047.84,
+      "access_probe_intersections": {},
+      "downward_travel_checks": [
+        {
+          "downward_travel_mm": 0,
+          "cradle_gap_mm": 5.5,
+          "gate_cradle_gap_mm": 3.9,
+          "positive_volume_intersections": {}
+        },
+        {
+          "downward_travel_mm": 0.25,
+          "cradle_gap_mm": 5.25,
+          "gate_cradle_gap_mm": 3.65,
+          "positive_volume_intersections": {}
+        },
+        {
+          "downward_travel_mm": 0.5,
+          "cradle_gap_mm": 5.0,
+          "gate_cradle_gap_mm": 3.4,
+          "positive_volume_intersections": {}
+        },
+        {
+          "downward_travel_mm": 0.75,
+          "cradle_gap_mm": 4.75,
+          "gate_cradle_gap_mm": 3.15,
+          "positive_volume_intersections": {}
+        },
+        {
+          "downward_travel_mm": 1.0,
+          "cradle_gap_mm": 4.5,
+          "gate_cradle_gap_mm": 2.9,
+          "positive_volume_intersections": {}
+        }
+      ],
+      "existing_base_m5_mounts_unchanged": true,
+      "electronics_service_requires_releasing_cover_glue": true,
+      "physical_validation": false,
+      "side_entry": {
+        "edge": "+X",
+        "entry_corridor_xy_mm": [
+          76.0,
+          86.0,
+          -5.0,
+          5.0
+        ],
+        "keyed_pocket_xy_mm": [
+          78.0,
+          82.0,
+          -8.0,
+          8.0
+        ],
+        "minimum_entry_width_mm": 10.0,
+        "representative_cable_diameter_mm": 4,
+        "swept_cable_cover_intersection_mm3": 0.0,
+        "gate_removed": true,
+        "cradle_and_spacer_removed_or_raised": true,
+        "loose_cover_slide_elevation_mm": 10,
+        "elevated_cover_gap_above_stop_heads_mm": 2.5,
+        "connected_cable_end_threading_required": false,
+        "retrofit_path_checks": [
+          {
+            "stage": "elevated_side_entry",
+            "cover_translation_x_mm": -24,
+            "cover_translation_z_mm": 10,
+            "positive_volume_intersections": {}
+          },
+          {
+            "stage": "elevated_side_entry",
+            "cover_translation_x_mm": -20,
+            "cover_translation_z_mm": 10,
+            "positive_volume_intersections": {}
+          },
+          {
+            "stage": "elevated_side_entry",
+            "cover_translation_x_mm": -15,
+            "cover_translation_z_mm": 10,
+            "positive_volume_intersections": {}
+          },
+          {
+            "stage": "elevated_side_entry",
+            "cover_translation_x_mm": -10,
+            "cover_translation_z_mm": 10,
+            "positive_volume_intersections": {}
+          },
+          {
+            "stage": "elevated_side_entry",
+            "cover_translation_x_mm": -5,
+            "cover_translation_z_mm": 10,
+            "positive_volume_intersections": {}
+          },
+          {
+            "stage": "elevated_side_entry",
+            "cover_translation_x_mm": 0,
+            "cover_translation_z_mm": 10,
+            "positive_volume_intersections": {}
+          },
+          {
+            "stage": "lower_to_rim",
+            "cover_translation_x_mm": 0,
+            "cover_translation_z_mm": 8,
+            "positive_volume_intersections": {}
+          },
+          {
+            "stage": "lower_to_rim",
+            "cover_translation_x_mm": 0,
+            "cover_translation_z_mm": 6,
+            "positive_volume_intersections": {}
+          },
+          {
+            "stage": "lower_to_rim",
+            "cover_translation_x_mm": 0,
+            "cover_translation_z_mm": 4,
+            "positive_volume_intersections": {}
+          },
+          {
+            "stage": "lower_to_rim",
+            "cover_translation_x_mm": 0,
+            "cover_translation_z_mm": 2,
+            "positive_volume_intersections": {}
+          },
+          {
+            "stage": "lower_to_rim",
+            "cover_translation_x_mm": 0,
+            "cover_translation_z_mm": 1,
+            "positive_volume_intersections": {}
+          },
+          {
+            "stage": "lower_to_rim",
+            "cover_translation_x_mm": 0,
+            "cover_translation_z_mm": 0,
+            "positive_volume_intersections": {}
+          }
+        ],
+        "physical_wire_slack_and_bend_radius_validation": false
+      },
+      "oled_pcb_clearance_mm": 0.35,
+      "oled_clearance_requires_physical_check": true
+    },
+    "cable_gate": {
+      "stationary": true,
+      "print_envelope_mm": [
+        9.5,
+        22,
+        4.3
+      ],
+      "assembly_z_mm": [
+        32.3,
+        36.6
+      ],
+      "flange_xy_mm": [
+        75.5,
+        85.0,
+        -11.0,
+        11.0
+      ],
+      "flange_thickness_mm": 1.6000000000000014,
+      "tongue_xy_mm": [
+        76.3,
+        84.7,
+        -4.7,
+        4.7
+      ],
+      "shoulder_xy_mm": [
+        78.3,
+        81.7,
+        -7.7,
+        7.7
+      ],
+      "tongue_fit_clearance_mm": 0.3,
+      "visible_corner_clip_mm": 0.6,
+      "visible_top_chamfer_mm": 0.3,
+      "glue_contact_area_mm2": 79.44,
+      "retention": "Glue spots on flange against fixed cover; no snap latch or cable clamp",
+      "minimum_retained_cable_opening_mm": [
+        11.5,
+        16.0
+      ],
+      "representative_cable_clearance_mm": 3.5,
+      "cradle_static_clearance_mm": 3.9,
+      "cradle_clearance_at_1mm_downward_travel_mm": 2.8999999999999986,
+      "insertion_requires_cradle_removed_or_raised": true,
+      "insertion_direction": "Vertically down from above the fixed cover",
+      "insertion_checks": [
+        {
+          "lift_mm": 0,
+          "positive_volume_intersections": {}
+        },
+        {
+          "lift_mm": 0.3,
+          "positive_volume_intersections": {}
+        },
+        {
+          "lift_mm": 1,
+          "positive_volume_intersections": {}
+        },
+        {
+          "lift_mm": 3,
+          "positive_volume_intersections": {}
+        },
+        {
+          "lift_mm": 6,
+          "positive_volume_intersections": {}
+        },
+        {
+          "lift_mm": 10,
+          "positive_volume_intersections": {}
+        }
+      ],
+      "physical_validation": false
+    },
     "assembled_printed_bounds_mm": [
       170.4,
       170.0,
@@ -319,6 +617,26 @@
       ],
       "bed_face": "Large flat underside",
       "flat_bed_contact_mm2": 28677.141,
+      "support_intent": "No supports intended; inspect sliced result and bridge quality."
+    },
+    "base_top_cover": {
+      "rotation_degrees_xyz": [
+        0,
+        0,
+        0
+      ],
+      "bed_face": "Entire flat underside; chamfered perimeter faces upward",
+      "flat_bed_contact_mm2": 25770.673,
+      "support_intent": "No supports intended; inspect sliced result and bridge quality."
+    },
+    "nfc_cable_gate": {
+      "rotation_degrees_xyz": [
+        180,
+        0,
+        0
+      ],
+      "bed_face": "Broad chamfered flange face; solid locating tongue points upward",
+      "flat_bed_contact_mm2": 190.1,
       "support_intent": "No supports intended; inspect sliced result and bridge quality."
     },
     "cradle": {
@@ -489,22 +807,37 @@
   "service_lift_checks": [
     {
       "lift_mm": 1,
+      "cover_remains_fixed": true,
+      "cable_gate_remains_fixed": true,
+      "electronics_access": false,
       "positive_volume_intersections": {}
     },
     {
       "lift_mm": 5,
+      "cover_remains_fixed": true,
+      "cable_gate_remains_fixed": true,
+      "electronics_access": false,
       "positive_volume_intersections": {}
     },
     {
       "lift_mm": 15,
+      "cover_remains_fixed": true,
+      "cable_gate_remains_fixed": true,
+      "electronics_access": false,
       "positive_volume_intersections": {}
     },
     {
       "lift_mm": 35,
+      "cover_remains_fixed": true,
+      "cable_gate_remains_fixed": true,
+      "electronics_access": false,
       "positive_volume_intersections": {}
     },
     {
       "lift_mm": 60,
+      "cover_remains_fixed": true,
+      "cable_gate_remains_fixed": true,
+      "electronics_access": false,
       "positive_volume_intersections": {}
     }
   ],
@@ -515,10 +848,257 @@
     "button_position_provisional": true,
     "positive_volume_intersections": {}
   },
+  "top_cover_checks": {
+    "stationary": true,
+    "dimensions_mm": [
+      170,
+      170,
+      3
+    ],
+    "assembly_z_mm": [
+      32.0,
+      35.0
+    ],
+    "corner_clip_mm": 6,
+    "top_perimeter_chamfer_mm": 0.6,
+    "spacer_opening_xy_mm": [
+      -25.0,
+      25.0,
+      -27.5,
+      22.5
+    ],
+    "spacer_minimum_side_clearance_mm": 11.0,
+    "cradle_static_clearance_mm": 5.5,
+    "cable_opening_xy_mm": [
+      64.0,
+      76.0,
+      -8.0,
+      8.0
+    ],
+    "spacer_opening_size_mm": [
+      50.0,
+      50.0
+    ],
+    "boot_to_spacer_opening_web_mm": 4.0,
+    "cable_route_minimum_clearance_mm": 4.0,
+    "stop_access_diameter_mm": 8.0,
+    "stop_head_diameter_mm": 5.5,
+    "stop_head_radial_clearance_mm": 1.25,
+    "boot_access_diameter_mm": 8.0,
+    "glue_rim_contact_area_mm2": 2047.84,
+    "access_probe_intersections": {},
+    "downward_travel_checks": [
+      {
+        "downward_travel_mm": 0,
+        "cradle_gap_mm": 5.5,
+        "gate_cradle_gap_mm": 3.9,
+        "positive_volume_intersections": {}
+      },
+      {
+        "downward_travel_mm": 0.25,
+        "cradle_gap_mm": 5.25,
+        "gate_cradle_gap_mm": 3.65,
+        "positive_volume_intersections": {}
+      },
+      {
+        "downward_travel_mm": 0.5,
+        "cradle_gap_mm": 5.0,
+        "gate_cradle_gap_mm": 3.4,
+        "positive_volume_intersections": {}
+      },
+      {
+        "downward_travel_mm": 0.75,
+        "cradle_gap_mm": 4.75,
+        "gate_cradle_gap_mm": 3.15,
+        "positive_volume_intersections": {}
+      },
+      {
+        "downward_travel_mm": 1.0,
+        "cradle_gap_mm": 4.5,
+        "gate_cradle_gap_mm": 2.9,
+        "positive_volume_intersections": {}
+      }
+    ],
+    "existing_base_m5_mounts_unchanged": true,
+    "electronics_service_requires_releasing_cover_glue": true,
+    "physical_validation": false,
+    "side_entry": {
+      "edge": "+X",
+      "entry_corridor_xy_mm": [
+        76.0,
+        86.0,
+        -5.0,
+        5.0
+      ],
+      "keyed_pocket_xy_mm": [
+        78.0,
+        82.0,
+        -8.0,
+        8.0
+      ],
+      "minimum_entry_width_mm": 10.0,
+      "representative_cable_diameter_mm": 4,
+      "swept_cable_cover_intersection_mm3": 0.0,
+      "gate_removed": true,
+      "cradle_and_spacer_removed_or_raised": true,
+      "loose_cover_slide_elevation_mm": 10,
+      "elevated_cover_gap_above_stop_heads_mm": 2.5,
+      "connected_cable_end_threading_required": false,
+      "retrofit_path_checks": [
+        {
+          "stage": "elevated_side_entry",
+          "cover_translation_x_mm": -24,
+          "cover_translation_z_mm": 10,
+          "positive_volume_intersections": {}
+        },
+        {
+          "stage": "elevated_side_entry",
+          "cover_translation_x_mm": -20,
+          "cover_translation_z_mm": 10,
+          "positive_volume_intersections": {}
+        },
+        {
+          "stage": "elevated_side_entry",
+          "cover_translation_x_mm": -15,
+          "cover_translation_z_mm": 10,
+          "positive_volume_intersections": {}
+        },
+        {
+          "stage": "elevated_side_entry",
+          "cover_translation_x_mm": -10,
+          "cover_translation_z_mm": 10,
+          "positive_volume_intersections": {}
+        },
+        {
+          "stage": "elevated_side_entry",
+          "cover_translation_x_mm": -5,
+          "cover_translation_z_mm": 10,
+          "positive_volume_intersections": {}
+        },
+        {
+          "stage": "elevated_side_entry",
+          "cover_translation_x_mm": 0,
+          "cover_translation_z_mm": 10,
+          "positive_volume_intersections": {}
+        },
+        {
+          "stage": "lower_to_rim",
+          "cover_translation_x_mm": 0,
+          "cover_translation_z_mm": 8,
+          "positive_volume_intersections": {}
+        },
+        {
+          "stage": "lower_to_rim",
+          "cover_translation_x_mm": 0,
+          "cover_translation_z_mm": 6,
+          "positive_volume_intersections": {}
+        },
+        {
+          "stage": "lower_to_rim",
+          "cover_translation_x_mm": 0,
+          "cover_translation_z_mm": 4,
+          "positive_volume_intersections": {}
+        },
+        {
+          "stage": "lower_to_rim",
+          "cover_translation_x_mm": 0,
+          "cover_translation_z_mm": 2,
+          "positive_volume_intersections": {}
+        },
+        {
+          "stage": "lower_to_rim",
+          "cover_translation_x_mm": 0,
+          "cover_translation_z_mm": 1,
+          "positive_volume_intersections": {}
+        },
+        {
+          "stage": "lower_to_rim",
+          "cover_translation_x_mm": 0,
+          "cover_translation_z_mm": 0,
+          "positive_volume_intersections": {}
+        }
+      ],
+      "physical_wire_slack_and_bend_radius_validation": false
+    },
+    "oled_pcb_clearance_mm": 0.35,
+    "oled_clearance_requires_physical_check": true
+  },
+  "cable_gate_checks": {
+    "stationary": true,
+    "print_envelope_mm": [
+      9.5,
+      22,
+      4.3
+    ],
+    "assembly_z_mm": [
+      32.3,
+      36.6
+    ],
+    "flange_xy_mm": [
+      75.5,
+      85.0,
+      -11.0,
+      11.0
+    ],
+    "flange_thickness_mm": 1.6000000000000014,
+    "tongue_xy_mm": [
+      76.3,
+      84.7,
+      -4.7,
+      4.7
+    ],
+    "shoulder_xy_mm": [
+      78.3,
+      81.7,
+      -7.7,
+      7.7
+    ],
+    "tongue_fit_clearance_mm": 0.3,
+    "visible_corner_clip_mm": 0.6,
+    "visible_top_chamfer_mm": 0.3,
+    "glue_contact_area_mm2": 79.44,
+    "retention": "Glue spots on flange against fixed cover; no snap latch or cable clamp",
+    "minimum_retained_cable_opening_mm": [
+      11.5,
+      16.0
+    ],
+    "representative_cable_clearance_mm": 3.5,
+    "cradle_static_clearance_mm": 3.9,
+    "cradle_clearance_at_1mm_downward_travel_mm": 2.8999999999999986,
+    "insertion_requires_cradle_removed_or_raised": true,
+    "insertion_direction": "Vertically down from above the fixed cover",
+    "insertion_checks": [
+      {
+        "lift_mm": 0,
+        "positive_volume_intersections": {}
+      },
+      {
+        "lift_mm": 0.3,
+        "positive_volume_intersections": {}
+      },
+      {
+        "lift_mm": 1,
+        "positive_volume_intersections": {}
+      },
+      {
+        "lift_mm": 3,
+        "positive_volume_intersections": {}
+      },
+      {
+        "lift_mm": 6,
+        "positive_volume_intersections": {}
+      },
+      {
+        "lift_mm": 10,
+        "positive_volume_intersections": {}
+      }
+    ],
+    "physical_validation": false
+  },
   "source_sha256": {
-    "build_simple.py": "b32793c5552dfb63a69c7585519cd275a9b1d1500ec92b89928c694948c81185",
-    "simple_geometry.py": "92a4bc86d85cc20dd2fc2f6fca3f95a2e779fbc7638e4f0ecf2f82d5cbd11f6c",
-    "simple-parameters.json": "8d68f823bb3193902047ea2f5af75e6c1aa86543e764dcdc645bdeb63188b55c",
-    "variants/oled-led/parameters.json": "a433349c6c11221c705f16ffa2390f3b91a5d0619b2a646d4d20ccd680d44819"
+    "build_simple.py": "3c01859b63fcc00f7a8eba35c9f809753c4f4bb428b267a87568c8e733ab422c",
+    "simple_geometry.py": "51e73cd9993a8871d65d7bb45d45d07a6f8292cf66f965de90c68cdaa1b1ae23",
+    "simple-parameters.json": "b7d67e186cfc992052ab555e3478c9c00963c5dafa2c8208dd5317898cc25450",
+    "variants/oled-led/parameters.json": "d0e03abd522dcedd765e62eed709cab0b349c706334e846f6113b5587c90c73a"
   }
 }

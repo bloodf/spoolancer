@@ -1,19 +1,21 @@
 # Spoolancer printable CAD
 
-The current **v0.8 LED/OLED models use six printed pieces**: a low electronics base, one-piece cradle, load-cell spacer, NFC tower, reader cassette and flat rear cover. The cradle has integral spool ramps and fixed sides. The reader height is the only adjustment. The tower glues into the cradle; the rear cover remains removable for wiring access.
+The current **v0.8.1 LED/OLED models use eight printed pieces**: a low electronics base, one-piece cradle, load-cell spacer, NFC tower, reader cassette, flat rear cover, glue-on base top cover and small NFC cable cap. The cradle has integral spool ramps and fixed sides. The reader height is the only adjustment. The tower glues into the cradle; the rear cover remains removable for wiring access.
 
 [Interactive 3D assembly](https://bloodf.github.io/spoolancer/) · [Numbered exploded view](variants/oled-led/previews/exploded.png) · [Print orientations](variants/oled-led/previews/print-orientations.png) · [Print manifest](../docs/PRINTING.md) · [Parts list](../docs/BOM.md)
 
 The new geometry replaces the previous LED/OLED lid, separate rails, sliding side guides and small latches. Use a complete matching v0.8 set. Do not mix it with v0.7 parts or follow the old glued-rail instructions. The [assembly guide](../docs/ASSEMBLY.md) and [glue guide](../docs/GLUE-ASSEMBLY.md) describe the current joints.
 
-Physical fit, bond retention, strength, NFC performance and weighing accuracy remain untested. The six-part design targets upright spools 50–100 mm wide and 160–220 mm in diameter, used for occasional weighing. Place the reader-side flange beside the tower and rotate the seated spool to align its tag.
+Already printed v0.8? Print [`base_top_cover`](variants/oled-led/exports/base_top_cover.stl) and [`nfc_cable_gate`](variants/oled-led/exports/nfc_cable_gate.stl). The original six STLs are byte-identical; the [retrofit guide](../docs/TOP-COVER.md) explains installation and clearances. No extra screws are needed.
+
+Physical fit, bond retention, strength, NFC performance and weighing accuracy remain untested. The eight-part design targets upright spools 50–100 mm wide and 160–220 mm in diameter, used for occasional weighing. Place the reader-side flange beside the tower and rotate the seated spool to align its tag.
 
 ## Current LED/OLED files
 
 | Variant | Printable files | Editable assembly | Notes |
 |---|---|---|---|
-| Five LEDs + web controls | [Six STEP/STL pairs](variants/headless-led/exports) | [FreeCAD](variants/headless-led/exports/spoolancer-v0.8-headless-led.FCStd) · [Assembly STEP](variants/headless-led/exports/spoolancer-v0.8-headless-led-assembly.step) | [Variant notes](variants/headless-led/NOTES.md) |
-| 0.96-inch OLED + five LEDs | [Six STEP/STL pairs](variants/oled-led/exports) | [FreeCAD](variants/oled-led/exports/spoolancer-v0.8-oled-led.FCStd) · [Assembly STEP](variants/oled-led/exports/spoolancer-v0.8-oled-led-assembly.step) | [Variant notes](variants/oled-led/NOTES.md) |
+| Five LEDs + web controls | [Eight STEP/STL pairs](variants/headless-led/exports) | [FreeCAD](variants/headless-led/exports/spoolancer-v0.8.1-headless-led.FCStd) · [Assembly STEP](variants/headless-led/exports/spoolancer-v0.8.1-headless-led-assembly.step) | [Variant notes](variants/headless-led/NOTES.md) |
+| 0.96-inch OLED + five LEDs | [Eight STEP/STL pairs](variants/oled-led/exports) | [FreeCAD](variants/oled-led/exports/spoolancer-v0.8.1-oled-led.FCStd) · [Assembly STEP](variants/oled-led/exports/spoolancer-v0.8.1-oled-led-assembly.step) | [Variant notes](variants/oled-led/NOTES.md) |
 
 Both variants use the existing ESP32-S3 and five LEDs at 16.67 mm centres. Their vertical front is part of the base. The DC-jack opening is user-drilled after checking the actual jack and converter. A separate 12 V-to-5 V converter is required. No converter bracket is prescribed.
 
@@ -27,10 +29,12 @@ Each export folder contains one STL and one STEP per production part. Print each
 | `nfc_tower` | Broad front face, rear cavity upward |
 | `nfc_cassette` | Closed back face, antenna cup upward |
 | `nfc_cover` | Flat panel face |
+| `base_top_cover` | Flat underside; chamfered perimeter upward |
+| `nfc_cable_gate` | Broad flange down; locating tongue upward |
 
 The exact orientations and bed-contact areas are recorded in each variant's `exports/validation.json`. The [orientation preview](variants/oled-led/previews/print-orientations.png) uses actual print-oriented meshes, with each panel independently scaled. It is not a packing layout or a substitute for slicer inspection. See [printing instructions](../docs/PRINTING.md) for current slicing evidence and unresolved physical checks.
 
-The base and front controls stay fixed. The cell spacer, cradle, glued tower and reader float on the moving end of the load cell. Wires crossing into the fixed base need slack so they do not pull on the weighing assembly. To service the base, remove the spool, disconnect power and the reader lead, remove the two moving-end load-cell screws, and lift the cradle while supporting the loose spacer.
+The base, glued top cover and front controls stay fixed. The cell spacer, cradle, glued tower and reader float on the moving end of the load cell. Wires crossing into the fixed base need slack so they do not pull on the weighing assembly. To service the base, remove the spool, disconnect power and the reader lead, remove the two moving-end load-cell screws, and lift the cradle while supporting the loose spacer. Electronics access then requires releasing the top-cover adhesive; removing the cradle alone does not uncover the boards.
 
 ## Edit and regenerate the current models
 
@@ -38,7 +42,7 @@ The source files are:
 
 | File | Purpose |
 |---|---|
-| [simple-parameters.json](simple-parameters.json) | Shared dimensions for the six-part geometry |
+| [simple-parameters.json](simple-parameters.json) | Shared dimensions for the eight-part geometry |
 | `variants/{headless-led,oled-led}/parameters.json` | Variant overrides, applied after shared dimensions |
 | [simple_geometry.py](simple_geometry.py) | Printable solids, reference components, print poses and joint geometry |
 | [build_simple.py](build_simple.py) | Exports, assembled/print scenes and geometry checks |
@@ -64,7 +68,7 @@ node viewer/model.test.mjs
 
 For the project's macOS FreeCAD installation, the interpreter path is `/Applications/FreeCAD.app/Contents/Resources/bin/python`. If needed, set `FREECAD_LIB` to the directory containing the compatible native FreeCAD module. Use the corresponding interpreter and module directory for your own installation; do not assume host-specific paths work on Linux or Windows.
 
-Each build emits six individual STEP/STL pairs, a complete STEP/FCStd assembly, a validation report, `previews/scene.json` in assembled coordinates, and `previews/scene-print.json` in actual print poses. The renderer generates assembled, exploded, component-location, service, front-control, edge, cable and print-orientation views. Its manifest records source and image hashes. The viewer builder consumes the assembled scene and shared part map, and rejects unlabeled, missing or multiply assigned meshes.
+Each build emits eight individual STEP/STL pairs, a complete STEP/FCStd assembly, a validation report, `previews/scene.json` in assembled coordinates, and `previews/scene-print.json` in actual print poses. The renderer generates assembled, exploded, component-location, service, front-control, edge, cable and print-orientation views. Its manifest records source and image hashes. The viewer builder consumes the assembled scene and shared part map, and rejects unlabeled, missing or multiply assigned meshes.
 
 Keep manual CAD edits in a separate file if they must survive regeneration. The FreeCAD Dimensions spreadsheet records the build values; regeneration reads JSON and the generator source. STEP timestamps and FreeCAD metadata can change binary hashes between rebuilds. Geometric correspondence is checked separately.
 
@@ -78,7 +82,7 @@ Electronics, fasteners, the load cell and spool are simplified envelopes, not ma
 
 ## Preserved legacy models
 
-The original **headless v0.4.1** and **touch v0.4** mechanisms retain separate rails, sliding guides and their original part counts. They are not the six-part redesign. Their old material estimates, screenshots and validation reports apply only to those preserved files.
+The original **headless v0.4.1** and **touch v0.4** mechanisms retain separate rails, sliding guides and their original part counts. They are not this v0.8-family redesign. Their old material estimates, screenshots and validation reports apply only to those preserved files.
 
 - [Original headless notes](variants/headless/HEADLESS-NOTES.md) and [exports](variants/headless/exports). The convenience copy in `cad/exports` is also this legacy model. It has nine production pieces, including two identical rim rails, plus its fit samples.
 - [ESP-8048S043C-I touch notes](variants/touch-8048/TOUCH-NOTES.md) and [exports](variants/touch-8048/exports). The twelve-piece legacy assembly includes its separate display stand and bezel.

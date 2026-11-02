@@ -1,6 +1,6 @@
 # Spoolancer assembly explorer
 
-A standalone, offline-capable 3D view of the **OLED + five LEDs** and **five LEDs + web controls** enclosures. The v0.8 models use actual CAD tessellations, with six independently selectable printed pieces: base, one-piece cradle, load-cell spacer, NFC tower, reader cassette and rear cover.
+A standalone, offline-capable 3D view of the **OLED + five LEDs** and **five LEDs + web controls** enclosures. The v0.8.1 models use actual CAD tessellations, with eight independently selectable printed pieces: base, one-piece cradle, load-cell spacer, NFC tower, reader cassette, rear cover, glue-on base top cover and small NFC cable cap.
 
 ## Open locally
 
@@ -19,14 +19,14 @@ The viewer is also suitable for static hosting such as GitHub Pages. Every asset
 - Drag to orbit, scroll or pinch to zoom, right-drag or two-finger drag to pan. Focus the canvas and use arrow keys to pan.
 - Move **Open the assembly** between assembled and exploded positions.
 - Select a numbered component or a list entry. Use **Focus**, **Isolate part** or **Hide part** to inspect it.
-- **See inside housing** makes the base, cradle, reader tower, cassette and rear cover transparent. Hardware references, the spool, cable/clearance references and part numbers have separate toggles.
+- **See inside housing** makes the base, cradle, reader tower, cassette, rear cover, base top cover and cable cap transparent. Hardware references, the spool, cable/clearance references and part numbers have separate toggles.
 - **Cable / clearances** shows the nominal reader wire loop and its tail into the base. These are representative spaces, not simulated wires at every reader height.
 - **Reset** restores the complete assembled model. **Fit view** frames the visible parts. Standard front, side and top views are available.
 - Both light and dark themes work locally; the preference is saved when browser storage is available.
 
 No converter, converter mount or reserved converter volume is modeled. Fit and insulate a 12 V-to-5 V converter against a suitable fixed wall only after checking the actual board, cable route and clearances. Hardware envelopes remain provisional. Any cable paths shown are dimensional references, not qualified cable assemblies. Electrical terminations, threads, screw drives, adhesive and the user-drilled jack are not represented. Exploded offsets illustrate component locations, not a collision-free assembly sequence. Original CAD coordinates are retained at 0% explosion. Flat face shading preserves mechanical edges; the viewer does not smooth or modify the shape.
 
-The spool and glued reader tower sit on one floating cradle with integral ramps and fixed sides. Only reader height adjusts. The base and front controls stay fixed. To service the base, remove the spool, disconnect power and the NFC lead, then remove the two moving-end load-cell screws and lift the cradle while supporting its spacer. The viewer's exploded offsets do not illustrate this service motion. Physical fit, strength, bond retention and weighing accuracy remain untested.
+The spool and glued reader tower sit on one floating cradle with integral ramps and fixed sides. Only reader height adjusts. The base, glued top cover, cable cap and front controls stay fixed. To service the base, remove the spool, disconnect power and the NFC lead, then remove the two moving-end load-cell screws and lift the cradle while supporting its spacer. The top cover remains fixed; electronics access requires releasing its glue joint. The viewer's exploded offsets do not illustrate this service motion. Physical fit, strength, bond retention and weighing accuracy remain untested.
 
 ## Rebuild and verify from the repository
 

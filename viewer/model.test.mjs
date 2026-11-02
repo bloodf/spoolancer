@@ -27,5 +27,5 @@ for (const pose of ['min', 'max']) {
   assert.equal(partVisible(alternate, { ...visibility, clearance: true }, base.id, new Set()), false);
 }
 assert.deepEqual(metadata.parts.filter(part => part.category === 'printed').map(part => part.id),
-  ['base', 'cradle', 'cell_spacer', 'nfc_tower', 'nfc_cassette', 'nfc_cover']);
+  ['base', 'cradle', 'cell_spacer', 'nfc_tower', 'nfc_cassette', 'nfc_cover', 'base_top_cover', 'nfc_cable_gate']);
 console.log(`Viewer transforms and visibility passed for ${metadata.parts.length} component groups.`);

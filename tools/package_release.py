@@ -116,16 +116,16 @@ def main():
             contents["ASSEMBLY.md"] = bundled_guide("docs/ASSEMBLY.md")
             contents["PRINTING.md"] = bundled_guide("docs/PRINTING.md")
             contents["GLUE-ASSEMBLY.md"] = bundled_guide("docs/GLUE-ASSEMBLY.md")
-            for preview in ("assembled", "exploded", "component-locations", "edge-detail", "cable-routing", "print-orientations", "service-interior"):
+            for preview in ("assembled", "exploded", "component-locations", "edge-detail", "cable-routing", "print-orientations", "service-interior", "base-top-cover"):
                 path = folder + f"previews/{preview}.png"
                 if path in files:
                     contents[f"views/{preview}.png"] = files[path]
             indicator_note = """
-Read [variant notes](VARIANT-NOTES.md), [printing instructions](PRINTING.md), [DC power instructions](DC-POWER.md) and [indicator behavior](INDICATOR-GUIDE.md) before printing. This is the six-piece v0.8 fixed-width design. The reader support has one broad glued joint; the load cell, reader adjustment and rear cover use 12 screws: 4 metal M3 × 16, 4 nylon M3 × 16, 2 M4 × 25 and 2 M5 × 12. Use the [fastener list](BOM.md#current-ledoled-fasteners), [assembly instructions](ASSEMBLY.md) and [bonding guide](GLUE-ASSEMBLY.md). Keep the complete matching set; old lid, rails and sliding guides are incompatible. Each of the six parts prints once; there are no separate fit coupons in this revision. Check actual electronics dimensions before printing.
+Read [variant notes](VARIANT-NOTES.md), [printing instructions](PRINTING.md), [DC power instructions](DC-POWER.md) and [indicator behavior](INDICATOR-GUIDE.md) before printing. This is the eight-piece v0.8.1 fixed-width design. It retains the six v0.8 pieces and adds `base_top_cover`, a flat lid glued to the stationary base rim, plus `nfc_cable_gate`, a cap for its edge-entry cable slot. Existing v0.8 builders need only the cover and cap. The larger central opening clears the load-cell spacer; the open edge slot accepts an already connected NFC wire before the cap is fitted. The reader support has one broad glued joint; the load cell, reader adjustment and rear cover use 12 screws: 4 metal M3 × 16, 4 nylon M3 × 16, 2 M4 × 25 and 2 M5 × 12. The new lid and cap add no screws. Use the [fastener list](BOM.md#current-ledoled-fasteners), [assembly instructions](ASSEMBLY.md) and [bonding guide](GLUE-ASSEMBLY.md). The v0.7 lid, rails and sliding guides remain incompatible. Each of the eight parts prints once; there are no separate fit coupons in this revision. Check actual electronics dimensions before printing.
 
 Use [the assembly-view guide](ASSEMBLY-VIEW.md) and the numbered images in `views/` to locate parts. The companion assembly-viewer ZIP provides a rotatable model and an exploded-view slider.
 
-This case has closed USB walls, no jack hole and no converter mount. Drill only after checking the actual jack and wiring; mount an insulated converter on a fixed wall. A 12 V input must pass through a regulated 5 V converter. Remove the spool and cradle and isolate the converter supply before computer USB programming.
+This case has closed USB walls, no jack hole and no converter mount. Drill only after checking the actual jack and wiring; mount an insulated converter on a fixed wall. A 12 V input must pass through a regulated 5 V converter. Test the electronics before gluing the lid, keep its access holes and weighing clearance open, and use small adhesive spots on the fixed rim and cable-cap seat. Keep glue off the wire and leave its clearance opening free. Board service requires releasing the lid's glue joint. Remove the spool and cradle, release the lid as needed for access, and isolate the converter supply before computer USB programming.
 """
         parameter_note = ("Current controls are in `simple-parameters.json`; `variant-parameters.json` records the model. Other construction dimensions are explicit in `cad/simple_geometry.py` in the source bundle. See the CAD guide for supported controls."
                           if variant in ("headless-led", "oled-led") else
@@ -134,7 +134,7 @@ This case has closed USB walls, no jack hole and no converter mount. Drill only 
 
 Prototype print bundle, generated from commit `{commit}`. Physical fit, strength and weighing have not been validated.
 
-There are {len(parts)} STEP/STL pairs and {production} production pieces. STEP and STL are alternative formats for the same part; do not print both. Units are millimeters and parts are placed in print orientation. Fit samples, where listed, belong only to that revision. Original headless/touch bundles retain legacy mechanics and cannot be mixed with the six-piece LED/OLED set.
+There are {len(parts)} STEP/STL pairs and {production} production pieces. STEP and STL are alternative formats for the same part; do not print both. Units are millimeters and parts are placed in print orientation. Fit samples, where listed, belong only to that revision. Original headless/touch bundles retain legacy mechanics and cannot be mixed with the current LED/OLED set.
 
 | File stem | Quantity | Purpose |
 | --- | ---: | --- |

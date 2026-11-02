@@ -1,12 +1,12 @@
-# 0.96-inch OLED and five LEDs · six-part v0.8 enclosure
+# 0.96-inch OLED and five LEDs · eight-part v0.8.1 enclosure
 
-This print-first redesign replaces the complete v0.7 LED/OLED mechanism. Print **six pieces**, use **12 screws**, and glue one broad tower joint. The fixed bay accepts the modeled 50–100 mm spool widths without sliding side guides. The current model has no separate lid, removable ramps, thin frame, hooks or flexible retaining fingers.
+This print-first redesign replaces the complete v0.7 LED/OLED mechanism. Print **eight pieces**, use **12 screws**, and glue the tower joint and stationary base top cover. Existing v0.8 builders print `base_top_cover` and `nfc_cable_gate`; all original six STLs are unchanged. Follow the [retrofit guide](../../../docs/TOP-COVER.md). The fixed bay accepts the modeled 50–100 mm spool widths without sliding side guides. The current model has a flat glue-on top cover, with no removable ramps, thin frame, hooks or flexible retaining fingers.
 
 **Physical validation is false.** Geometry checks, export checks and slicer evidence remain separate from actual printed fit, strength, adhesive retention, stability, wire behavior, RF operation and weighing accuracy. Use one complete current set and keep the old release only for an existing old build.
 
 ## Files and construction
 
-Print one each of `base`, `cradle`, `cell_spacer`, `nfc_tower`, `nfc_cassette` and `nfc_cover` from [exports](exports/). Every individual STEP/STL has its broad bed face at Z=0. The assembly STEP includes purchased-component and spool references and must not be printed as a whole.
+Print one each of `base`, `cradle`, `cell_spacer`, `nfc_tower`, `nfc_cassette`, `nfc_cover`, `base_top_cover` and `nfc_cable_gate` from [exports](exports/). Every individual STEP/STL has its broad bed face at Z=0. The assembly STEP includes purchased-component and spool references and must not be printed as a whole.
 
 The base is **170 × 170 × 32 mm**, with a 4 mm floor and 3.2 mm walls. Its electronics rest on broad blocks, with removable insulating retention chosen around the actual boards. The cradle has an **8 mm floor**, integral solid V ramps and a **6 mm thick fixed left fence**. The slicer supplies infill inside solid CAD bodies; solid volume is not a filament-mass estimate.
 
@@ -42,9 +42,9 @@ Use **4 metal M3 × 16, 4 nylon M3 × 16, 2 M4 × 25 and 2 M5 × 12 screws**. Nu
 
 Both cell-screw stacks give 5.2 mm nominal engagement. Check actual thread size, depth and washers. Four stop screws sit in broad posts, with 3.5 mm access bores through the cradle. The initial 1 mm stop gap is untuned and supplies no demonstrated overload protection.
 
-Follow the [glue guide](../../../docs/GLUE-ASSEMBLY.md) for the tower/nest only. Bond and fully cure the bare printed subassembly before fitting the cell or electronics. Do not glue the cell, spacer, cassette, cover, moving/fixed gap or wire loop.
+Follow the [glue guide](../../../docs/GLUE-ASSEMBLY.md) for the tower/nest and stationary base rim. Bond and fully cure the bare printed subassembly before fitting the cell or electronics. Do not glue the cell, spacer, cassette, NFC rear cover, moving/fixed gap or wire loop. Bond the top cover last, after testing the electronics and dry-fitting its 5.5 mm nominal cradle gap. The modeled OLED gap below the cover is only 0.35 mm; check the actual board and all wiring.
 
-For rear wiring service, remove the two nylon cover screws and lift the flat cover outward. Free the reader lead before removing the cassette's two clamp screws. For base service, remove the spool, disconnect/free the reader tail and remove **only the two moving-end M4 screws**. Lift the cradle/tower while supporting the separate spacer. The fixed M5 pair stays installed. Recheck calibration and cable clearance after service.
+For rear wiring service, remove the two nylon cover screws and lift the flat cover outward. Free the reader lead before removing the cassette's two clamp screws. For base service, remove the spool, disconnect/free the reader tail and remove **only the two moving-end M4 screws**. Lift the cradle/tower while supporting the separate spacer. The fixed M5 pair stays installed. The glued top cover stays fixed; release its adhesive separately to reach the boards. Releasing the small cable cap opens the side slot so the cover can leave around a connected lead. For this retrofit, keep the lead connected and support the lifted cradle beside the base with enough slack; see the cover guide. Recheck calibration and cable clearance after service.
 
 ## Digital evidence and remaining physical work
 

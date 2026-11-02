@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Check that the published v0.8 files match their verified sources and images."""
+"""Check that the current CAD files match their verified sources and images."""
 import hashlib
 import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
+EXPECTED_PARTS = {'base', 'cradle', 'cell_spacer', 'nfc_tower', 'nfc_cassette', 'nfc_cover', 'base_top_cover', 'nfc_cable_gate'}
 
 
 def sha(path):
@@ -19,9 +20,12 @@ for variant in ('headless-led', 'oled-led'):
     rendered = json.loads((previews / 'render-manifest.json').read_text())
     assert validation['physical_validation'] is verification['physical_validation'] is rendered['physical_validation'] is False
     assert validation['source_sha256'] == verification['source_sha256']
+    assert validation['top_cover_checks'] == verification['top_cover_checks']
+    assert validation['cable_gate_checks'] == verification['cable_gate_checks']
     for path, digest in validation['source_sha256'].items():
         assert sha(ROOT / 'cad' / path) == digest, ('stale geometry', path)
-    assert len(validation['parts']) == verification['freecad']['printed_instances'] == rendered['numbered_printed_instances'] == 6
+    assert set(validation['parts']) == EXPECTED_PARTS
+    assert len(validation['parts']) == verification['freecad']['printed_instances'] == rendered['numbered_printed_instances']
     assert {p.stem for p in exports.glob('*.stl')} == set(validation['parts']), 'stale printable files'
     for name in validation['parts']:
         assert sha(exports / (name + '.stl')) == verification['stl_files'][name]['sha256']
@@ -37,9 +41,10 @@ for variant in ('headless-led', 'oled-led'):
     for printer in ('p1s', 'u1'):
         sliced = json.loads((ROOT / 'analysis/printability-v0.8' / f'v0.8-{variant}-{printer}.json').read_text())
         assert sliced['validation_sha256'] == sha(exports / 'validation.json'), 'stale slice provenance'
-        assert sliced['all_slices_succeeded'] and sliced['printed_piece_count'] == 6
+        assert sliced['all_slices_succeeded'] and sliced['printed_piece_count'] == len(EXPECTED_PARTS)
+        assert sliced['partial_part_selection'] is None
         assert set(sliced['parts']) == set(validation['parts'])
         for name, record in sliced['parts'].items():
             assert record['fingerprint']['stl_sha256'] == sha(exports / (name + '.stl')), ('stale toolpath', name)
             assert record['fingerprint']['script_sha256'] == sha(ROOT / 'tools/slice_simple.py')
-    print(variant + ': six verified STEP/STL pairs, broad print faces, source and image hashes match')
+    print(f'{variant}: {len(EXPECTED_PARTS)} verified STEP/STL pairs, broad print faces, source and image hashes match')

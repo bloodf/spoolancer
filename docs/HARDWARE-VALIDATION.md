@@ -76,13 +76,15 @@ Suggested measurement table:
 | Check | Expected behavior / evidence to record | Result |
 | --- | --- | --- |
 | Seated alignment | Reads at intended spool widths and reader heights through the printed window; record tag position and actual gap | Not run |
-| NTAG216 write/read-back | A spare supported blank tag accepts a Spoolancer record; rescan returns the intended metadata and UID | Not run |
+| NTAG213/215/216 capacity and read-back | Test each actual chip/layout: undersized records refuse before writing; supported blank tags with enough space accept a record and verify metadata/UID | Not run |
+| Passive tag families | Record chip/PN532 version and repeated IDs for NFC-A/B, FeliCa and Jewel; confirm links survive rescan/reboot; randomized IDs are unsuitable | Not run |
+| Inventory actions | Link/change after registration; duplicate and changed tags refuse; local deletion clears selection; retained inactive binding can be explicitly unlinked | Not run |
 | Refused writes | Wrong type, locked/protected tag, foreign content or changed UID produces refusal rather than success | Not run |
 | Interrupted write | On a spare tag, movement or interruption reports failure; rescan shows the resulting tag state before retrying | Not run |
 | Original printer tags | Bambu/Snapmaker tags identify only by UID and remain read-only; a local UID link selects the expected manually entered profile | Not run |
 | Record persistence | Brand, material, color, empty-spool weight and saved measurement survive normal restart; selecting another spool does not overwrite the first | Not run |
 
-Use spare tags for interrupted-write tests. NTAG216 writes are not transactional. Native touch and browser actions must use the same active spool and confirmation rules; test both when building the touch version.
+Use spare tags for interrupted-write tests. NTAG21x writes are not transactional. Keep one physical tag in the field; Jewel and mixed-family multi-tag detection are not guaranteed. Native touch and browser writes must use the same active spool and confirmation rules; test both when building the touch version.
 
 ## Optional Spoolman checks
 

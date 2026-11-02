@@ -1,8 +1,10 @@
-# Print the six-part v0.8 enclosure
+# Print the eight-part v0.8.1 enclosure
 
-The current **LED-only and OLED-plus-LED builds each need six pieces, one of each file**. Their ramps and fixed left fence are part of one broad cradle. The tower, cassette and cover all print on broad faces; there are no separate rails, sliding width guides, lid hooks, thin retaining fingers or edge-standing covers.
+The current **LED-only and OLED-plus-LED builds each need eight pieces, one of each file**. Their ramps and fixed left fence are part of one broad cradle. The tower, cassette and cover all print on broad faces; there are no separate rails, sliding width guides, lid hooks, thin retaining fingers or edge-standing covers.
 
 This revision replaces the v0.7 LED/OLED mechanism. Use one complete v0.8 set. **Actual print fit, adhesive strength and load-bearing behavior remain untested.** Original `headless` and `touch-8048` CAD are preserved legacy designs with different parts and hardware.
+
+For an existing v0.8 build, print **`base_top_cover` and `nfc_cable_gate`**. The original six STL files are unchanged. Follow the [retrofit guide](TOP-COVER.md); the cover adds no screws.
 
 ## Current print files
 
@@ -16,6 +18,8 @@ Individual STEP and STL files are already placed in their intended print orienta
 | NFC tower | 1 | Front panel down, tray upward | 153.3 × 100 × 30 | [STEP](../cad/variants/headless-led/exports/nfc_tower.step) · [STL](../cad/variants/headless-led/exports/nfc_tower.stl) | [STEP](../cad/variants/oled-led/exports/nfc_tower.step) · [STL](../cad/variants/oled-led/exports/nfc_tower.stl) |
 | NFC cassette | 1 | Closed back down, antenna opening upward | 47.2 × 82 × 11.4 | [STEP](../cad/variants/headless-led/exports/nfc_cassette.step) · [STL](../cad/variants/headless-led/exports/nfc_cassette.stl) | [STEP](../cad/variants/oled-led/exports/nfc_cassette.step) · [STL](../cad/variants/oled-led/exports/nfc_cassette.stl) |
 | NFC rear cover | 1 | Entire flat face | 147.3 × 100 × 3 | [STEP](../cad/variants/headless-led/exports/nfc_cover.step) · [STL](../cad/variants/headless-led/exports/nfc_cover.stl) | [STEP](../cad/variants/oled-led/exports/nfc_cover.step) · [STL](../cad/variants/oled-led/exports/nfc_cover.stl) |
+| Base top cover | 1 | Flat underside, top chamfer upward | 170 × 170 × 3 | [STEP](../cad/variants/headless-led/exports/base_top_cover.step) · [STL](../cad/variants/headless-led/exports/base_top_cover.stl) | [STEP](../cad/variants/oled-led/exports/base_top_cover.step) · [STL](../cad/variants/oled-led/exports/base_top_cover.stl) |
+| NFC cable access cap | 1 | Broad flange down, tongue upward | 9.5 × 22 × 4.3 | [STEP](../cad/variants/headless-led/exports/nfc_cable_gate.step) · [STL](../cad/variants/headless-led/exports/nfc_cable_gate.stl) | [STEP](../cad/variants/oled-led/exports/nfc_cable_gate.step) · [STL](../cad/variants/oled-led/exports/nfc_cable_gate.stl) |
 
 The base is the only part that differs between these two current variants. Its optional OLED window is integrated into the vertical front wall. Five LED holes are 7.4 mm diameter at 16.667 mm pitch. No USB or DC-jack hole is supplied; the jack hole is drilled after checking actual hardware clearance.
 
@@ -35,25 +39,25 @@ The broad bed faces and sloping cover-boss supports are intended to avoid extern
 
 These settings are not a qualified print profile. Check cooling, first-layer expansion, bridge extrusion and bed adhesion in your own slicer. The ramps are solid CAD bodies so the slicer can apply its infill; CAD solid volume is not filament mass. Any slicer estimate must name its profile and must not be reported as a weighed print.
 
-Before final bonding, dry-fit the six pieces and actual electronics. Check the cassette slides freely over the full 85–170 mm reader-center range, both nylon clamp heads sit flush, the cover nuts load from the sides, and the tower seats in its glue nest without rocking. Check the real board's BOOT button against the 6 mm top access hole. The generic PCB, glass, connector and strip-width envelopes are provisional.
+Before final bonding, dry-fit the eight pieces and actual electronics. Check the cassette slides freely over the full 85–170 mm reader-center range, both nylon clamp heads sit flush, the cover nuts load from the sides, and the tower seats in its glue nest without rocking. Check the real board's BOOT button against the 6 mm top access hole. The generic PCB, glass, connector and strip-width envelopes are provisional.
 
 Do not use the previous LED/OLED fit samples to qualify this redesigned mechanism. Current production files are the fit basis; printing a cropped section in your slicer can reduce the cost of checking a particular interface. A section does not establish full-part strength or assembled behavior.
 
 ## Assembly and editable files
 
-Use the [12-screw bill of materials](BOM.md#current-ledoled-fasteners), [assembly sequence](ASSEMBLY.md) and [single glue-joint guide](GLUE-ASSEMBLY.md). The [3D and exploded views](ASSEMBLY-VIEW.md) show placement, not printer-bed orientation.
+Use the [12-screw bill of materials](BOM.md#current-ledoled-fasteners), [assembly sequence](ASSEMBLY.md) and [glue-joint guide](GLUE-ASSEMBLY.md). The [3D and exploded views](ASSEMBLY-VIEW.md) show placement, not printer-bed orientation.
 
 | Build | Complete assembly STEP | Editable FreeCAD |
 | --- | --- | --- |
-| LED-only | [STEP](../cad/variants/headless-led/exports/spoolancer-v0.8-headless-led-assembly.step) | [FreeCAD](../cad/variants/headless-led/exports/spoolancer-v0.8-headless-led.FCStd) |
-| OLED + LEDs | [STEP](../cad/variants/oled-led/exports/spoolancer-v0.8-oled-led-assembly.step) | [FreeCAD](../cad/variants/oled-led/exports/spoolancer-v0.8-oled-led.FCStd) |
+| LED-only | [STEP](../cad/variants/headless-led/exports/spoolancer-v0.8.1-headless-led-assembly.step) | [FreeCAD](../cad/variants/headless-led/exports/spoolancer-v0.8.1-headless-led.FCStd) |
+| OLED + LEDs | [STEP](../cad/variants/oled-led/exports/spoolancer-v0.8.1-oled-led-assembly.step) | [FreeCAD](../cad/variants/oled-led/exports/spoolancer-v0.8.1-oled-led.FCStd) |
 
 ## Legacy designs
 
-The preserved [original headless exports](../cad/variants/headless/exports/) and [integrated-touch exports](../cad/variants/touch-8048/exports/) retain their earlier mechanisms. Their [v0.7-era print manifest](https://github.com/bloodf/spoolancer/blob/v0.7.0-alpha.1/docs/PRINTING.md#shared-production-parts) describes those unchanged parts. They are not six-part v0.8 builds and must not be mixed with them. The prior LED/OLED v0.7 files remain available from their tagged release for existing builders.
+The preserved [original headless exports](../cad/variants/headless/exports/) and [integrated-touch exports](../cad/variants/touch-8048/exports/) retain their earlier mechanisms. Their [v0.7-era print manifest](https://github.com/bloodf/spoolancer/blob/v0.7.0-alpha.1/docs/PRINTING.md#shared-production-parts) describes those unchanged parts. They are not current v0.8-family builds and must not be mixed with them. The prior LED/OLED v0.7 files remain available from their tagged release for existing builders.
 
 ## Offline slice comparison
 
-The [recorded P1S/U1 diagnostic](../analysis/printability-v0.8/README.md) successfully sliced all six parts on their exported bed faces with automatic normal supports enabled. Cradle, spacer, cassette and cover generated no supports. Base and tower require local support cleanup around windows, counterbores, slots and nut pockets. Do not describe the entire build as support-free.
+The [recorded P1S/U1 diagnostic](../analysis/printability-v0.8/README.md) successfully sliced all eight parts on their exported bed faces with automatic normal supports enabled. Cradle, spacer, cassette, rear cover, base top cover and cable cap generated no supports. Base and tower require local support cleanup around windows, counterbores, slots and nut pockets. Do not describe the entire build as support-free.
 
-The new set estimates 511–521 g of PETG with these profiles: about 15–16% more than v0.7, with 83–86% less support extrusion. The thicker construction prioritizes fewer, sturdier parts; physical strength still needs testing. The bundled P1S PETG profile reports a bed-temperature warning. Inspect and use temperatures appropriate for your actual filament rather than treating the diagnostic profile as printer-ready G-code.
+The eight-piece set estimates 583–594 g of PETG with these profiles, with 83–86% less support extrusion than v0.7. The cover and small cap together estimate 73.01 g on P1S or 71.82 g on U1, with no generated support. Separate-job estimates total about 2 h 2 min (P1S) or 2 h 8 min (U1), including startup for each part. These are slicer estimates, not weighed prints. The thicker construction prioritizes fewer, sturdier parts; physical strength still needs testing. The bundled P1S PETG profile reports a bed-temperature warning. Inspect and use temperatures appropriate for your actual filament rather than treating the diagnostic profile as printer-ready G-code.

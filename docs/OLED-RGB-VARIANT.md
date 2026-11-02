@@ -44,18 +44,13 @@ GPIO4/5/6 are confined to the two new standalone profiles; they are not the inte
 
 ## Indicator behavior
 
-Five cyan segments show remaining filament relative to the selected spool's configured starting filament mass. Each full segment is 20%; the next segment dims proportionally. Only a fresh, calibrated, stable measurement with known empty-spool weight and valid starting mass can display the bar. Invalid or unavailable measurements never appear as an empty or full spool.
+Each completed cyan segment is 20% of the selected spool's initial filament mass. The next segment uses four 5% color bands: red, orange, yellow and green, then cyan when complete. At 85/90/95%, four LEDs stay cyan and the fifth is red/orange/yellow; at 96–99% it is green, and at 100% all five are cyan. Below 10% the remaining segment pulses, and empty pulses red.
 
-| Event | Signal |
-| --- | --- |
-| Wi-Fi setup | Slow blue pulse |
-| Measurement unavailable or waiting | Amber lights |
-| Explicit NFC operation | Steady purple lights |
-| Save or Spoolman operation in progress | Steady blue lights |
-| Operation succeeds | Green lights for 2.5 seconds |
-| Operation fails | Red lights for 2.5 seconds |
+Only a fresh, calibrated, stable measurement with known empty-spool weight and valid initial mass produces the bar. Other states use distinct animations: setup blue breathing, connecting blue chase, offline blue double flashes, empty cradle white breathing, spool selection cyan breathing, settling amber bounce, calibration amber double pulse, unknown tare amber outer pixels, stale sensor red breathing, invalid weight alternating red, NFC purple chase, save/Spoolman blue chase, success green fill and failure red double flash. Result patterns expire after 2.5 seconds. While weighing offline, the last pixel briefly flashes blue every five seconds.
 
-The OLED shows valid remaining grams, gross grams, selected material, status and local address. When net weight is unavailable, it labels gross weight and explains the missing action. Busy operations hide remaining grams. Setup directs the user to the browser; BOOT retains the two-second enrollment and eight-second Wi-Fi recovery gestures.
+Open **Settings → Hardware tests** to run the 12-second LED color/pixel/bar sequence, recheck PN532 communication and tag ID, or inspect the HX711 signal without changing calibration. LED emission/color order and measurement accuracy require visual/known-weight checks. See the [interface guide](WEB-INTERFACE.md#hardware-tests-and-five-led-indicator).
+
+The OLED shows valid remaining grams, gross grams, selected material, status and local address. When net weight is unavailable, it labels gross weight and explains the missing action. Busy operations hide remaining grams. Setup directs the user to the browser; first setup uses the browser without a BOOT press, and holding BOOT for eight seconds while running resets Wi-Fi/pairing.
 
 Routine background NFC scans do not flash the lights. Explicit NFC success requires exactly one target without an error. Pending Spoolman creation is an unresolved outcome requiring reconciliation, not a background sync queue. Text in the OLED/browser supplies meaning alongside color.
 

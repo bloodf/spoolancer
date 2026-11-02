@@ -1,4 +1,4 @@
-"""Six broad, support-conscious v0.8 pieces. All coordinates are millimetres.
+"""Six unchanged v0.8 pieces plus a side-entry cover and gate. Units are mm.
 
 Shapes are in assembly coordinates. Apply XYZ print rotations in order, then
 translate the resulting bounding-box minimum Z to zero. No export side effects.
@@ -91,7 +91,7 @@ def build(App, Part, parameters, variant):
             return 0.0
         return a.common(b).Volume
 
-    # Flat-bottom open tub. The carrier covers its centre without a fragile lid.
+    # Preserve the v0.8 tub so existing builds need only the new top cover.
     base = plate(-85,85,-85,85,0,32,6)
     base = base.cut(plate(-81.8,81.8,-81.8,81.8,4,33,3))
     base = base.fuse(plate(-14,14,-75,-40,4,12,3))
@@ -114,6 +114,48 @@ def build(App, Part, parameters, variant):
         base_cutters.append(box(-57,-33,-86,-80,11,25))
     base = cut(base,base_cutters)
     add_part("base",base,(.16,.32,.34),[0,0,0],"Large flat underside")
+
+    # The cover belongs to the stationary base. It must never bridge the gap
+    # to the cradle, cell spacer, screw heads or the load-cell flexure.
+    cp = p["top_cover"]
+    top_cover = plate(-85,85,-85,85,cp["bottom_z"],cp["top_z"],6)
+    perimeter = [edge for edge in top_cover.Edges
+                 if abs(edge.BoundBox.ZMin-cp["top_z"]) < .0001
+                 and abs(edge.BoundBox.ZMax-cp["top_z"]) < .0001]
+    assert len(perimeter) == 8
+    top_cover = top_cover.makeChamfer(cp["perimeter_chamfer"], perimeter)
+    cx0,cx1,cy0,cy1 = cp["spacer_opening"]
+    wx0,wx1,wy0,wy1 = cp["cable_opening"]
+    ex0,ex1,ey0,ey1 = cp["cable_entry"]
+    kx0,kx1,ky0,ky1 = cp["cable_gate_pocket"]
+    top_cutters = [box(cx0,cx1,cy0,cy1,cp["bottom_z"]-1,cp["top_z"]+1),
+                   box(wx0,wx1,wy0,wy1,cp["bottom_z"]-1,cp["top_z"]+1),
+                   box(ex0,ex1,ey0,ey1,cp["bottom_z"]-1,cp["top_z"]+1),
+                   box(kx0,kx1,ky0,ky1,cp["bottom_z"]-1,cp["top_z"]+1)]
+    top_cutters += [cylinder(cp["stop_access_diameter"]/2,5,(x,y,31))
+                   for x,y in p["stop_positions"]]
+    bx,by,_ = p["boot_center_estimate"]
+    top_cutters.append(cylinder(cp["boot_access_diameter"]/2,5,(bx,by,31)))
+    top_cover = cut(top_cover,top_cutters)
+    add_part("base_top_cover",top_cover,(.19,.41,.42),[0,0,0],
+             "Entire flat underside; chamfered perimeter faces upward")
+
+    # This solid gate closes only the outer access corridor. The cable stays
+    # loose in the inner bay; no cable end is threaded through the gate.
+    gp = cp["gate"]
+    gx0,gx1,gy0,gy1 = gp["flange_xy"]
+    gate_flange = plate(gx0,gx1,gy0,gy1,cp["top_z"],gp["top_z"],.6)
+    gate_perimeter = [edge for edge in gate_flange.Edges
+                      if abs(edge.BoundBox.ZMin-gp["top_z"]) < .0001
+                      and abs(edge.BoundBox.ZMax-gp["top_z"]) < .0001]
+    gate_flange = gate_flange.makeChamfer(.3,gate_perimeter)
+    tx0,tx1,ty0,ty1 = gp["tongue_xy"]
+    sx0,sx1,sy0,sy1 = gp["shoulder_xy"]
+    gate = union([gate_flange,
+                  box(tx0,tx1,ty0,ty1,gp["bottom_z"],cp["top_z"]),
+                  box(sx0,sx1,sy0,sy1,gp["bottom_z"],cp["top_z"])])
+    add_part("nfc_cable_gate",gate,(.27,.53,.51),[180,0,0],
+             "Broad chamfered flange face; solid locating tongue points upward")
 
     # An eight-millimetre slab and solid sloping supports replace the old frame.
     cradle = plate(-70,85.4,-70,70,40.5,48.5,5)
@@ -334,7 +376,7 @@ def build(App, Part, parameters, variant):
               "nuts":{"M3_nylon_insert_locknut":4,"M3_all_nylon":4},
               "washers":{"M3_nylon":6,"M4_metal":2,"M5_metal":2},
               "physical_validation":False}
-    info={"stem":"spoolancer-v0.8-"+variant,"variant":variant,"production_part_count":6,
+    info={"stem":"spoolancer-v0.8.1-"+variant,"variant":variant,"production_part_count":8,
           "revision":p["revision"],"fastener_schedule":schedule,"spool_axis":"X",
           "base_envelope_mm":[170,170,32],"assembly_footprint_mm":[173.7,170],
           "cradle_floor_mm":8,"minimum_general_wall_mm":3,
@@ -345,14 +387,15 @@ def build(App, Part, parameters, variant):
           "v_apex_z_mm":apex,"v_slope":slope,"v_angle_degrees":p["ramp_angle_degrees"],
           "cell_stack_mm":{"cell_bottom":12,"cell_top":24.7,"spacer_top":40.5,
                            "cradle_top":48.5,"moving_head_seat":43.7},
-          "service":"Remove spool and two moving-end M4 screws to lift cradle, spacer and tower; fixed M5 screws remain installed. Disconnect the NFC lead before lifting fully.",
-          "glue_joint":"Broad tower bottom and three-sided nest only. Dry-fit and verify clearance before permanent bonding.",
-          "boot_access":"Remove spool; insert a straight nonconductive probe vertically through the 6 mm cradle hole at X=-33,Y=-6. Estimated button top Z=12.6; verify actual board position before final mounting.",
+          "service":"Remove spool and two moving-end M4 screws to lift cradle, spacer and tower; fixed M5 screws, glued top cover and cable gate remain installed. Disconnect the NFC lead before lifting beyond its slack. Lifting the cradle does not expose the electronics: release the top-cover adhesive joint before removing boards. For retrofit, remove or raise the cradle with enough cable slack, slide the unglued cover around the connected NFC lead above the base and stop heads, then lower it onto the rim. Seat the cable gate from above before replacing the cradle.",
+          "glue_joint":"Tower bottom to its three-sided cradle nest, top-cover underside to the stationary base perimeter rim, and small glue spots under the cable-gate flange onto the fixed cover. The gate is indexed by its tongue, not snap-retained. Dry-fit before bonding. Keep glue out of all openings and the gap to moving parts; never glue or pinch the cable, cradle, spacer, load cell or screws against the fixed cover.",
+          "boot_access":"Remove spool; insert a straight nonconductive probe vertically through the 6 mm cradle hole and aligned 8 mm top-cover hole at X=-33,Y=-6. Estimated button top Z=12.6; verify actual board position before final mounting.",
           "boot_center_estimate_mm":p["boot_center_estimate"],"boot_access_diameter_mm":p["boot_access_diameter"],
           "fit_notes":["Generic electronics, LED strip width and connector envelopes require actual-part checks.",
                        "Wire depiction is representative; route a gentle slack loop and check weighing zero throughout travel.",
                        "Tower face is 3 mm thick; verify NFC read distance with the actual tag before final assembly.",
-                       "Screw thread form, cell tapped-hole depths and final stop setting must be checked on received load cell."],
+                       "Screw thread form, cell tapped-hole depths and final stop setting must be checked on received load cell.",
+                       "The top cover clears the modeled OLED PCB by only 0.35 mm; check actual board height, solder joints and wires before gluing. Physical fit is unverified."],
           "physical_validation":False}
     checks={"physical_validation":False,"printed_part_intersections":pair_checks,
             "spool_cases":spool_checks,"reader_positions":reader_checks,
@@ -365,6 +408,151 @@ def build(App, Part, parameters, variant):
                                name:round(overlap(boot_probe,shape),6)
                                for name,shape in {**parts,**{k:v for k,v in refs.items() if not k.startswith("spool_")}}.items()
                                if overlap(boot_probe,shape)>.001}}
+
+    # Validate the added cover against the unchanged assembly. The 1 mm travel
+    # represents the designed stop gap, not a measured load-cell deflection.
+    moving_parts = {name: shape for name,shape in parts.items()
+                    if name not in ("base", "base_top_cover", "nfc_cable_gate")}
+    travel_checks = []
+    for dz in (0, .25, .5, .75, cp["maximum_downward_travel"]):
+        hits = {}
+        for name,shape in moving_parts.items():
+            moved = shape.copy()
+            moved.translate(V(0,0,-dz))
+            hit = overlap(moved,top_cover)
+            if hit > .001:
+                hits[name] = round(hit,6)
+            gate_hit = overlap(moved,gate)
+            if gate_hit > .001:
+                hits[name+"/nfc_cable_gate"] = round(gate_hit,6)
+        travel_checks.append({"downward_travel_mm":dz,
+                              "cradle_gap_mm":round(40.5-dz-cp["top_z"],6),
+                              "gate_cradle_gap_mm":round(40.5-dz-gp["top_z"],6),
+                              "positive_volume_intersections":hits})
+    rim_faces = [face for face in base.Faces
+                 if abs(face.BoundBox.ZMin-cp["bottom_z"]) < .0001
+                 and abs(face.BoundBox.ZMax-cp["bottom_z"]) < .0001]
+    glue_contact = sum(face.common(top_cover).Area for face in rim_faces)
+    access_probes = {
+        **{"stop_"+str(i+1):cylinder(3.5,5,(x,y,31))
+           for i,(x,y) in enumerate(p["stop_positions"])},
+        "moving_M4_front":cylinder(4.2,5,(0,-10,31)),
+        "moving_M4_rear":cylinder(4.2,5,(0,5,31)),
+        "boot":cylinder(1.5,5,(boot_x,boot_y,31)),
+        "cable":cylinder(2,5,(70,0,31))}
+    probe_hits = {name:round(overlap(probe,top_cover),6)
+                  for name,probe in access_probes.items()
+                  if overlap(probe,top_cover) > .001}
+    probe_hits.update({name+"/nfc_cable_gate":round(overlap(probe,gate),6)
+                       for name,probe in access_probes.items()
+                       if overlap(probe,gate) > .001})
+
+    # A complete swept envelope proves a connected 4 mm cable can enter the
+    # unglued cover from +X. It is not a claim that wire can pass through the
+    # base wall; elevate the loose cover above the fixed base and stop heads.
+    wire_probe = cylinder(2,26,(70,0,30))
+    swept_wire = union([box(70,94,-2,2,31,37),
+                        cylinder(2,6,(70,0,31)),cylinder(2,6,(94,0,31))])
+    side_entry_hit = overlap(swept_wire,top_cover)
+    stationary = {"base":base, "load_cell":refs["load_cell"],
+                  "fixed_cell_fasteners":refs["fixed_cell_fasteners"],
+                  "stop_fasteners":refs["stop_fasteners"],
+                  **{name:shape for name,shape in refs.items()
+                     if name.startswith(("esp32_","hx711_","led_","oled_"))}}
+    retrofit_checks = []
+    poses_to_check = [("elevated_side_entry",dx,10) for dx in (-24,-20,-15,-10,-5,0)]
+    poses_to_check += [("lower_to_rim",0,dz) for dz in (8,6,4,2,1,0)]
+    for stage,dx,dz in poses_to_check:
+        moved_cover = top_cover.copy()
+        moved_cover.translate(V(dx,0,dz))
+        hits = {name:round(overlap(moved_cover,shape),6)
+                for name,shape in {**stationary,"connected_cable_probe":wire_probe}.items()
+                if overlap(moved_cover,shape) > .001}
+        retrofit_checks.append({"stage":stage,"cover_translation_x_mm":dx,
+                                "cover_translation_z_mm":dz,
+                                "positive_volume_intersections":hits})
+    gate_insertion = []
+    for dz in (0,.3,1,3,6,10):
+        raised_gate = gate.copy()
+        raised_gate.translate(V(0,0,dz))
+        hits = {name:round(overlap(raised_gate,shape),6)
+                for name,shape in {**stationary,"base_top_cover":top_cover,
+                                  "connected_cable_probe":wire_probe}.items()
+                if overlap(raised_gate,shape) > .001}
+        gate_insertion.append({"lift_mm":dz,"positive_volume_intersections":hits})
+    cover_top_faces = [face for face in top_cover.Faces
+                       if abs(face.BoundBox.ZMin-cp["top_z"]) < .0001
+                       and abs(face.BoundBox.ZMax-cp["top_z"]) < .0001]
+    gate_glue_contact = sum(face.common(gate).Area for face in cover_top_faces)
+    cover_fit = {"stationary":True,"dimensions_mm":[170,170,3],
+                 "assembly_z_mm":[cp["bottom_z"],cp["top_z"]],
+                 "corner_clip_mm":6,"top_perimeter_chamfer_mm":cp["perimeter_chamfer"],
+                 "spacer_opening_xy_mm":cp["spacer_opening"],
+                 "spacer_minimum_side_clearance_mm":round(top_cover.distToShape(spacer)[0],6),
+                 "cradle_static_clearance_mm":round(top_cover.distToShape(cradle)[0],6),
+                 "cable_opening_xy_mm":cp["cable_opening"],
+                 "spacer_opening_size_mm":[cx1-cx0,cy1-cy0],
+                 "boot_to_spacer_opening_web_mm":cx0-(boot_x+cp["boot_access_diameter"]/2),
+                 "cable_route_minimum_clearance_mm":round(top_cover.distToShape(refs["nfc_wire_tail"])[0],6),
+                 "stop_access_diameter_mm":cp["stop_access_diameter"],
+                 "stop_head_diameter_mm":5.5,
+                 "stop_head_radial_clearance_mm":(cp["stop_access_diameter"]-5.5)/2,
+                 "boot_access_diameter_mm":cp["boot_access_diameter"],
+                 "glue_rim_contact_area_mm2":round(glue_contact,6),
+                 "access_probe_intersections":probe_hits,
+                 "downward_travel_checks":travel_checks,
+                 "existing_base_m5_mounts_unchanged":True,
+                 "electronics_service_requires_releasing_cover_glue":True,
+                 "physical_validation":False}
+    cover_fit["side_entry"] = {
+        "edge":"+X","entry_corridor_xy_mm":cp["cable_entry"],
+        "keyed_pocket_xy_mm":cp["cable_gate_pocket"],
+        "minimum_entry_width_mm":ey1-ey0,"representative_cable_diameter_mm":4,
+        "swept_cable_cover_intersection_mm3":round(side_entry_hit,6),
+        "gate_removed":True,"cradle_and_spacer_removed_or_raised":True,
+        "loose_cover_slide_elevation_mm":10,
+        "elevated_cover_gap_above_stop_heads_mm":2.5,
+        "connected_cable_end_threading_required":False,
+        "retrofit_path_checks":retrofit_checks,
+        "physical_wire_slack_and_bend_radius_validation":False}
+    gate_fit = {
+        "stationary":True,"print_envelope_mm":[9.5,22,4.3],
+        "assembly_z_mm":[gp["bottom_z"],gp["top_z"]],
+        "flange_xy_mm":gp["flange_xy"],"flange_thickness_mm":gp["top_z"]-cp["top_z"],
+        "tongue_xy_mm":gp["tongue_xy"],"shoulder_xy_mm":gp["shoulder_xy"],
+        "tongue_fit_clearance_mm":gp["fit_clearance"],
+        "visible_corner_clip_mm":.6,"visible_top_chamfer_mm":.3,
+        "glue_contact_area_mm2":round(gate_glue_contact,6),
+        "retention":"Glue spots on flange against fixed cover; no snap latch or cable clamp",
+        "minimum_retained_cable_opening_mm":[gx0-wx0,wy1-wy0],
+        "representative_cable_clearance_mm":round(gate.distToShape(wire_probe)[0],6),
+        "cradle_static_clearance_mm":round(gate.distToShape(cradle)[0],6),
+        "cradle_clearance_at_1mm_downward_travel_mm":40.5-1-gp["top_z"],
+        "insertion_requires_cradle_removed_or_raised":True,
+        "insertion_direction":"Vertically down from above the fixed cover",
+        "insertion_checks":gate_insertion,
+        "physical_validation":False}
+    if variant == "oled-led":
+        cover_fit["oled_pcb_clearance_mm"] = round(top_cover.distToShape(refs["oled_pcb"])[0],6)
+        cover_fit["oled_clearance_requires_physical_check"] = True
+    assert glue_contact > 2000, glue_contact
+    assert gate_glue_contact > 75, gate_glue_contact
+    assert side_entry_hit < .001, side_entry_hit
+    assert all(not case["positive_volume_intersections"] for case in retrofit_checks), retrofit_checks
+    assert all(not case["positive_volume_intersections"] for case in gate_insertion), gate_insertion
+    assert cover_fit["spacer_minimum_side_clearance_mm"] >= 10.999
+    assert cover_fit["boot_to_spacer_opening_web_mm"] >= 3.999
+    assert cover_fit["cradle_static_clearance_mm"] >= 5.499
+    assert cover_fit["cable_route_minimum_clearance_mm"] >= 3.999
+    assert not probe_hits, probe_hits
+    assert all(not case["positive_volume_intersections"] for case in travel_checks), travel_checks
+    assert min(case["cradle_gap_mm"] for case in travel_checks) >= 4.499
+    assert min(case["gate_cradle_gap_mm"] for case in travel_checks) >= 2.899
+    assert gate_fit["representative_cable_clearance_mm"] >= 3.499
+    info["top_cover"] = cover_fit
+    info["cable_gate"] = gate_fit
+    checks["top_cover"] = cover_fit
+    checks["cable_gate"] = gate_fit
     def moving_reader_at(height):
         cup,pcb,components=cassette_at(height)
         return {"nfc_cassette":cup,"pn532_pcb":pcb,"pn532_components":components,

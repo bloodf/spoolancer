@@ -1,0 +1,44 @@
+{
+  "baseline_git_commit": "6304c2c7631a62af4397f12cbbaacdb63de849bf",
+  "revision": "v0.8.1-side-entry-glue-cover-fit-prototype",
+  "variant": "headless-led",
+  "comparison": "Original six print STL files before and after adding side-entry top cover and cable gate",
+  "existing_six_stl_byte_identical": true,
+  "new_print_parts": [
+    "base_top_cover.stl",
+    "nfc_cable_gate.stl"
+  ],
+  "parts": {
+    "nfc_tower.stl": {
+      "v0_8_sha256": "34307a369c2b38490cd02cbe4f9a96c666ed1469d7f999fdf7d67022344db60d",
+      "current_sha256": "34307a369c2b38490cd02cbe4f9a96c666ed1469d7f999fdf7d67022344db60d",
+      "byte_identical": true
+    },
+    "nfc_cover.stl": {
+      "v0_8_sha256": "157b9b4d6043d4069faae984025addfd4e710767693f49058046cc06e84c40bd",
+      "current_sha256": "157b9b4d6043d4069faae984025addfd4e710767693f49058046cc06e84c40bd",
+      "byte_identical": true
+    },
+    "cell_spacer.stl": {
+      "v0_8_sha256": "2df0fb35ef0cc733227819e47d40da01269379318a5140aa8b4db18e50d832d4",
+      "current_sha256": "2df0fb35ef0cc733227819e47d40da01269379318a5140aa8b4db18e50d832d4",
+      "byte_identical": true
+    },
+    "cradle.stl": {
+      "v0_8_sha256": "90d6d0d0502d18776142a93549cdb30a26c8592e2190f47fd8f7e086cab080af",
+      "current_sha256": "90d6d0d0502d18776142a93549cdb30a26c8592e2190f47fd8f7e086cab080af",
+      "byte_identical": true
+    },
+    "base.stl": {
+      "v0_8_sha256": "8cb2caea78c4ddc96a899583a8f38352d1c356a869c090d5c89a4b260a1e747f",
+      "current_sha256": "8cb2caea78c4ddc96a899583a8f38352d1c356a869c090d5c89a4b260a1e747f",
+      "byte_identical": true
+    },
+    "nfc_cassette.stl": {
+      "v0_8_sha256": "2e1914d18bbcc0d90d9b6eb812d4b4ba2b7ae3b4e123d520f8f04c2f4f6bffda",
+      "current_sha256": "2e1914d18bbcc0d90d9b6eb812d4b4ba2b7ae3b4e123d520f8f04c2f4f6bffda",
+      "byte_identical": true
+    }
+  },
+  "physical_validation": false
+}

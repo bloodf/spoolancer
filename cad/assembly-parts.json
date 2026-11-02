@@ -19,7 +19,7 @@
         0,
         0
       ],
-      "description": "Low fixed enclosure with an integrated vertical front for five LEDs and an optional OLED. No lid or separate front panel. Drill the DC-jack hole after dry-fitting the actual converter and wiring.",
+      "description": "Low fixed enclosure with an integrated vertical front for five LEDs and an optional OLED. The added top cover glues to its rim. Drill the DC-jack hole after dry-fitting the actual converter and wiring.",
       "provisional": false
     },
     {
@@ -100,6 +100,38 @@
         145
       ],
       "description": "Flat removable rear cover secured by two nylon screws. Remove it for reader adjustment and cable service. Keep it removable rather than gluing it closed.",
+      "provisional": false
+    },
+    {
+      "id": "base_top_cover",
+      "number": "22",
+      "label": "Glue-on base top cover",
+      "category": "printed",
+      "meshes": [
+        "base_top_cover"
+      ],
+      "explode": [
+        0,
+        0,
+        35
+      ],
+      "description": "Flat stationary cover with a larger central opening and an NFC cable slot that opens to the right edge. Slide the already-soldered lead in sideways, then seat the small cable gate. Glue only to the fixed rim. Keep the cable slack and the moving mechanism clear. Board service requires releasing the cover bond; dry-fit OLED and converter clearance.",
+      "provisional": false
+    },
+    {
+      "id": "nfc_cable_gate",
+      "number": "23",
+      "label": "NFC cable access cap",
+      "category": "printed",
+      "meshes": [
+        "nfc_cable_gate"
+      ],
+      "explode": [
+        35,
+        0,
+        65
+      ],
+      "description": "Small rigid cap closes the outer cable-entry slot after the soldered lead is placed sideways. Locate it in the cover seat and retain it with small adhesive spots on the stationary cover. The remaining opening leaves the lead free; do not glue or clamp the cable. Check print fit before bonding.",
       "provisional": false
     },
     {

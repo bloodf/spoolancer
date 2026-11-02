@@ -53,9 +53,88 @@ Spoolancer ready. Variant: oled-led; assets: ready; inventory: ready; setup AP: 
 
 All five firmware profiles compiled. This establishes that the observed initialization stall cleared on this board. The owner then confirmed that the OLED and webpage work. That report establishes basic visible display and browser access; physical LED colors, detailed page actions, safe power wiring and weighing accuracy remain separate checks. The owner reported USB-only power, direct GPIO6-to-DIN wiring, and the converter output still connected to the board's 5 V rail; that arrangement differs from the power/buffer circuit in [the wiring guide](../WIRING.md#10-usb-programming-and-service).
 
+## Wi-Fi setup update, 30 October 2026
+
+The owner requested the new firmware and confirmed USB-only power, with the 12 V adapter unplugged and the buck converter's OUT+ disconnected. The connected programming bridge was rechecked; the tool identified ESP32-S3 revision 0.2, 16 MB flash and 8 MB embedded PSRAM.
+
+The `spoolancer-oled-led` application and web assets were rebuilt from the working tree based on `6304c2c`, including the new first-run Wi-Fi setup changes. The filesystem inspection passed: the image contained exactly the five current device web files and targeted the public assets partition. The desktop demo was not packaged.
+
+A fresh full 16,777,216-byte flash backup, exact upload images and verification logs were stored privately outside the repository. The backup's size and SHA-256 were recorded; restoration was not tested. Device identifiers, credentials and raw flash contents are excluded from this public record.
+
+Before writing, the device's bootloader, partition table and app0 boot metadata matched the expected local artifacts. Only the application at `0x10000` and public web assets at `0x810000` were written, at 460800 baud. The tool reported hash verification for both images. No erase-all operation or bootloader, partition-table, OTA, NVS or inventory write was requested.
+
+| Uploaded artifact | Bytes | SHA-256 |
+| --- | ---: | --- |
+| `firmware.bin` | 972,592 | `1474859082b35a8d21be64c722c73f5ecc055092e81ddfec0dec401c1a9660b6` |
+| `littlefs.bin` | 7,274,496 | `636cedd25adc1dfdfb159506ea4833ed84f8f8b7e521c13bf95c0979cb7bd364` |
+
+Before normal startup, readback of the first 64 KiB (`0x0–0xffff`, including NVS) and the complete 1 MiB inventory partition (`0xf00000–0xffffff`) matched the fresh backup byte-for-byte. This verifies that the flash operation preserved stored configuration, pairing, calibration and inventory bytes. The new firmware may subsequently migrate legacy authentication metadata during startup; the byte comparison was deliberately made before that application behavior.
+
+After a normal reset, the serial capture reported:
+
+```text
+Flash: 16777216 bytes; PSRAM: 8386279 bytes
+Status UI: initial LED transfer complete
+Status UI: OLED acknowledged; initializing display
+Status OLED: I2C acknowledged; verify controller and image (address 0x3c)
+Startup: status UI ready
+Spoolancer ready. Variant: oled-led; assets: ready; inventory: ready; setup AP: [omitted]; address: 192.168.4.1
+```
+
+The 30-second startup observation reached one ready message without a detected panic, brownout or repeated ready sequence. This confirms successful installation and basic startup on this controller. First-run setup, Wi-Fi scanning/association, optional-PIN behavior, calibration and physical peripheral behavior still require their own device checks.
+
+## Measurement and Spoolman update, 30 October 2026
+
+The owner requested flashing the completed measurement, setup, Spoolman and interface changes. The connected serial bridge was rechecked and reported ESP32-S3 revision 0.2, 16 MB flash and 8 MB embedded PSRAM. The `spoolancer-oled-led` application and web filesystem were rebuilt, and the asset checker confirmed exactly the five current runtime files.
+
+A fresh full 16,777,216-byte backup, exact upload images, source hashes and logs were stored privately outside the repository. Backup size and SHA-256 were checked. The device bootloader, partition table and app0 OTA metadata matched the expected artifacts before writing. Backup restoration was not tested.
+
+Only the application at `0x10000` and public assets at `0x810000` were written at 460800 baud. Both the write operation's hash checks and a separate `verify_flash` operation passed. No erase-all, bootloader, partition-table, NVS, OTA or inventory write was requested. Before application startup, the first 64 KiB and complete 1 MiB inventory partition were read back and matched the fresh backup byte-for-byte.
+
+| Uploaded artifact | Bytes | SHA-256 |
+| --- | ---: | --- |
+| `firmware.bin` | 966,880 | `1e3c4c5c16e8e50ead8aacd697a47f36552b9b248054aa9e772c8561657046ce` |
+| `littlefs.bin` | 7,274,496 | `405a4e54866b353e80f4cfdffd9b20b364de972336360e0697ea114d0c3e7b4a` |
+
+After normal reset, a 30-second serial capture reached one OLED/LED ready message, acknowledged the OLED and reported both assets and inventory ready. No panic, brownout or repeated startup was detected. The initial ready line preceded Wi-Fi association; a subsequent live HTTP check confirmed that the device joined its saved network.
+
+The live `/api/status` response reported `mode:device`, variant `oled-led`, connected Wi-Fi, fresh calibrated scale readings and `setup.physical_confirmation_required:false`. All five web files served by the ESP matched the current source bytes exactly. This verifies the installed application, actual device-hosted interface and retained network access. It does not prove weighing accuracy, physical OLED appearance, NFC actions or Spoolman discovery/synchronization.
+
+## NFC identification and inventory actions update, 30 October 2026
+
+The connected `spoolancer-oled-led` controller received the completed NFC identification and inventory action changes from the working tree based on `6304c2c`. All five firmware profiles compiled, all five asset images passed exact-file extraction checks, native sanitizer tests passed, and the web behavior suite passed 66 tests before upload.
+
+A new complete 16,777,216-byte flash backup was saved privately and checked for size and SHA-256. The existing bootloader, partition table and app0 boot metadata matched the expected artifacts. Only the application at `0x10000` and web assets at `0x810000` were written at 460800 baud. Write-time hash checks and a separate `verify_flash` operation passed. The first 64 KiB and complete 1 MiB inventory partition then matched the backup byte-for-byte before application startup. No erase-all, configuration reset or inventory/tag mutation was requested. Backup restoration was not tested.
+
+| Uploaded artifact | Bytes | SHA-256 |
+| --- | ---: | --- |
+| `firmware.bin` | 980,752 | `753d05a8d3ba38190bb649976ecf6d943f6bc820258fcd95d3cdb553bd508ca6` |
+| `littlefs.bin` | 7,274,496 | `f9957b137fd5c40b31e6c5b0325a5fe14fa6f9a908fedda0095f64880fa3427f` |
+
+A 30-second serial capture reached exactly one OLED/LED ready message, acknowledged the OLED and mounted both filesystems, without panic, brownout or repeated startup. The initial ready line preceded network association. A subsequent live HTTP check confirmed connected Wi-Fi, ready storage, OLED availability, calibrated/fresh scale data and no initial-setup button requirement. All five web assets served by the actual device matched the current source bytes exactly.
+
+This confirms installation, storage retention, startup and device-hosted assets. No physical tag association/write, inventory deletion, Spoolman archive or live server recovery was performed during verification. The expanded tag-family and server-action results remain simulated/source evidence until those bench checks are completed.
+
+## Hardware diagnostics and numeric JSON update, 30 October 2026
+
+The OLED/LED controller received the Hardware tests panel, state animations and colored 5% partial weight segments. Live verification of the first upload exposed a pre-existing numeric JSON error: fresh/calibrated HX711 status arrived without the gross-weight field. A reproduction against the actual installed ArduinoJson library confirmed that conversion of an absent member to JsonVariant discarded assignment. The helper now preserves the member proxy. A real-library sanitizer test covers finite values, unknown/null fields and spool-weight serialization/reload, and CI runs it after firmware dependencies are installed.
+
+All five applications and all five exact runtime asset images built. The web suite passed 72 tests and the native sanitizer suite passed. After the correction, a fresh full 16,777,216-byte backup was saved privately with integrity metadata. The bootloader, partition table and app0 selection matched the expected artifacts. Only application and public asset partitions were written, with write-time hash verification and separate flash verification. Before startup, the first 64 KiB and complete 1 MiB inventory partition matched the fresh backup byte-for-byte. Backup restoration was not tested.
+
+| Final uploaded artifact | Bytes | SHA-256 |
+| --- | ---: | --- |
+| `firmware.bin` | 986,912 | `72a1ed163edece5a86d30967054815ebf060e643a048fc46a84c246ab4877f94` |
+| `littlefs.bin` | 7,274,496 | `2413c724339f07fa90171b304be9de1fe3866fff724595fda5218f4819386bca` |
+
+A 30-second capture reached one ready message, acknowledged the OLED and mounted both filesystems, without a detected panic, brownout or startup loop. Live HTTP verified connected Wi-Fi, retained calibration, fresh scale samples, an actual numeric gross-weight field and all five exact current served assets.
+
+Authenticated device requests rejected missing sessions and unknown diagnostic components. The scale diagnostic returned `pass` for fresh stable samples and numeric grams. The NFC diagnostic returned `fail`, with PN532 not responding; seated tag reading/writing remains unverified. The LED diagnostic returned `observe`; its countdown was positive after starting and zero after 13 seconds. Stored configuration was unchanged. These requests did not zero/calibrate, modify a spool or write tag memory.
+
+The actual device-hosted Hardware tests page was then exercised through the browser. Scale displayed numeric gross weight and a passing signal result; NFC showed the no-response message. No browser errors or warnings were observed. The existing calibration produced a negative gross reading in this setup; no empty-cradle zero or reference-weight accuracy procedure was performed. A passing signal is not a passing accuracy check. [Live panel screenshot](web-hardware-device.png). Physical emitted LED colors/order still require visual confirmation.
+
 ## Still untested
 
-- PIN enrollment, BOOT timing/access, Wi-Fi association and recovery, and HTTP actions beyond opening the page.
+- New first-run enrollment, BOOT timing/access, Wi-Fi scanning and recovery, and authenticated HTTP mutations. Existing-network association, public status and served assets passed in the latest update.
 - Detailed OLED states, LED color/order/current and combined peripheral power behavior.
 - The 12 V jack, buck converter, internal power plug and enclosure fit.
 - HX711 readings, calibration, independent known weights and mechanical stability.

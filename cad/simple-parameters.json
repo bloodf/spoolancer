@@ -1,5 +1,25 @@
 {
-  "revision": "v0.8-print-first-fit-prototype",
+  "revision": "v0.8.1-side-entry-glue-cover-fit-prototype",
+  "top_cover": {
+    "bottom_z": 32.0,
+    "top_z": 35.0,
+    "perimeter_chamfer": 0.6,
+    "spacer_opening": [-25.0, 25.0, -27.5, 22.5],
+    "cable_opening": [64.0, 76.0, -8.0, 8.0],
+    "cable_entry": [76.0, 86.0, -5.0, 5.0],
+    "cable_gate_pocket": [78.0, 82.0, -8.0, 8.0],
+    "gate": {
+      "flange_xy": [75.5, 85.0, -11.0, 11.0],
+      "tongue_xy": [76.3, 84.7, -4.7, 4.7],
+      "shoulder_xy": [78.3, 81.7, -7.7, 7.7],
+      "bottom_z": 32.3,
+      "top_z": 36.6,
+      "fit_clearance": 0.3
+    },
+    "stop_access_diameter": 8.0,
+    "boot_access_diameter": 8.0,
+    "maximum_downward_travel": 1.0
+  },
   "spool_widths": [
     50.0,
     80.0,

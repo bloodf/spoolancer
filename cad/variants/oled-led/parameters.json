@@ -1,5 +1,5 @@
 {
-  "revision": "v0.8-print-first-fit-prototype",
+  "revision": "v0.8.1-side-entry-glue-cover-fit-prototype",
   "geometry_source": "cad/simple_geometry.py",
   "defaults_source": "cad/simple-parameters.json",
   "oled_enabled": true,

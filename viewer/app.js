@@ -60,7 +60,7 @@ let data = null;
 let lastPointer = null;
 const initialSelection = $('selection').innerHTML;
 const categoryNames = { printed: 'Printed pieces', electronics: 'Hardware references', spool: 'Spool reference', clearance: 'Routing & clearances' };
-const housingIds = new Set(['base', 'cradle', 'nfc_tower', 'nfc_cassette', 'nfc_cover']);
+const housingIds = new Set(['base', 'cradle', 'nfc_tower', 'nfc_cassette', 'nfc_cover', 'base_top_cover', 'nfc_cable_gate']);
 
 function theme(value) {
   document.documentElement.dataset.theme = value;

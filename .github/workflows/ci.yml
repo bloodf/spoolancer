@@ -89,6 +89,10 @@ jobs:
           key: ${{ runner.os }}-${{ runner.arch }}-pio-${{ env.PLATFORMIO_CORE_VERSION }}-${{ hashFiles('firmware/platformio.ini', '.github/workflows/ci.yml') }}
       - name: Compile all board variants
         run: pio run -d firmware -e spoolancer-headless -e spoolancer-touch-8048 -e spoolancer-s3 -e spoolancer-headless-led -e spoolancer-oled-led
+      - name: Test numeric JSON with the installed ArduinoJson library
+        env:
+          CXX: clang++
+        run: python3 firmware/tests/json_numbers_test.py
       - name: Build all asset images
         run: pio run -d firmware -e spoolancer-headless -e spoolancer-touch-8048 -e spoolancer-s3 -e spoolancer-headless-led -e spoolancer-oled-led -t buildfs
       - name: Verify partitions and packaged assets

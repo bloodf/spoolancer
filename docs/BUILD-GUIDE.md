@@ -1,6 +1,6 @@
 # Build your first Spoolancer
 
-Start with the **five-LED build** if you have an ESP32-S3 N16R8 and PN532. It uses your phone for controls and the board's existing BOOT button for setup. The optional ESP-8048S043C-I touchscreen replaces the separate ESP32.
+Start with the **five-LED build** if you have an ESP32-S3 N16R8 and PN532. It uses your phone for controls and initial setup. The existing BOOT button provides Wi-Fi recovery. The optional ESP-8048S043C-I touchscreen replaces the separate ESP32.
 
 This is a prototype release. CAD checks, firmware builds and software tests have passed; physical fit, calibrated accuracy, seated NFC operation and a real Spoolman connection still need testing. Record your results in the [hardware validation report](HARDWARE-VALIDATION.md).
 
@@ -15,7 +15,7 @@ The [v0.8.0-alpha.1 release](https://github.com/bloodf/spoolancer/releases/tag/v
 | OLED + five LEDs | Same N16R8, 0.96-inch I²C OLED and five pixels | [oled-led](../cad/variants/oled-led/) | `spoolancer-oled-led` |
 | Legacy integrated touch | ESP-8048S043C-I, 4.3-inch 800 × 480 capacitive | [touch-8048](../cad/variants/touch-8048/) | `spoolancer-touch-8048` |
 
-The current LED/OLED v0.8 cases use six broad printed pieces, a fixed-width cradle and [12 screws](BOM.md#current-ledoled-fasteners). Glue only the broad reader-support joint as described in the [bonding guide](GLUE-ASSEMBLY.md). There are no external USB cutouts. Drill the DC jack opening after checking fit, and mount an insulated converter on a fixed wall. Convert 12 V to regulated 5 V and disconnect the converter before USB programming; follow [the power guide](DC-POWER.md). The original headless and integrated-touch mechanics are legacy versions with different joints.
+The current LED/OLED v0.8.1 cases use eight broad printed pieces, a fixed-width cradle and [12 screws](BOM.md#current-ledoled-fasteners). Glue the broad reader-support joint, stationary base top cover and small cable cap as described in the [bonding guide](GLUE-ASSEMBLY.md). Existing v0.8 builders need the [new cover and cable cap](TOP-COVER.md). There are no external USB cutouts. Drill the DC jack opening after checking fit, and mount an insulated converter on a fixed wall. Convert 12 V to regulated 5 V and disconnect the converter before USB programming; follow [the power guide](DC-POWER.md). The original headless and integrated-touch mechanics are legacy versions with different joints.
 
 Use only one controller. All builds share the 5 kg bar load cell, HX711 and PN532. Neither needs a separate setup button or perfboard. The touchscreen pin map differs from the headless map, and its microSD slot must remain empty.
 
@@ -24,7 +24,7 @@ Gather the [bill of materials](BOM.md), calipers, a multimeter, soldering tools 
 ## 2. Check the parts before a full print
 
 1. Measure your board, connectors, load-cell holes and thread depths against the [mechanical references](MECHANICAL-SOURCES.md).
-2. For v0.8, compare those measurements with the complete base, spacer and reader cassette. There are no separate fit coupons. Keep the six individual files in their exported poses and inspect the [print guide](PRINTING.md). Legacy fit samples apply only to their own revisions.
+2. For v0.8, compare those measurements with the complete base, spacer and reader cassette. There are no separate fit coupons. Keep the eight individual files in their exported poses and inspect the [print guide](PRINTING.md). Legacy fit samples apply only to their own revisions.
 3. Verify that the top BOOT access hole aligns with your actual board before fixing the board down. Remove the spool and use a blunt nonconductive probe; the button location is provisional. The old USB-opening BOOT access applies only to the legacy case.
 4. Edit the current [simple geometry and dimensions](../cad/README.md#edit-and-regenerate-the-current-models) if measurements differ, then regenerate the whole matching set.
 
@@ -45,9 +45,9 @@ Use the [print manifest](PRINTING.md), then follow the [assembly guide](ASSEMBLY
 After normal power-up:
 
 1. Join the temporary `Spoolancer-xxxx` network and open `http://192.168.4.1`.
-2. Choose an eight-digit PIN. Hold BOOT for two seconds, release it, and submit within 60 seconds. Each press permits one enrollment attempt.
-3. Enter your local Wi-Fi details. Note the LAN address, reconnect your phone to that Wi-Fi and open the scale there. `http://spoolancer.local` may work where mDNS is supported.
-4. Pair using your PIN. Choose Light, Dark or System appearance in the browser.
+2. Select a nearby 2.4 GHz Wi-Fi network and enter its password. Choose an eight-digit PIN or disable PIN protection for local access. Finish setup in the browser without pressing BOOT or opening the enclosure.
+3. Wait for connection confirmation. Note the LAN address, reconnect your phone to that Wi-Fi and open the scale there. `http://spoolancer.local` may work where mDNS is supported.
+4. Pair using your PIN if protection is enabled; without a PIN, local access opens automatically. Choose Light, Dark or System appearance in the browser.
 
 The temporary setup network has no password, and setup uses HTTP. Use it in a trusted location. It closes after ten minutes or 60 seconds after the scale joins the LAN. For recovery, hold BOOT for eight seconds **while the firmware is running**, then release it. This clears Wi-Fi and pairing while retaining inventory, calibration and Spoolman settings. BOOT held during power-on or RST selects programming mode instead; release BOOT and press RST to start normally.
 

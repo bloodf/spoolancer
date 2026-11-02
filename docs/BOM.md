@@ -1,6 +1,6 @@
 # Bill of materials
 
-The current v0.8 LED and OLED builds use six printed pieces and the 12-screw list below. Original headless and integrated-touch CAD are preserved as legacy designs. Choose one controller and the shared parts below. The headless build reuses the project owner's ESP32-S3 N16R8 and PN532. It needs **no separate button, perfboard, display, axle or bearings**.
+The current v0.8.1 LED and OLED builds use eight printed pieces and the 12-screw list below. Original headless and integrated-touch CAD are preserved as legacy designs. Choose one controller and the shared parts below. The headless build reuses the project owner's ESP32-S3 N16R8 and PN532. It needs **no separate button, perfboard, display, axle or bearings**.
 
 These selections match the current CAD assumptions. They are not bench-qualified substitutes for checking received dimensions and electrical behavior. Purchase links come from the existing [shopping notes](../SHOPPING.md), recorded 26 October 2026; prices, stock, variants and delivery have not been refreshed for this release.
 
@@ -35,7 +35,7 @@ Use the available 3V3/GND headers or insulated soldered branches to power PN532 
 
 ## Current LED/OLED fasteners
 
-Use this list for the **v0.8 `headless-led` and `oled-led` builds**: **12 screws in three dimensional sizes**, plus **8 nuts and 10 washers**. Buy metal and nylon M3 × 16 separately. The fixed ramps and left fence are now part of the cradle, and the NFC tower uses one broad glued joint. The v0.7 20-screw and 18-screw rail options are superseded; those parts are incompatible with this set.
+Use this list for the **v0.8-family `headless-led` and `oled-led` builds**: **12 screws in three dimensional sizes**, plus **8 nuts and 10 washers**. Buy metal and nylon M3 × 16 separately. The fixed ramps and left fence are now part of the cradle, and the NFC tower uses one broad glued joint. The [new top cover](TOP-COVER.md) glues to the stationary base rim and needs no extra fasteners; existing v0.8 builders print the cover and its small cable cap. The v0.7 20-screw and 18-screw rail options are superseded; those parts are incompatible with this set.
 
 | Quantity | Screw to buy | Locations |
 | ---: | --- | --- |

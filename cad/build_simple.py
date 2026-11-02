@@ -1,4 +1,4 @@
-"""Generate the six-piece v0.8 prototype; all tests are geometric, not physical."""
+"""Generate v0.8.1 with a side-entry cover and gate; tests are geometric."""
 import argparse
 import hashlib
 import json
@@ -41,7 +41,7 @@ def generate(variant, output_root=None):
     model = build(App, Part, p, variant)
     parts, refs, info = model['parts'], model['refs'], model['info']
     checks = model['checks']
-    assert len(parts) == 6
+    assert len(parts) == 8
     assert all(s.isValid() and len(s.Solids) == 1 for s in parts.values())
     assert not checks['printed_part_intersections'], checks['printed_part_intersections']
     assert all(not c['positive_volume_intersections'] for c in checks['spool_cases']), checks['spool_cases']
@@ -69,22 +69,25 @@ def generate(variant, output_root=None):
                 'floor_gap_mm': round(z - diameter / 2 - info['cell_stack_mm']['cradle_top'], 6),
                 'positive_volume_intersections': hits})
 
-    # Raise the moving assembly through an open top, with its cable disconnected.
+    # Raise only the moving assembly; the glued cover stays fixed on the base.
+    # This does not provide electronics service access through the cover.
     service = []
     for dz in (1, 5, 15, 35, 60):
         hits = {}
         for name, shape in parts.items():
-            if name == 'base':
+            if name in ('base', 'base_top_cover', 'nfc_cable_gate'):
                 continue
             lifted = shape.copy()
             lifted.translate(App.Vector(0, 0, dz))
-            for fixed_name in ('base', 'load_cell', 'esp32_pcb', 'esp32_components', 'hx711_pcb'):
+            for fixed_name in ('base', 'base_top_cover', 'nfc_cable_gate', 'load_cell', 'esp32_pcb', 'esp32_components', 'hx711_pcb'):
                 fixed = parts.get(fixed_name, refs.get(fixed_name))
                 volume = overlap(lifted, fixed)
                 if volume > .001:
                     hits[name + '/' + fixed_name] = round(volume, 6)
         assert not hits, (dz, hits)
-        service.append({'lift_mm': dz, 'positive_volume_intersections': hits})
+        service.append({'lift_mm': dz, 'cover_remains_fixed': True,
+                        'cable_gate_remains_fixed': True,
+                        'electronics_access': False, 'positive_volume_intersections': hits})
 
     report = {'revision': p['revision'], 'units': 'mm', 'variant': variant,
         'assembly_stem': info['stem'], 'physical_validation': False, 'parts': {},
@@ -93,8 +96,10 @@ def generate(variant, output_root=None):
         'printed_part_intersections': checks['printed_part_intersections'],
         'component_intersections': component_hits, 'spool_envelope_checks': spool_checks,
         'pod_adjustment_checks': checks['reader_positions'], 'service_lift_checks': service,
-        'boot_access': checks['boot_access'], 'source_sha256': source_hashes}
-    doc = App.newDocument('Spoolancer_v0_8_' + variant.replace('-', '_'))
+        'boot_access': checks['boot_access'], 'top_cover_checks': checks['top_cover'],
+        'cable_gate_checks': checks['cable_gate'],
+        'source_sha256': source_hashes}
+    doc = App.newDocument('Spoolancer_v0_8_1_' + variant.replace('-', '_'))
     sheet = doc.addObject('Spreadsheet::Sheet', 'Dimensions')
     sheet.set('A1', 'Prototype dimensions in mm. Edit JSON/generator and regenerate; spreadsheet is a record.')
     for row, (key, value) in enumerate(p.items(), 3):
