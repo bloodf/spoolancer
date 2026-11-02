@@ -14,7 +14,7 @@ with tempfile.TemporaryDirectory(prefix="spoolancer-tests-") as directory:
         "-fsanitize=address,undefined", "-fno-omit-frame-pointer", "-g",
         "-I", str(root / "tests/stubs"), "-I", str(root / "include"), "-I", str(root / "src"),
         str(root / "tests/domain_test.cpp"), str(root / "tests/scale_test.cpp"), str(root / "tests/setup_test.cpp"),
-        str(root / "tests/status_test.cpp"), str(root / "tests/remote_inventory_test.cpp"), str(root / "tests/brand_tags_test.cpp"), str(root / "src/Scale.cpp"),
+        str(root / "tests/status_test.cpp"), str(root / "tests/remote_inventory_test.cpp"), str(root / "tests/brand_tags_test.cpp"), str(root / "tests/ota_test.cpp"), str(root / "src/Scale.cpp"),
         "-o", str(executable),
     ], check=True)
     subprocess.run([str(executable)], check=True)

@@ -60,7 +60,7 @@ Each printable part has its own STEP and STL in print orientation, using millime
 
 ## Local interface
 
-The ESP32 hosts the interface without an account or cloud service. It includes live weighing, saved spool profiles, brand/material/color fields, a color picker, custom materials, light/dark/system appearance, calibration and NFC actions. Spoolman is optional; local inventory works independently.
+The ESP32 hosts the interface without an account or cloud service. It includes live weighing, saved spool profiles, brand/material/color fields, a color picker, custom materials, light/dark/system appearance, calibration and NFC actions. Spoolman is optional; local inventory works independently. Settings → Hardware tests also offers one-click **firmware updates** pulled from this repository's GitHub releases — see [over-the-air updates](firmware/README.md#over-the-air-updates).
 
 ![Local browser demo in dark appearance, with simulated readings](docs/web-preview-dark.png)
 

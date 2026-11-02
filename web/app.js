@@ -23,6 +23,7 @@ let lastDiscovered = false;
 let savedSpoolmanUrl = '';
 let tagLink = null;
 let diagnosticResults = {};
+let firmwareInfo = null;
 const networkPickers = ['setup', 'config'].map(name => ({ name, root: $(`#${name}-network`) }));
 const needsSetup = () => state.status?.setup?.required === true;
 
@@ -35,7 +36,7 @@ function node(tag, text, className) {
 
 async function deviceRequest(path, { method = 'GET', body } = {}) {
   const controller = new AbortController();
-  const duration = ['/api/spools', '/api/spools/remove', '/api/nfc/write', '/api/spoolman/sync'].includes(path.split('?')[0]) ? 30000 : ['/api/nfc/read', '/api/spools/tag', '/api/spoolman/test', '/api/diagnostics'].includes(path) ? 20000 : 8000;
+  const duration = ['/api/spools', '/api/spools/remove', '/api/nfc/write', '/api/spoolman/sync'].includes(path.split('?')[0]) ? 30000 : ['/api/nfc/read', '/api/spools/tag', '/api/spoolman/test', '/api/diagnostics', '/api/update'].includes(path) ? 20000 : 8000;
   const timeout = setTimeout(() => controller.abort(), duration);
   try {
     const response = await fetch(path, {
@@ -100,7 +101,7 @@ function lock(preserveEdits = false) {
   state.privateLoaded = false;
   if (!preserveEdits || !state.configDirty) { state.configDirty = false; state.connectionDirty = false; state.serverDirty = false; $('#config-form').reset(); }
   if (!preserveEdits) $('#spool-form').reset();
-  state.drafts = []; state.inventory = null; diagnosticResults = {};
+  state.drafts = []; state.inventory = null; diagnosticResults = {}; firmwareInfo = null;
   $('#config-form [name=wifi_password]').value = '';
   $('#pair-form [name=pin]').value = '';
   renderInventory();
@@ -283,6 +284,46 @@ function renderHardware() {
   $('#hardware-percent').textContent = known ? `${Math.round(m.percent)}%` : 'Waiting for a valid weight';
   const colors = ledSegments(known ? m.percent : null);
   [...$('#hardware-led-bar').children].forEach((segment, i) => { segment.style.setProperty('--segment-color', colors[i] || 'var(--raised)'); segment.style.color = colors[i] ? '#10231e' : 'var(--ink)'; });
+  renderFirmware();
+}
+function renderFirmware() {
+  const fresh = isFresh(), status = state.status || {};
+  const current = status.device?.firmware || 'Unknown';
+  $('#firmware-current').textContent = current;
+  $('#firmware-version').textContent = current === 'Unknown' ? '—' : current;
+  const canCheck = fresh && !!state.token && !state.busy;
+  $('#firmware-check').disabled = !canCheck;
+  const info = firmwareInfo, apply = $('#firmware-apply'), notes = $('#firmware-notes'), result = $('#firmware-result');
+  if (!info) { $('#firmware-latest').textContent = 'Not checked'; apply.hidden = true; notes.hidden = true; result.textContent = ''; return; }
+  if (info.error) {
+    $('#firmware-latest').textContent = 'Unavailable'; apply.hidden = true; notes.hidden = true;
+    result.textContent = `${state.demo ? 'Demo: ' : ''}${info.error}`; result.className = 'form-error'; return;
+  }
+  $('#firmware-latest').textContent = info.latest || 'Unknown';
+  const available = info.update_available === true;
+  apply.hidden = !available; apply.disabled = !canCheck;
+  notes.hidden = !info.notes_url; if (info.notes_url) notes.href = info.notes_url;
+  result.className = 'inline-result';
+  result.textContent = info.message ? `${state.demo ? 'Demo: ' : ''}${info.message}`
+    : available ? `Version ${info.latest} is available.` : 'This device is up to date.';
+}
+async function checkFirmware() {
+  if (!requirePair()) return;
+  setBusy(true);
+  try { firmwareInfo = { ...(await api('/api/update')), message: '' }; }
+  catch (error) { firmwareInfo = { error: error.message || 'Could not check for updates.' }; }
+  finally { setBusy(false); }
+}
+async function applyFirmware() {
+  if (!requirePair() || !firmwareInfo?.update_available) return;
+  if (!confirm('Install the latest firmware now? The device downloads it and reboots, and will be offline for about a minute. Keep it powered.')) return;
+  setBusy(true);
+  try {
+    const result = await api('/api/update', { method: 'POST', body: { confirm: true } });
+    firmwareInfo = { ...firmwareInfo, message: result.message || 'Update started; the device will reboot.' };
+    notice(result.message || 'Update started; the device will reboot.');
+  } catch (error) { notice(error.message || 'Could not start the update.', true); }
+  finally { setBusy(false); }
 }
 async function runDiagnostic(component) {
   if (!requirePair()) return;
@@ -1162,6 +1203,8 @@ $('#test-spoolman').addEventListener('click', async () => {
   } catch (error) { notice(error.message, true); }
 });
 for (const component of ['nfc', 'leds', 'scale']) $(`#test-${component}`).addEventListener('click', () => { void runDiagnostic(component); });
+$('#firmware-check').addEventListener('click', () => { void checkFirmware(); });
+$('#firmware-apply').addEventListener('click', () => { void applyFirmware(); });
 
 $('#calibration-form').addEventListener('submit', event => {
   event.preventDefault();

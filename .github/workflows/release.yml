@@ -1,0 +1,83 @@
+name: Release firmware
+
+# Publishes a GitHub release with a firmware and filesystem image for every board variant.
+# The device OTA (firmware/include/Ota.h) downloads the assets named for its own variant.
+# Triggered by pushing a version tag (vX.Y.Z), or manually via workflow_dispatch with a tag.
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag to create (e.g. v0.6.0). Must match a commit you want released.'
+        required: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.event.inputs.tag || github.ref_name }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Build all variants and publish the release
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      PLATFORMIO_CORE_VERSION: '6.1.19'
+      VERSION: ${{ github.event.inputs.tag || github.ref_name }}
+      # Injected into every build as the reported firmware version (Ota.h / /api/status).
+      PLATFORMIO_BUILD_FLAGS: -DSPOOLANCER_VERSION=\"${{ github.event.inputs.tag || github.ref_name }}\"
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6.3.0
+        with:
+          python-version: '3.12'
+      - name: Install PlatformIO
+        run: python3 -m pip install "platformio==${PLATFORMIO_CORE_VERSION}"
+      - uses: actions/cache@caa296126883cff596d87d8935842f9db880ef25 # v5.1.0
+        with:
+          path: |
+            ~/.platformio/packages
+            ~/.platformio/platforms
+            firmware/.pio/libdeps
+          key: ${{ runner.os }}-${{ runner.arch }}-pio-${{ env.PLATFORMIO_CORE_VERSION }}-${{ hashFiles('firmware/platformio.ini', '.github/workflows/ci.yml') }}
+      - name: Build firmware and filesystem images for every variant
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          # env name -> variant string the device reports (must match deviceVariant in main.cpp).
+          declare -A variants=(
+            [spoolancer-headless]=headless
+            [spoolancer-headless-led]=headless-led
+            [spoolancer-oled-led]=oled-led
+            [spoolancer-s3]=st7789
+            [spoolancer-touch-8048]=touch-8048
+          )
+          for env in "${!variants[@]}"; do
+            variant="${variants[$env]}"
+            echo "::group::$env ($variant)"
+            pio run -d firmware -e "$env"
+            pio run -d firmware -e "$env" -t buildfs
+            cp "firmware/.pio/build/$env/firmware.bin" "dist/spoolancer-${variant}-firmware.bin"
+            cp "firmware/.pio/build/$env/littlefs.bin" "dist/spoolancer-${variant}-littlefs.bin"
+            echo "::endgroup::"
+          done
+          ls -l dist
+      - name: Publish the GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if gh release view "$VERSION" >/dev/null 2>&1; then
+            gh release upload "$VERSION" dist/* --clobber
+          else
+            gh release create "$VERSION" dist/* \
+              --title "$VERSION" \
+              --generate-notes \
+              --target "$GITHUB_SHA"
+          fi

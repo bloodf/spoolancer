@@ -31,6 +31,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <cerrno>
+#include "Ota.h"
 #ifdef SPOOLANCER_TOUCH
 #include "TouchUi.h"
 #endif
@@ -84,6 +85,7 @@ bool assetsReady = false, storeReady = false, activeHadLoad = false, apActive = 
 bool connectionAttempt = false;
 uint32_t nextNfc = 0, nextDisplay = 0, connectStarted = 0, reconnectAt = 0;
 uint32_t nextLogin = 0, pinVisibleUntil = 0;
+Ota::Release otaPending; bool otaRequested = false;
 unsigned loginFailures = 0, sessionSlot = 0;
 struct WifiNetwork { String ssid; int32_t rssi, channel; bool secure, supported; };
 struct WifiScan {
@@ -508,7 +510,7 @@ String writeSpoolTag(Spool &s, const String &expectedUid, BrandTags::Format form
 }
 void statusRoute() {
   JsonDocument doc; doc["mode"] = "device"; doc["device"]["name"] = config.name;
-  doc["device"]["firmware"] = "0.5.0-prototype"; doc["device"]["storage_ready"] = storeReady;
+  doc["device"]["firmware"] = SPOOLANCER_VERSION; doc["device"]["storage_ready"] = storeReady;
   doc["device"]["variant"] = deviceVariant;
   doc["auth"]["pin_required"] = Setup::pinRequired(config.auth);
   doc["auth"]["invalid"] = config.auth == Setup::AuthMode::Invalid;
@@ -1687,6 +1689,30 @@ void setupRoutes() {
       reconnectAt = millis() + 1000;
     }
   });
+  server.on("/api/update", HTTP_GET, [] {
+    if (!authorized()) return;
+    if (WiFi.status() != WL_CONNECTED) { error(409, "Connect the scale to your local Wi-Fi before checking for updates."); return; }
+    const Ota::Release rel = Ota::fetchLatest(deviceVariant);
+    JsonDocument doc; doc["current"] = SPOOLANCER_VERSION; doc["variant"] = deviceVariant;
+    if (!rel.ok) { doc["error"] = rel.error; reply(doc); return; }
+    doc["latest"] = rel.tag;
+    doc["update_available"] = Ota::updateAvailable(SPOOLANCER_VERSION, rel.tag.c_str());
+    doc["notes_url"] = rel.notesUrl; doc["has_filesystem"] = !rel.fsUrl.isEmpty();
+    reply(doc);
+  });
+  server.on("/api/update", HTTP_POST, [] {
+    if (!authorized()) return;
+    JsonDocument in; if (!body(in) || !confirmation(in)) return;
+    if (WiFi.status() != WL_CONNECTED) { error(409, "Connect the scale to your local Wi-Fi before updating."); return; }
+    if (otaRequested) { error(409, "An update is already in progress."); return; }
+    const Ota::Release rel = Ota::fetchLatest(deviceVariant);
+    if (!rel.ok) { error(502, rel.error); return; }
+    if (!Ota::updateAvailable(SPOOLANCER_VERSION, rel.tag.c_str())) { error(409, "This device already runs the latest release."); return; }
+    otaPending = rel; otaRequested = true;
+    JsonDocument result; result["ok"] = true; result["latest"] = rel.tag;
+    result["message"] = "Update started. The device is downloading " + rel.tag + " and reboots in about a minute. Do not power it off.";
+    reply(result);
+  });
   server.on("/api/spoolman/discover", HTTP_GET, [] {
     if (!authorized()) return;
     discoveryReply();
@@ -1908,6 +1934,15 @@ void setup() {
 }
 
 void loop() {
+  if (otaRequested) {
+    otaRequested = false;
+    appMessage = "Installing firmware update; the device will reboot.";
+    // apply() reboots on success and only returns on failure.
+    const String failure = Ota::apply(otaPending);
+    appMessage = failure.isEmpty() ? "Update complete." : failure;
+    otaPending = Ota::Release{};
+    return;
+  }
   scale.tick(); server.handleClient(); buttons();
   pollWifiScan(); pollDiscovery();
 #ifdef SPOOLANCER_TOUCH

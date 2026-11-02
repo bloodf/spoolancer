@@ -127,7 +127,8 @@ void setupTests();
 void remoteInventoryTests();
 void statusTests();
 void brandTagTests();
+void otaTests();
 int main() {
-  measurements(); tagProtection(); records(); scaleDriverTests(); setupTests(); remoteInventoryTests(); statusTests(); brandTagTests();
+  measurements(); tagProtection(); records(); scaleDriverTests(); setupTests(); remoteInventoryTests(); statusTests(); brandTagTests(); otaTests();
   std::cout << "PASS: measurement/NDEF/tag safeguards, mocked HX711 calibration/freshness, AP-only setup guards, remote inventory cache/pagination, LED/OLED validity and event expiry, printer-brand tag vectors\n";
 }

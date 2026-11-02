@@ -10,7 +10,7 @@ export function createDemo({ now = Date.now } = {}) {
     { id: 'demo-3', name: 'Signal orange PLA', brand: 'Generic', material: 'PLA', color: '#cc7938', empty_weight_g: null, initial_weight_g: 1000, density_g_cm3: 1.24, diameter_mm: 1.75, spoolman_id: null, remaining_weight_g: null },
   ];
   const status = {
-    mode: 'demo', device: { name: 'Studio scale' },
+    mode: 'demo', device: { name: 'Studio scale', firmware: '0.5.0-demo', variant: 'headless-led' },
     diagnostics: {leds_supported:true, led_test_remaining_ms:0},
     auth: { pin_required: true, invalid: false }, setup: { required: false, complete: true, can_submit: false, physical_confirmation_required: false },
     scale: { gross_g: 842, calibrated: true, zero_set: true, stable: true, fresh: true, tare_ready: true, calibration_ready: true },
@@ -389,6 +389,14 @@ export function createDemo({ now = Date.now } = {}) {
       spool.gross_g = m.gross;
       spool.remaining_weight_g = m.remaining;
       return { ok: true, gross_g: m.gross, remaining_weight_g: m.remaining, spoolman_id: spool.spoolman_id, message: path.endsWith('/sync') ? status.spoolman.last_message : 'Measurement saved in this demo session.' };
+    }
+    if (path === '/api/update' && method === 'GET') {
+      return { current: status.device.firmware, variant: status.device.variant, latest: 'v0.6.0-demo',
+        update_available: true, notes_url: 'https://github.com/bloodf/spoolancer/releases', has_filesystem: true };
+    }
+    if (path === '/api/update' && method === 'POST') {
+      if (!body.confirm) fail('Explicit confirmation is required.');
+      return { ok: true, latest: 'v0.6.0-demo', message: 'Demo update started. No firmware was downloaded or changed.' };
     }
     fail('Unknown demo endpoint.', 404);
   }
