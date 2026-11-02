@@ -27,7 +27,8 @@ static_assert(SPOOLANCER_LED_BRIGHTNESS >= 0 && SPOOLANCER_LED_BRIGHTNESS <= 255
 Adafruit_NeoPixel pixels(StatusModel::ledCount, Pins::statusLed, SPOOLANCER_LED_ORDER + NEO_KHZ800);
 StatusModel::Event event;
 uint32_t lastRender = 0, lastOled = 0;
-bool screenAvailable = false;
+bool screenAvailable = false, testingLeds = false;
+uint32_t ledTestStarted = 0;
 #ifdef SPOOLANCER_OLED
 // Wire owns the pins; U8g2 pin arguments would reconfigure an active I2C bus.
 #ifdef SPOOLANCER_OLED_SH1106
@@ -55,6 +56,10 @@ void drawScreen(const Snapshot &snapshot, const StatusModel::View &view) {
     snprintf(line, sizeof(line), "%s %s", StatusModel::operationText(view.operation), view.mode == Mode::Success ? "OK" : "failed");
   } else if (view.mode == Mode::BusyNfc || view.mode == Mode::BusySave || view.mode == Mode::BusySync) {
     snprintf(line, sizeof(line), "%s working", StatusModel::operationText(view.operation));
+  } else if (view.mode == Mode::LedTest) {
+    snprintf(line, sizeof(line), "LED test / observe");
+  } else if (view.mode == Mode::Connecting || view.mode == Mode::Offline) {
+    snprintf(line, sizeof(line), "%s", view.mode == Mode::Connecting ? "Wi-Fi connecting" : "Wi-Fi offline");
   } else if (view.mode == Mode::Setup) {
     snprintf(line, sizeof(line), "Wi-Fi setup / browser");
   } else snprintf(line, sizeof(line), "%s", StatusModel::problemText(view.problem));
@@ -74,19 +79,27 @@ void begin() {
   Wire.beginTransmission(SPOOLANCER_OLED_ADDRESS);
   if (Wire.endTransmission() == 0) {
     Serial.println("Status UI: OLED acknowledged; initializing display");
-    oled.setI2CAddress(SPOOLANCER_OLED_ADDRESS * 2); oled.setBusClock(100000);
+    // Both bundled SSD1306/SH1106 controller definitions use 400 kHz I2C.
+    oled.setI2CAddress(SPOOLANCER_OLED_ADDRESS * 2); oled.setBusClock(400000);
     oled.begin(); screenAvailable = true;
   }
   Serial.printf("Status OLED: %s (address 0x%02x)\n", screenAvailable ? "I2C acknowledged; verify controller and image" : "not found; web remains available", SPOOLANCER_OLED_ADDRESS);
 #endif
 }
-void start(StatusModel::Operation operation, uint32_t now) { event.begin(operation, now); }
+void start(StatusModel::Operation operation, uint32_t now) { testingLeds = false; event.begin(operation, now); }
 void finish(bool success, uint32_t now) { event.finish(success, now); }
 bool oledAvailable() { return screenAvailable; }
+bool testLeds(uint32_t now) { testingLeds = true; ledTestStarted = now; return true; }
+uint32_t ledTestRemaining(uint32_t now) {
+  const uint32_t elapsed = now - ledTestStarted;
+  if (!testingLeds || elapsed >= StatusModel::ledTestMs) { testingLeds = false; return 0; }
+  return StatusModel::ledTestMs - elapsed;
+}
 void render(const Snapshot &snapshot, uint32_t now, bool force) {
   if (!force && uint32_t(now - lastRender) < 50) return;
   lastRender = now;
-  const StatusModel::View view = StatusModel::evaluate(snapshot, event, now);
+  StatusModel::View view = StatusModel::evaluate(snapshot, event, now);
+  if (ledTestRemaining(now)) { view.leds = StatusModel::ledTest(now - ledTestStarted); view.mode = StatusModel::Mode::LedTest; }
   for (size_t i = 0; i < StatusModel::ledCount; ++i) {
     const auto &color = view.leds[i];
     pixels.setPixelColor(i, pixels.Color(color.red, color.green, color.blue, 0));

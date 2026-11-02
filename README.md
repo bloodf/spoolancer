@@ -14,7 +14,7 @@ Spoolancer is a standalone filament scale built around an ESP32-S3. Place a spoo
 
 ## Choose a build
 
-The current **v0.8** mechanical design has six printed pieces: base, one-piece cradle, load-cell spacer, NFC support, reader cassette and rear cover. Both versions use your ESP32-S3 N16R8, PN532, HX711 and a 5 kg bar load cell.
+The current **v0.8.1** mechanical design has eight printed pieces: base, one-piece cradle, load-cell spacer, NFC support, reader cassette, rear cover, glue-on base top cover and small NFC cable cap. Already built v0.8? Print **the new cover and its small NFC cable cap**; the six original STLs are unchanged. See the [cover files and installation guide](docs/TOP-COVER.md). Both versions use your ESP32-S3 N16R8, PN532, HX711 and a 5 kg bar load cell.
 
 | | Five LEDs + web | OLED + five LEDs |
 | --- | --- | --- |
@@ -28,11 +28,11 @@ The fixed cradle accepts the modeled **50–100 mm spool widths and 160–220 mm
 
 Both cases have vertical front controls, five LEDs at 16.667 mm pitch, closed USB walls and space for a user-installed DC supply. Drill the jack hole after checking the actual components; **12 V must pass through a regulated 5 V converter**. See [power wiring](docs/DC-POWER.md) and [the indicator guide](docs/OLED-RGB-VARIANT.md).
 
-![Six-piece OLED and LED CAD prototype](cad/variants/oled-led/previews/assembled.png)
+![Eight-piece OLED and LED CAD prototype](cad/variants/oled-led/previews/assembled.png)
 
-The new construction uses **12 screws in three sizes**, plus one broad glued joint for the NFC support. Load-cell screws, reader adjustment and the rear cover remain removable. See the [fastener list](docs/BOM.md#current-ledoled-fasteners) and [assembly instructions](docs/ASSEMBLY.md). This is a CAD prototype; printed strength, adhesive retention, fit and weighing are untested. The proposed operating range remains 20–2,000 g gross spool weight. The sensor's 5 kg rating also carries the moving mechanism.
+The new construction uses **12 screws in three sizes**, plus glued joints for the NFC support, stationary top cover and small cable cap. Load-cell screws, reader adjustment and the rear cover remain removable. See the [fastener list](docs/BOM.md#current-ledoled-fasteners) and [assembly instructions](docs/ASSEMBLY.md). This is a CAD prototype; printed strength, adhesive retention, fit and weighing are untested. The proposed operating range remains 20–2,000 g gross spool weight. The sensor's 5 kg rating also carries the moving mechanism.
 
-The original [screenless USB design](cad/variants/headless) and [800 × 480 integrated-touch design](cad/variants/touch-8048) remain available as **legacy mechanical versions**. Their old parts do not fit the new six-piece mechanism. Firmware support is unchanged.
+The original [screenless USB design](cad/variants/headless) and [800 × 480 integrated-touch design](cad/variants/touch-8048) remain available as **legacy mechanical versions**. Their old parts do not fit the v0.8-family mechanism. Firmware support is unchanged.
 
 ## Explore the assembly
 
@@ -44,6 +44,8 @@ The [assembly-view guide](docs/ASSEMBLY-VIEW.md) explains controls, component lo
 
 ## Download everything
 
+The new cover is available in the [current print files](docs/PRINTING.md) and [editable CAD](cad/README.md). The older release below does **not** include it.
+
 The [v0.8 prototype pre-release](https://github.com/bloodf/spoolancer/releases/tag/v0.8.0-alpha.1) provides:
 
 - [OLED + five-LED print bundle](https://github.com/bloodf/spoolancer/releases/download/v0.8.0-alpha.1/spoolancer-v0.8.0-alpha.1-oled-led-print.zip): six STEP/STL pairs, native FreeCAD, full assembly STEP, assembly views and instructions.
@@ -52,7 +54,7 @@ The [v0.8 prototype pre-release](https://github.com/bloodf/spoolancer/releases/t
 - Legacy [headless](https://github.com/bloodf/spoolancer/releases/download/v0.8.0-alpha.1/spoolancer-v0.8.0-alpha.1-headless-print.zip) and [integrated-touch](https://github.com/bloodf/spoolancer/releases/download/v0.8.0-alpha.1/spoolancer-v0.8.0-alpha.1-touch-8048-print.zip) bundles, clearly separated from v0.8 mechanics.
 - [SHA-256 checksums](https://github.com/bloodf/spoolancer/releases/download/v0.8.0-alpha.1/SHA256SUMS.txt).
 
-![Six actual print poses](cad/variants/oled-led/previews/print-orientations.png)
+![Eight actual print poses](cad/variants/oled-led/previews/print-orientations.png)
 
 Each printable part has its own STEP and STL in print orientation, using millimeters. Import individual files into a compatible slicer. Assembly STEP files include electronics/reference bodies and are for inspection, not direct printing. The [print manifest](docs/PRINTING.md) gives quantities and orientation. Editable CAD parameters and scripts are included. No printer-specific G-code or precompiled firmware is distributed in this release.
 
@@ -72,7 +74,7 @@ python3 -m http.server 8873 --bind 127.0.0.1 --directory web
 
 Open <http://127.0.0.1:8873/?demo=1> and pair with **12345678**. The amber demo banner identifies simulated readings. The preview does not contact hardware or Spoolman. The normal device interface never substitutes simulated readings for a disconnected sensor.
 
-For initial bench setup, connect computer USB to the controller's USB-C port; the standalone board uses **COM**. Disconnect any converter supply as described in [DC power](docs/DC-POWER.md) before doing this. Join `Spoolancer-xxxx`, open `http://192.168.4.1`, choose an eight-digit PIN, then hold BOOT for two seconds and release it while the firmware is running. Submit within 60 seconds and configure local Wi-Fi. The temporary setup network is open, and setup credentials use local HTTP; set it up on a trusted network. Full details are in the [first-build guide](docs/BUILD-GUIDE.md).
+For initial bench setup, connect computer USB to the controller's USB-C port; the standalone board uses **COM**. Disconnect any converter supply as described in [DC power](docs/DC-POWER.md) before doing this. Join `Spoolancer-xxxx`, open `http://192.168.4.1`, select your local Wi-Fi and choose an eight-digit PIN or access without a PIN. Finish setup in the browser; no BOOT press is required. The temporary setup network is open, and setup credentials use local HTTP; set it up in a trusted location. Full details are in the [first-build guide](docs/BUILD-GUIDE.md).
 
 Hold **BOOT for eight seconds while running** to clear Wi-Fi and pairing, keeping inventory, calibration and Spoolman settings. Holding BOOT during power-on or RST enters programming mode instead. Release BOOT and tap RST to start normally.
 
@@ -82,15 +84,17 @@ The optional touchscreen handles weighing, profile selection, tag actions, save/
 
 | Tag or service | Current implementation |
 | --- | --- |
-| NTAG216 inventory tag | Read/write Spoolancer schema 1, confirmed UID and read-back verification |
-| Original Bambu Lab / Snapmaker tag | UID-only, read-only; manually link the UID to a local spool profile |
+| NTAG213/215/216 inventory tag | Identify by UID; write Spoolancer schema 1 only when unlocked, supported and large enough; confirmed UID and read-back verification |
+| Other NFC-A, NFC-B, FeliCa, Jewel/Topaz | Identifier linking to an existing spool; no memory writes; physical-family tests pending |
+| NFC-V / ISO15693 / Type 5 | Not supported by the PN532 reader |
+| Original Bambu Lab / Snapmaker tag | Read to show brand, material and color (keys derived from the UID); RSA-signed, so read-only. A Bambu tag can be cloned onto a magic card |
 | Custom tags recognized by stock printers | Not implemented; Spoolancer tags do not replace signed printer tags |
 | OpenSpool interoperability | Not implemented |
 | Spoolman | Optional HTTP connection to a numeric local IPv4 address; explicit create/link and absolute-weight updates |
 
 Remaining filament is **gross spool weight minus a known empty-spool weight**. An unknown tare stays unknown. A saved measurement does not become a live reading. Spoolman retries are manual; uncertain creation responses need reconciliation before retrying. See the [interface/API guide](web/README.md) for the implemented boundaries.
 
-Both printer families use manufacturer-signed MIFARE Classic-family tags; a matching blank chip does not make a printer-compatible tag. [Tag types and stock-firmware limits](docs/NFC-TAGS.md) explains how these differ from Spoolancer's writable NTAG216 inventory.
+Both printer families use manufacturer-signed MIFARE Classic-family tags; a matching blank chip does not make a printer-compatible tag. [Tag types and stock-firmware limits](docs/NFC-TAGS.md) explains identification, writable capacities and the PN532's hardware limits. Inventory supports adding/changing RFID after registration and removing a local spool or archiving it in Spoolman with its server history retained.
 
 ## Project files and contributing
 

@@ -14,8 +14,25 @@ with tempfile.TemporaryDirectory(prefix="spoolancer-tests-") as directory:
         "-fsanitize=address,undefined", "-fno-omit-frame-pointer", "-g",
         "-I", str(root / "tests/stubs"), "-I", str(root / "include"), "-I", str(root / "src"),
         str(root / "tests/domain_test.cpp"), str(root / "tests/scale_test.cpp"), str(root / "tests/setup_test.cpp"),
-        str(root / "tests/status_test.cpp"), str(root / "src/Scale.cpp"),
+        str(root / "tests/status_test.cpp"), str(root / "tests/remote_inventory_test.cpp"), str(root / "tests/brand_tags_test.cpp"), str(root / "src/Scale.cpp"),
         "-o", str(executable),
     ], check=True)
     subprocess.run([str(executable)], check=True)
+    nfc_executable = Path(directory) / "nfc-test"
+    subprocess.run([
+        os.environ.get("CXX", "c++"), "-std=c++17", "-Wall", "-Wextra", "-Werror",
+        "-fsanitize=address,undefined", "-fno-omit-frame-pointer", "-g",
+        "-I", str(root / "tests/nfc_stubs"), "-I", str(root / "include"), "-I", str(root / "src"),
+        str(root / "tests/nfc_test.cpp"), str(root / "tests/read_tags_test.cpp"), str(root / "src/Nfc.cpp"),
+        "-o", str(nfc_executable),
+    ], check=True)
+    subprocess.run([str(nfc_executable)], check=True)
+    actions_executable = Path(directory) / "spool-actions-test"
+    subprocess.run([
+        os.environ.get("CXX", "c++"), "-std=c++17", "-Wall", "-Wextra", "-Werror",
+        "-fsanitize=address,undefined", "-fno-omit-frame-pointer", "-g",
+        "-I", str(root / "include"), str(root / "tests/spool_actions_test.cpp"),
+        "-o", str(actions_executable),
+    ], check=True)
+    subprocess.run([str(actions_executable)], check=True)
 subprocess.run([sys.executable, str(root / "tests/storage_guard_test.py")], check=True)

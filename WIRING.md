@@ -190,7 +190,6 @@ No external button, button resistor or button perfboard is needed. Use onboard *
 
 | Action, with firmware already running | Result |
 | --- | --- |
-| Hold 2 seconds, then release before 8 seconds | Allows one PIN-enrollment attempt for 60 seconds |
 | Hold 8 seconds, then release | Clears Wi-Fi and pairing; retains inventory, calibration and Spoolman settings |
 | Press RST | Restarts; does not erase Wi-Fi |
 
@@ -213,7 +212,7 @@ Make connections only with both DC and USB disconnected. Keep the assembly open 
 3. **Start the ESP32 alone from the converter.** Leave USB and all peripheral harnesses disconnected, including signal wires and GPIO6/J2. Do not drive an unpowered module through a signal pin. Verify the board's 3V3 rail and normal startup. If programming is needed first, use the isolation sequence below.
 4. **Add the HX711/load cell, then PN532, then OLED.** Power off between additions. Check that 3V3 remains steady and the controller still starts. A USB boot with no peripherals does not establish regulator capacity with all modules active.
 5. **Add the buffer and LED branch.** Recheck 5 V under load. In setup mode the five LEDs should pulse blue; the OLED should show status/address. Stop and disconnect power if a component becomes unexpectedly hot or the supply collapses.
-6. **Set up the browser.** Join `Spoolancer-xxxx` and open `http://192.168.4.1`. Choose an eight-digit PIN, hold/release BOOT for two seconds, submit within 60 seconds and configure local Wi-Fi. The setup AP is open and uses HTTP; perform enrollment in a trusted location. See [first use](firmware/README.md#headless-first-use).
+6. **Set up the browser.** Join `Spoolancer-xxxx` and open `http://192.168.4.1`. Select local Wi-Fi, enter its password, choose an eight-digit PIN or no-PIN access, then hold/release BOOT for two seconds and finish setup within 60 seconds. The setup AP is open and uses HTTP; perform enrollment in a trusted location. See [first use](firmware/README.md#headless-first-use).
 7. **Check the sensors.** Check `/api/status` for `nfc.available: true` and inspect `nfc.last_error`, then test one known inventory tag. Check that scale data becomes fresh. Before calibration, missing grams or a calibration-required message is expected. `/api/status` exposes `nfc.available`, `nfc.last_error`, `scale.fresh` and `scale.stable` for diagnosis; it does not expose raw HX711 counts or a numeric PN532 firmware version.
 8. **Finish assembly and calibrate.** Zero the complete empty cradle, calibrate with a known 100–2000 g mass and check independent masses. Repeat placements, reader-height changes and tests with LEDs on/off. The 5 kg cell also carries the moving mechanism; the firmware's intended gross-spool range is up to 2 kg.
 
