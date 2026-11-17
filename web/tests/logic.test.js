@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
-import { filterSpools, spoolLabel, spoolTagUids, selectionMessage, tagStorage, TAG_FORMATS, fullSpoolTare, inventoryState, inventoryActionSpool, cleanLocalDraft, ledSegments, measurement, networkChoices, pinIsOptional, scaleCalibrationGuard, scaleZeroGuard, setupBody, setupState, tagWriteGuard, tagLinkGuard, validateSpool, validSpoolmanUrl, wifiCredentials, normalizeHex, materialSelection, resolveMaterial, normalizeTheme, resolveTheme, readThemePreference, saveThemePreference, THEME_STORAGE_KEY, pairingState, sessionBody } from '../logic.js';
+import { filterSpools, spoolDetailRows, spoolLabel, spoolTagUids, selectionMessage, tagStorage, TAG_FORMATS, fullSpoolTare, inventoryState, inventoryActionSpool, cleanLocalDraft, ledSegments, measurement, networkChoices, pinIsOptional, scaleCalibrationGuard, scaleZeroGuard, setupBody, setupState, tagWriteGuard, tagLinkGuard, validateSpool, validSpoolmanUrl, wifiCredentials, normalizeHex, materialSelection, resolveMaterial, normalizeTheme, resolveTheme, readThemePreference, saveThemePreference, THEME_STORAGE_KEY, pairingState, sessionBody } from '../logic.js';
 import { createDemo } from '../demo.js';
 
 const spool = { id: 'a', name: 'Green PLA', material: 'PLA', brand: 'Generic', color: '#306040', empty_weight_g: 250, initial_weight_g: 1000, density_g_cm3: 1.24, diameter_mm: 1.75, spoolman_id: null };
@@ -1045,4 +1045,14 @@ test('static UI controls referenced by startup are present in the webpage', () =
 test('an offline reader is distinct from a reader with no tag', () => {
   assert.match(selectionMessage({nfc:{available:false}},[]),/reader offline/);
   assert.match(selectionMessage({nfc:{available:true,present:false}},[]),/Choose a spool below/);
+});
+
+test('spool details show only present, well-formed Spoolman facts', () => {
+  assert.deepEqual(spoolDetailRows(undefined), []);
+  assert.deepEqual(spoolDetailRows({ extruder_temp_c: null, location: '  ', price: 'x' }), []);
+  const rows = spoolDetailRows({ extruder_temp_c: 215, bed_temp_c: 60, multi_color_hexes: 'FF0000,zz,00f', multi_color_direction: 'coaxial', price: 24.5, location: 'Shelf A', comment: 'Opened' });
+  assert.deepEqual(rows.map(row => row.label), ['Nozzle', 'Bed', 'Colors', 'Location', 'Price', 'Note']);
+  assert.equal(rows[0].value, '215 °C');
+  assert.deepEqual(rows[2].colors, ['#ff0000', '#0000ff']);
+  assert.match(rows[2].value, /coaxial/);
 });

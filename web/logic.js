@@ -115,6 +115,27 @@ export function grams(value) {
   return finite(value) ? new Intl.NumberFormat('en', { maximumFractionDigits: 1 }).format(value) : '—';
 }
 
+// Compact rows for optional Spoolman facts (`details`); absent or malformed fields are skipped.
+export function spoolDetailRows(details) {
+  if (!details || typeof details !== 'object') return [];
+  const text = key => typeof details[key] === 'string' && details[key].trim() ? details[key].trim() : '';
+  const temp = key => finite(details[key]) ? `${grams(details[key])} °C` : '';
+  const colors = text('multi_color_hexes').split(',').flatMap(hex => { try { return [normalizeHex(hex)]; } catch { return []; } });
+  const direction = text('multi_color_direction');
+  return [
+    ['Nozzle', temp('extruder_temp_c')],
+    ['Bed', temp('bed_temp_c')],
+    ['Colors', colors.length ? `${colors.join(' ').toUpperCase()}${direction ? ` · ${direction}` : ''}` : '', colors],
+    ['Location', text('location')],
+    ['Price', finite(details.price) ? grams(details.price) : ''],
+    ['Lot', text('lot_nr')],
+    ['Article', text('article_number')],
+    ['External ID', text('external_id')],
+    ['Filament note', text('filament_comment')],
+    ['Note', text('comment')],
+  ].filter(row => row[1]).map(([label, value, swatches]) => swatches ? { label, value, colors: swatches } : { label, value });
+}
+
 export function validSpoolmanUrl(value) {
   if (value === '') return true;
   const match = /^http:\/\/(\d{1,3}(?:\.\d{1,3}){3})(?::(\d{1,5}))?(\/[^\s?#@\\]*)?$/.exec(value);

@@ -1,4 +1,4 @@
-import { filterSpools, spoolLabel, spoolTagUids, selectionMessage, tagStorage, TAG_FORMATS, validateSpool, measurement, tagWriteGuard, tagLinkGuard, grams, validSpoolmanUrl, COMMON_MATERIALS, COLOR_SWATCHES, normalizeHex, materialSelection, resolveMaterial, THEME_STORAGE_KEY, normalizeTheme, resolveTheme, readThemePreference, saveThemePreference, pairingState, sessionBody, usesOpenSetup, setupState, setupBody, pinIsOptional, networkChoices, wifiCredentials, scaleZeroGuard, scaleCalibrationGuard, fullSpoolTare, inventoryState, inventoryActionSpool, cleanLocalDraft, ledSegments } from './logic.js';
+import { filterSpools, spoolLabel, spoolTagUids, selectionMessage, tagStorage, TAG_FORMATS, validateSpool, measurement, tagWriteGuard, tagLinkGuard, grams, validSpoolmanUrl, COMMON_MATERIALS, COLOR_SWATCHES, normalizeHex, materialSelection, resolveMaterial, THEME_STORAGE_KEY, normalizeTheme, resolveTheme, readThemePreference, saveThemePreference, pairingState, sessionBody, usesOpenSetup, setupState, setupBody, pinIsOptional, networkChoices, wifiCredentials, scaleZeroGuard, scaleCalibrationGuard, fullSpoolTare, inventoryState, inventoryActionSpool, cleanLocalDraft, ledSegments, spoolDetailRows } from './logic.js';
 
 const $ = selector => document.querySelector(selector);
 const state = { token: '', status: null, spools: [], lastSeen: 0, busy: false, configDirty: false, connectionDirty: false, serverDirty: false, privateLoaded: false, action: null, demo: false, lastPrivate: 0, calibrationZeroed: false, calibrationReference: null, inventory: null, drafts: [], editedSpool: null };
@@ -25,6 +25,7 @@ let tagLink = null;
 let diagnosticResults = {};
 let firmwareInfo = null;
 let privateLoading = false;
+const openFacts = new Set(); // Inventory rows whose filament details are expanded, kept across re-renders.
 const networkPickers = ['setup', 'config'].map(name => ({ name, root: $(`#${name}-network`) }));
 const needsSetup = () => state.status?.setup?.required === true;
 
@@ -225,10 +226,11 @@ function render() {
   $('#active-swatch').style.setProperty('--spool-color', /^#[0-9a-f]{6}$/i.test(spool?.color || '') ? spool.color : '#7c8d7a');
   $('#edit-active').disabled = !spool || state.busy;
   $('#edit-active').textContent = spool?.metadata_readonly ? 'Details' : 'Edit';
+  renderSpoolFacts($('#active-details'), spool);
   $('#active-select').disabled = !state.token || !fresh || state.busy || privateLoading;
   $('#active-search').disabled = !state.token || privateLoading;
   $('#selection-message').textContent = state.token ? selectionMessage(status, state.spools) : 'Pair to match NFC tags with your inventory.';
-  $('#scale-inventory-summary').textContent = !state.token ? 'Pair to choose from your inventory.' : privateLoading || state.inventory?.refreshing ? 'Loading spools from the inventory…' : state.inventory?.error ? state.inventory.error : `${state.spools.length} spools · ${status?.spoolman?.configured ? 'Spoolman' : 'Stored on this scale'}${state.inventory?.stale ? ' · cached' : ''}`;
+  $('#scale-inventory-summary').textContent = !state.token ? 'Pair to choose from your inventory.' : privateLoading || state.inventory?.refreshing ? 'Loading spools from the inventory…' : state.inventory?.error ? state.inventory.error : `${state.spools.length} ${state.spools.length === 1 ? 'spool' : 'spools'} · ${status?.spoolman?.configured ? 'Spoolman' : 'Stored on this scale'}${state.inventory?.stale ? ' · cached' : ''}`;
   $('#refresh-scale-inventory').disabled = !state.token || state.busy || privateLoading || state.inventory?.refreshing || !fresh;
   $('#select-spool').disabled = !state.token || !fresh || !$('#active-select').value || state.busy;
   const tag = fresh ? status?.nfc || {} : {};
@@ -244,6 +246,7 @@ function render() {
   $('#write-tag').disabled = !spool || !!tagWriteGuard(status, null, fresh, $('#tag-format').value) || state.busy;
   $('#tag-format-note').textContent = TAG_FORMATS.find(item => item.id === $('#tag-format').value)?.note || '';
   $('#link-tag').disabled = !spool || !fresh || state.busy;
+  setButtonText($('#link-tag'), spool?.tag_uid ? 'Change RFID' : 'Link RFID');
   // Cloning only applies to a Bambu Classic tag on the reader.
   $('#clone-tag').disabled = !state.token || !fresh || state.busy || tag.chip !== 'classic';
   $('#erase-tag').disabled = !state.token || !fresh || state.busy || !tag.present || !tag.uid || !tag.raw_writable;
@@ -604,6 +607,27 @@ function details(list, pairs) {
   }
 }
 
+// Optional Spoolman facts; the list stays hidden when the spool carries none.
+function renderSpoolFacts(list, spool) {
+  const rows = spoolDetailRows(spool?.details);
+  list.replaceChildren();
+  for (const row of rows) {
+    const item = node('div');
+    const value = node('dd');
+    for (const color of row.colors || []) {
+      const chip = node('span', undefined, 'color-chip');
+      chip.style.background = color;
+      chip.setAttribute('aria-hidden', 'true');
+      value.append(chip);
+    }
+    value.append(row.value);
+    item.append(node('dt', row.label), value);
+    list.append(item);
+  }
+  list.hidden = !rows.length;
+  return rows.length;
+}
+
 function renderInventory() {
   const query = $('#inventory-search').value.trim().toLowerCase();
   const matches = filterSpools(state.spools, query);
@@ -658,6 +682,14 @@ function renderInventory() {
     actions.append(use, edit, link, remove);
     heading.prepend(top);
     card.append(identity, values, actions);
+    const facts = node('dl', undefined, 'details-list spool-facts');
+    if (renderSpoolFacts(facts, spool)) {
+      const more = node('details', undefined, 'spool-more');
+      more.open = openFacts.has(String(spool.id));
+      more.addEventListener('toggle', () => { if (more.open) openFacts.add(String(spool.id)); else openFacts.delete(String(spool.id)); });
+      more.append(node('summary', 'Filament details'), facts);
+      card.append(more);
+    }
     if (spool.removal_pending) card.append(node('p', 'Archive not confirmed. Check its status before using this spool.', 'inline-result error'));
     list.append(card);
   }
@@ -830,7 +862,7 @@ function setupTheme() {
     const theme = resolveTheme(preference, system.matches);
     document.documentElement.dataset.theme = theme;
     $('meta[name=color-scheme]').content = theme;
-    $('meta[name=theme-color]').content = theme === 'dark' ? '#111b18' : '#f6f7f2';
+    $('meta[name=theme-color]').content = theme === 'dark' ? '#151917' : '#f5f6f4';
     $('#theme-select').value = preference;
   };
   $('#theme-select').addEventListener('change', event => { preference = saveThemePreference(storage, event.target.value); apply(); });

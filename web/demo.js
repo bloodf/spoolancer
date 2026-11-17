@@ -5,8 +5,8 @@ const fail = (message, status = 400) => { const error = new Error(message); erro
 
 export function createDemo({ now = Date.now } = {}) {
   const profiles = [
-    { id: 'demo-1', name: 'Forest green PLA', brand: 'Bambu Lab', material: 'PLA', color: '#3d7058', empty_weight_g: 250, initial_weight_g: 1000, density_g_cm3: 1.24, diameter_mm: 1.75, spoolman_id: 12, remaining_weight_g: 618 },
-    { id: 'demo-2', name: 'Warm white PETG', brand: 'Polymaker', material: 'PETG', color: '#d7d2bc', empty_weight_g: 185, initial_weight_g: 1000, density_g_cm3: 1.27, diameter_mm: 1.75, spoolman_id: null, remaining_weight_g: null },
+    { id: 'demo-1', name: 'Forest green PLA', brand: 'Bambu Lab', material: 'PLA', color: '#3d7058', empty_weight_g: 250, initial_weight_g: 1000, density_g_cm3: 1.24, diameter_mm: 1.75, spoolman_id: 12, remaining_weight_g: 618, details: { extruder_temp_c: 220, bed_temp_c: 60, multi_color_hexes: '3D7058,A8C69F', multi_color_direction: 'coaxial', location: 'Dry box 2', price: 21.9, lot_nr: 'L2405-118', comment: 'Opened in May' } },
+    { id: 'demo-2', name: 'Warm white PETG', brand: 'Polymaker', material: 'PETG', color: '#d7d2bc', empty_weight_g: 185, initial_weight_g: 1000, density_g_cm3: 1.27, diameter_mm: 1.75, spoolman_id: null, remaining_weight_g: null, details: { extruder_temp_c: 240, bed_temp_c: 80 } },
     { id: 'demo-3', name: 'Signal orange PLA', brand: 'Generic', material: 'PLA', color: '#cc7938', empty_weight_g: null, initial_weight_g: 1000, density_g_cm3: 1.24, diameter_mm: 1.75, spoolman_id: null, remaining_weight_g: null },
   ];
   const status = {
