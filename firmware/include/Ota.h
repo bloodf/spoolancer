@@ -1,13 +1,8 @@
 #pragma once
-// Over-the-air firmware/filesystem update pulled from the project's GitHub releases.
-// The release workflow (.github/workflows/release.yml) publishes, for every board variant,
-// two fixed-name assets: spoolancer-<variant>-firmware.bin (app image) and
-// spoolancer-<variant>-littlefs.bin (web/filesystem image). The device asks the GitHub API
-// for the latest release, matches the assets for its own variant, and flashes them.
-//
-// ponytail: TLS transport only (setInsecure) and no binary signature — the OTA trusts GitHub
-// over HTTPS and the dual OTA app partitions make a bad app image recoverable, a bad filesystem
-// image re-flashable. Upgrade path: WiFiClientSecure::setCACertBundle + signed images.
+// OTA application images include the device webpage. The legacy littlefs release
+// asset remains published for older updaters, but this app never needs to flash it.
+// ponytail: TLS transport only (setInsecure), without binary signatures.
+// Upgrade path: CA validation and signed images.
 #include <cstddef>
 #include <cstdio>
 #include <cstring>
@@ -50,7 +45,6 @@ struct Release {
   String error;        // Non-empty when the latest release could not be resolved.
   String tag;          // Latest release tag, e.g. "v1.2.0".
   String firmwareUrl;  // Download URL of this variant's app image (required).
-  String fsUrl;        // Download URL of this variant's filesystem image (optional).
   String notesUrl;     // Human-readable release page.
 };
 
@@ -80,14 +74,12 @@ inline Release fetchLatest(const char *variant, const char *repo = SPOOLANCER_OT
   if (err) { r.error = "Could not parse the GitHub response."; return r; }
   r.tag = doc["tag_name"].as<String>();
   r.notesUrl = doc["html_url"].as<String>();
-  char fw[64], fs[64];
+  char fw[64];
   assetName(variant, "firmware", fw, sizeof(fw));
-  assetName(variant, "littlefs", fs, sizeof(fs));
   for (JsonObject a : doc["assets"].as<JsonArray>()) {
     const char *name = a["name"];
     if (!name) continue;
     if (!std::strcmp(name, fw)) r.firmwareUrl = a["browser_download_url"].as<String>();
-    else if (!std::strcmp(name, fs)) r.fsUrl = a["browser_download_url"].as<String>();
   }
   if (r.tag.isEmpty()) { r.error = "The latest release has no tag."; return r; }
   if (r.firmwareUrl.isEmpty()) { r.error = String("The latest release has no ") + fw + " image."; return r; }
@@ -95,16 +87,12 @@ inline Release fetchLatest(const char *variant, const char *repo = SPOOLANCER_OT
   return r;
 }
 
-// Flash the filesystem image first (if present), then the app image. On success the device
-// reboots into the new firmware and this never returns; on failure it returns the reason.
+// Update only the inactive app slot. Its embedded webpage switches with the app.
+// NVS, the legacy asset filesystem and private inventory are left untouched.
 inline String apply(const Release &rel) {
   WiFiClientSecure client; client.setInsecure();
   httpUpdate.rebootOnUpdate(false);
   httpUpdate.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
-  if (!rel.fsUrl.isEmpty()) {
-    if (httpUpdate.updateSpiffs(client, rel.fsUrl) == HTTP_UPDATE_FAILED)
-      return String("Filesystem update failed: ") + httpUpdate.getLastErrorString();
-  }
   if (httpUpdate.update(client, rel.firmwareUrl) == HTTP_UPDATE_FAILED)
     return String("Firmware update failed: ") + httpUpdate.getLastErrorString();
   ESP.restart();

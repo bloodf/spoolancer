@@ -41,8 +41,10 @@ struct Cache {
     return !connected || !successful || failed || uint32_t(now - refreshedAt) >= freshnessMs;
   }
   bool shouldRefresh(uint32_t now, bool connected, bool force) const {
-    if (!connected || (attempted && uint32_t(now - attemptedAt) < retryMs)) return false;
-    return force || stale(now, connected);
+    if (!connected) return false;
+    if (force) return true;
+    if (attempted && uint32_t(now - attemptedAt) < retryMs) return false;
+    return stale(now, connected);
   }
   void begin(uint32_t now) { attempted = true; attemptedAt = now; }
   void finish(uint32_t now, bool ok) {

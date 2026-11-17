@@ -1,4 +1,4 @@
-import { TAG_FORMATS, validateSpool, measurement, tagWriteGuard, tagLinkGuard, grams, validSpoolmanUrl, COMMON_MATERIALS, COLOR_SWATCHES, normalizeHex, materialSelection, resolveMaterial, THEME_STORAGE_KEY, normalizeTheme, resolveTheme, readThemePreference, saveThemePreference, pairingState, sessionBody, usesOpenSetup, setupState, setupBody, pinIsOptional, networkChoices, wifiCredentials, scaleZeroGuard, scaleCalibrationGuard, fullSpoolTare, inventoryState, inventoryActionSpool, cleanLocalDraft, ledSegments } from './logic.js';
+import { filterSpools, spoolLabel, spoolTagUids, selectionMessage, tagStorage, TAG_FORMATS, validateSpool, measurement, tagWriteGuard, tagLinkGuard, grams, validSpoolmanUrl, COMMON_MATERIALS, COLOR_SWATCHES, normalizeHex, materialSelection, resolveMaterial, THEME_STORAGE_KEY, normalizeTheme, resolveTheme, readThemePreference, saveThemePreference, pairingState, sessionBody, usesOpenSetup, setupState, setupBody, pinIsOptional, networkChoices, wifiCredentials, scaleZeroGuard, scaleCalibrationGuard, fullSpoolTare, inventoryState, inventoryActionSpool, cleanLocalDraft, ledSegments } from './logic.js';
 
 const $ = selector => document.querySelector(selector);
 const state = { token: '', status: null, spools: [], lastSeen: 0, busy: false, configDirty: false, connectionDirty: false, serverDirty: false, privateLoaded: false, action: null, demo: false, lastPrivate: 0, calibrationZeroed: false, calibrationReference: null, inventory: null, drafts: [], editedSpool: null };
@@ -24,6 +24,7 @@ let savedSpoolmanUrl = '';
 let tagLink = null;
 let diagnosticResults = {};
 let firmwareInfo = null;
+let privateLoading = false;
 const networkPickers = ['setup', 'config'].map(name => ({ name, root: $(`#${name}-network`) }));
 const needsSetup = () => state.status?.setup?.required === true;
 
@@ -36,7 +37,7 @@ function node(tag, text, className) {
 
 async function deviceRequest(path, { method = 'GET', body } = {}) {
   const controller = new AbortController();
-  const duration = ['/api/spools', '/api/spools/remove', '/api/nfc/write', '/api/spoolman/sync'].includes(path.split('?')[0]) ? 30000 : ['/api/nfc/read', '/api/spools/tag', '/api/spoolman/test', '/api/diagnostics', '/api/update'].includes(path) ? 20000 : 8000;
+  const duration = ['/api/spools', '/api/spools/remove', '/api/nfc/write', '/api/nfc/erase', '/api/spoolman/sync'].includes(path.split('?')[0]) ? 30000 : ['/api/nfc/read', '/api/spools/tag', '/api/spoolman/test', '/api/diagnostics', '/api/update'].includes(path) ? 20000 : 8000;
   const timeout = setTimeout(() => controller.abort(), duration);
   try {
     const response = await fetch(path, {
@@ -139,7 +140,9 @@ async function refreshStatus() {
 }
 
 async function loadPrivate(reportError = true, refreshInventory = false) {
-  if (!state.token) return;
+  if (!state.token || privateLoading) return;
+  privateLoading = true; render();
+  try {
   const token = state.token;
   state.lastPrivate = Date.now();
   const results = await Promise.allSettled([api(`/api/spools${refreshInventory ? '?refresh=1' : ''}`), api('/api/config')]);
@@ -163,12 +166,18 @@ async function loadPrivate(reportError = true, refreshInventory = false) {
     form.elements.wifi_password.value = '';
   }
   if (results[0].status === 'rejected') {
-    state.inventory = { ...(state.inventory || {}), source: state.status?.spoolman?.configured ? 'spoolman' : 'local', stale: true, cached: state.spools.length > 0, error: results[0].reason.message };
+    state.inventory = { ...(state.inventory || {}), source: state.status?.spoolman?.configured ? 'spoolman' : 'local', stale: true, cached: state.spools.length > 0, refreshing: false, error: results[0].reason.message };
     renderInventory();
   }
   const failure = results.find(result => result.status === 'rejected');
   if (failure && reportError) notice(failure.reason.message, true);
   render();
+  } finally {
+    privateLoading = false;
+    renderInventory();
+    if (state.token) { try { await refreshStatus(); } catch { state.lastSeen = 0; } }
+    render();
+  }
 }
 
 async function poll() {
@@ -177,7 +186,7 @@ async function poll() {
   try {
     await refreshStatus();
     await ensureLocalSession();
-    if (state.token && Date.now() - state.lastPrivate > 60000 && !state.busy) await loadPrivate(false);
+    if (state.token && (Date.now() - state.lastPrivate > 15000 || ((state.inventory?.refreshing || state.status?.spoolman?.inventory_refreshing) && Date.now() - state.lastPrivate > 800)) && !state.busy) await loadPrivate(false);
     maybeScanNetworks();
     if (visibleView === 'settings' && state.token && !lastDiscovered && state.status?.network?.connected && !state.status?.spoolman?.configured) void discoverSpoolman();
   } catch {
@@ -193,8 +202,8 @@ function render() {
   const m = currentMeasurement();
   setView();
   $('#device-name').textContent = status?.device?.name || 'Spool scale';
-  $('#connection').className = `connection ${fresh ? 'online' : 'offline'}`;
-  $('#connection span').textContent = state.busy ? 'Action in progress' : fresh ? (state.demo ? 'Demo connected' : 'Device connected') : 'Device disconnected';
+  $('#connection').className = `connection ${privateLoading || state.busy ? 'pending' : fresh ? 'online' : 'offline'}`;
+  $('#connection span').textContent = state.busy ? 'Action in progress' : privateLoading ? 'Loading inventory' : fresh ? (state.demo ? 'Demo connected' : 'Device connected') : 'Device disconnected';
   $('#pair-button').textContent = state.token ? 'Lock session' : pairingState(status, fresh).required ? 'Set up device' : 'Pair device';
   $('#pair-button').hidden = !status || needsSetup() || pinIsOptional(status) || setupFinished;
   renderPairing();
@@ -211,19 +220,26 @@ function render() {
   $('#weight-meter').hidden = m.percent === null;
   $('#weight-meter span').style.width = `${m.percent || 0}%`;
   $('#reading-time').textContent = fresh ? (state.demo ? 'Simulated reading' : 'Live device reading') : 'No live reading';
-  $('#active-name').textContent = spool?.name || (state.token ? 'Choose a spool' : 'Pair to see your spools');
+  $('#active-name').textContent = (spool ? spool.name || spoolLabel(spool) : '') || (state.token ? 'Choose a spool' : 'Pair to see your spools');
   $('#active-brand').textContent = spool?.brand || (spool ? 'Brand not set' : 'Enter a known empty weight to calculate remaining filament.');
   $('#active-material').textContent = spool?.material || 'No spool selected';
   $('#active-swatch').style.setProperty('--spool-color', /^#[0-9a-f]{6}$/i.test(spool?.color || '') ? spool.color : '#7c8d7a');
   $('#edit-active').disabled = !spool || state.busy;
   $('#edit-active').textContent = spool?.metadata_readonly ? 'Details' : 'Edit';
-  $('#active-select').disabled = !state.token || !fresh || state.busy;
+  $('#active-select').disabled = !state.token || !fresh || state.busy || privateLoading;
+  $('#active-search').disabled = !state.token || privateLoading;
+  $('#selection-message').textContent = state.token ? selectionMessage(status, state.spools) : 'Pair to match NFC tags with your inventory.';
+  $('#scale-inventory-summary').textContent = !state.token ? 'Pair to choose from your inventory.' : privateLoading || state.inventory?.refreshing ? 'Loading spools from the inventory…' : state.inventory?.error ? state.inventory.error : `${state.spools.length} spools · ${status?.spoolman?.configured ? 'Spoolman' : 'Stored on this scale'}${state.inventory?.stale ? ' · cached' : ''}`;
+  $('#refresh-scale-inventory').disabled = !state.token || state.busy || privateLoading || state.inventory?.refreshing || !fresh;
   $('#select-spool').disabled = !state.token || !fresh || !$('#active-select').value || state.busy;
   const tag = fresh ? status?.nfc || {} : {};
-  $('#tag-state').textContent = !fresh ? 'Unavailable' : tag.present ? tag.writable ? 'Writable' : 'Read-only' : 'No tag';
+  $('#tag-state').textContent = !fresh ? 'Unavailable' : tag.available === false ? 'Reader offline' : tag.present ? tag.writable ? 'Writable' : 'Read-only' : 'No tag';
   $('#tag-state').className = `pill ${tag.present && tag.writable ? '' : 'neutral'}`;
   $('#tag-type').textContent = tag.type || '—';
   $('#tag-uid').textContent = tag.uid || '—';
+  const storage = tagStorage(tag, $('#tag-format').value);
+  $('#tag-storage').textContent = storage.capacity;
+  $('#tag-storage-note').textContent = $('#tag-format').value === 'spoolancer' ? storage.note : '';
   $('#tag-message').textContent = tag.last_error || tag.last_message || tag.message || 'Position the tag over the reader. Only writable inventory tags can be edited.';
   $('#read-tag').disabled = !fresh || state.busy;
   $('#write-tag').disabled = !spool || !!tagWriteGuard(status, null, fresh, $('#tag-format').value) || state.busy;
@@ -231,6 +247,7 @@ function render() {
   $('#link-tag').disabled = !spool || !fresh || state.busy;
   // Cloning only applies to a Bambu Classic tag on the reader.
   $('#clone-tag').disabled = !state.token || !fresh || state.busy || tag.chip !== 'classic';
+  $('#erase-tag').disabled = !state.token || !fresh || state.busy || !tag.present || !tag.uid || !tag.raw_writable;
   const sm = status?.spoolman || {};
   $('#sync-state').textContent = !fresh ? 'Unavailable' : sm.last_error ? 'Needs attention' : sm.pending ? 'Pending' : sm.configured ? 'Configured' : 'Not configured';
   $('#sync-state').className = `pill ${sm.last_error ? 'error' : sm.pending ? 'warning' : 'neutral'}`;
@@ -244,6 +261,8 @@ function render() {
   $('#sync-button').hidden = sm.configured && !!spool?.spoolman_id;
   $('#spoolman-config-state').textContent = sm.last_error ? 'Needs attention' : sm.configured ? 'Configured' : 'Optional';
   if ($('#spool-dialog').open) renderSpoolMass();
+  $('#open-spoolman').hidden = !savedSpoolmanUrl || !validSpoolmanUrl(savedSpoolmanUrl);
+  $('#open-spoolman').href = savedSpoolmanUrl || '#';
   $('#device-ip').textContent = fresh ? status?.network?.ip || 'Not assigned' : 'Unavailable';
   $('#wifi-state').textContent = fresh ? status?.network?.connected ? 'Connected' : status?.setup?.ap_active ? 'Temporary setup network' : 'Not connected' : 'Unknown';
   $('#tare-button').disabled = !!scaleZeroGuard(status, fresh) || state.busy;
@@ -317,7 +336,7 @@ async function checkFirmware() {
 }
 async function applyFirmware() {
   if (!requirePair() || !firmwareInfo?.update_available) return;
-  if (!confirm('Install the latest firmware now? The device downloads it and reboots, and will be offline for about a minute. Keep it powered.')) return;
+  if (!confirm('Install the latest firmware now? The device downloads the firmware and included webpage, then reboots and will be offline for about a minute. Keep it powered.')) return;
   setBusy(true);
   try {
     const result = await api('/api/update', { method: 'POST', body: { confirm: true } });
@@ -331,7 +350,7 @@ async function uploadFirmware() {
   const file = $('#firmware-file').files[0];
   if (!file) { notice('Choose a firmware .bin file first.', true); return; }
   if (state.demo) { notice('Firmware upload is simulated in the demo; no device was flashed.'); return; }
-  if (!confirm(`Flash "${file.name}" (${Math.round(file.size / 1024)} KB) to this device now? Make sure it is the image built for this board. The device reboots into it; a wrong image is recoverable over USB.`)) return;
+  if (!confirm(`Flash "${file.name}" (${Math.round(file.size / 1024)} KB) to this device now? Make sure it is the image built for this board. New Spoolancer builds include the webpage in this same image. The device reboots into it; a wrong image is recoverable over USB.`)) return;
   setBusy(true);
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 120000);
@@ -568,8 +587,8 @@ function populateSelector(followActive = false) {
   const previous = select.value;
   select.replaceChildren(node('option', 'Choose a spool…'));
   select.firstChild.value = '';
-  for (const spool of state.spools) {
-    const option = node('option', `${spool.name} / ${spool.material}`);
+  for (const spool of filterSpools(state.spools, $('#active-search').value)) {
+    const option = node('option', spoolLabel(spool));
     option.value = spool.id;
     select.append(option);
   }
@@ -588,42 +607,42 @@ function details(list, pairs) {
 
 function renderInventory() {
   const query = $('#inventory-search').value.trim().toLowerCase();
-  const matches = state.spools.filter(s => `${s.name} ${s.brand} ${s.material}`.toLowerCase().includes(query));
+  const matches = filterSpools(state.spools, query);
   const list = $('#inventory-list');
   list.replaceChildren();
   const inventory = state.inventory;
   const remote = inventory?.source === 'spoolman' || state.status?.spoolman?.configured;
   $('#inventory-source').textContent = !state.token ? 'Pair to view inventory' : remote ? 'Spoolman inventory' : 'Stored on this scale';
-  $('#inventory-message').textContent = !state.token ? 'Your spool profiles are visible after pairing.' : inventory?.error ? `${inventory.cached ? 'Showing cached server data. ' : ''}${inventory.error}` : inventory?.stale ? 'Showing the last server inventory. Refresh to check for changes.' : remote ? 'Spoolman owns these profiles. Material details are edited on your server.' : 'Connect Spoolman in Settings to use a shared inventory.';
+  $('#inventory-message').textContent = privateLoading || inventory?.refreshing ? 'Loading the inventory. This can take a moment on a busy server.' : !state.token ? 'Your spool profiles are visible after pairing.' : inventory?.error ? `${inventory.cached ? 'Showing cached server data. ' : ''}${inventory.error}` : inventory?.stale ? 'Showing the last server inventory. Refresh to check for changes.' : remote ? 'Spoolman owns these profiles. Material details are edited on your server.' : 'Connect Spoolman in Settings to use a shared inventory.';
   $('.inventory-source').classList.toggle('has-error', !!inventory?.error);
-  $('#refresh-inventory').disabled = !state.token || !isFresh() || state.busy;
+  $('#refresh-inventory').disabled = !state.token || !isFresh() || state.busy || privateLoading || inventory?.refreshing;
   const unavailable = !!inventory?.error && !inventory.cached && !state.spools.length;
-  $('#spool-count').hidden = !state.token || unavailable || !state.privateLoaded;
+  $('#spool-count').hidden = !state.token || unavailable || !state.privateLoaded || inventory?.refreshing;
   $('#spool-count').textContent = state.spools.length;
-  $('#inventory-total').textContent = !state.token ? 'Pair to load private inventory' : !state.privateLoaded ? 'Loading inventory' : unavailable ? 'Count unavailable' : `${matches.length} of ${state.spools.length} spools`;
+  $('#inventory-total').textContent = !state.token ? 'Pair to load private inventory' : !state.privateLoaded || inventory?.refreshing ? 'Loading inventory' : unavailable ? 'Count unavailable' : `${matches.length} of ${state.spools.length} spools`;
   $('#inventory-empty').hidden = matches.length > 0;
-  $('#inventory-empty h2').textContent = !state.token ? 'Your inventory is private' : inventory?.error && !matches.length ? 'Inventory unavailable' : query ? 'No matching spools' : remote ? 'No spools on this server' : 'No spools yet';
-  $('#inventory-empty p').textContent = !state.token ? 'Pair with your scale to see its spool profiles.' : inventory?.error && !matches.length ? 'Check the server connection in Settings, then refresh. Local records are not substituted.' : query ? 'Try another name, brand or material.' : 'Add a spool to start tracking remaining filament.';
+  $('#inventory-empty h2').textContent = inventory?.refreshing ? 'Loading spools…' : !state.token ? 'Your inventory is private' : inventory?.error && !matches.length ? 'Inventory unavailable' : query ? 'No matching spools' : remote ? 'No spools on this server' : 'No spools yet';
+  $('#inventory-empty p').textContent = inventory?.refreshing ? 'Reading a complete server inventory. You can keep using Settings while it loads.' : !state.token ? 'Pair with your scale to see its spool profiles.' : inventory?.error && !matches.length ? 'Check the server connection in Settings, then refresh. Local records are not substituted.' : query ? 'Try another name, brand or material.' : 'Add a spool to start tracking remaining filament.';
   $('#new-spool-empty').textContent = state.token ? 'Add a spool' : 'Pair device';
   $('#new-spool-empty').hidden = !!query && !!state.token;
   for (const spool of matches) {
     const active = String(spool.id) === String(state.status?.active_spool_id);
     const card = node('article', undefined, `inventory-card${active ? ' active' : ''}`);
     const top = node('div', undefined, 'card-top');
-    top.append(node('span', active ? 'On the scale' : 'Saved spool', 'eyebrow'), node('span', spool.material, 'pill neutral'));
+    top.append(node('span', active ? 'On the scale' : spool.spoolman_id ? `Spool #${spool.spoolman_id}` : 'Local spool', 'inventory-row-state'), node('span', spool.material, 'pill neutral'));
     const identity = node('div', undefined, 'spool-identity');
     const picture = node('div', undefined, 'spool-drawing');
     picture.setAttribute('aria-hidden', 'true');
     if (/^#[0-9a-f]{6}$/i.test(spool.color || '')) picture.style.setProperty('--spool-color', spool.color);
     picture.append(node('i'));
     const heading = node('div');
-    heading.append(node('h3', spool.name), node('p', spool.brand || 'Brand not set'));
+    heading.append(node('h3', spool.name || spoolLabel(spool)), node('p', spool.brand || 'Brand not set'));
     identity.append(picture, heading);
     const values = node('dl', undefined, 'details-list');
-    details(values, [['Empty spool', typeof spool.empty_weight_g === 'number' ? `${grams(spool.empty_weight_g)} g` : 'Unknown'], ['Last saved remaining', typeof spool.remaining_weight_g === 'number' ? `${grams(spool.remaining_weight_g)} g` : 'No measurement'], ['Spoolman', spool.spoolman_id ? `#${spool.spoolman_id}` : 'Not linked'], ['RFID tag', spool.tag_uid || 'Not linked']]);
+    details(values, [['Empty spool', typeof spool.empty_weight_g === 'number' ? `${grams(spool.empty_weight_g)} g` : 'Unknown'], ['Last saved remaining', typeof spool.remaining_weight_g === 'number' ? `${grams(spool.remaining_weight_g)} g` : 'No measurement'], ['Spoolman', spool.spoolman_id ? `#${spool.spoolman_id}` : 'Not linked'], ['RFID', spoolTagUids(spool).length ? `${spoolTagUids(spool).length} linked` : 'Not linked']]);
     const actions = node('div', undefined, 'button-row inventory-actions');
-    const use = node('button', active ? 'Selected' : 'Use on scale', 'button secondary');
-    use.disabled = active || state.busy;
+    const use = node('button', active ? 'Selected' : 'Use on scale', 'button');
+    use.disabled = active || state.busy || !isFresh();
     use.setAttribute('aria-label', `Use ${spool.name} on scale`);
     use.addEventListener('click', () => chooseSpool(spool.id));
     const edit = node('button', spool.metadata_readonly ? 'Details' : 'Edit', 'button secondary');
@@ -638,7 +657,8 @@ function renderInventory() {
     remove.setAttribute('aria-label', `Remove ${spool.name}`);
     remove.addEventListener('click', () => showRemove(spool));
     actions.append(use, edit, link, remove);
-    card.append(top, identity, values, actions);
+    heading.prepend(top);
+    card.append(identity, values, actions);
     if (spool.removal_pending) card.append(node('p', 'Archive not confirmed. Check its status before using this spool.', 'inline-result error'));
     list.append(card);
   }
@@ -731,7 +751,7 @@ function setButtonText(button, text) {
   if (label) label.textContent = text; else button.textContent = text;
 }
 function setupIcons() {
-  const buttons = { '#refresh-button': 'refresh-cw', '#new-spool': 'plus', '#new-spool-scale': 'plus', '#save-measurement': 'save', '#read-tag': 'nfc', '#write-tag': 'nfc', '#link-tag': 'nfc', '#clone-tag': 'nfc', '#tag-link-scan': 'nfc', '#discover-spoolman': 'search', '#refresh-inventory': 'refresh-cw', '#test-nfc':'nfc', '#test-leds':'check', '#test-scale':'scale' };
+  const buttons = { '#refresh-button': 'refresh-cw', '#new-spool': 'plus', '#new-spool-scale': 'plus', '#save-measurement': 'save', '#read-tag': 'nfc', '#write-tag': 'nfc', '#link-tag': 'nfc', '#clone-tag': 'nfc', '#erase-tag': 'x', '#tag-link-scan': 'nfc', '#discover-spoolman': 'search', '#refresh-inventory': 'refresh-cw', '#test-nfc':'nfc', '#test-leds':'check', '#test-scale':'scale' };
   for (const [selector, name] of Object.entries(buttons)) { const el = $(selector); const label = node('span', el.textContent.replace(/^\+\s*/, ''), 'button-label'); el.replaceChildren(icon(name), label); }
   for (const [view, name] of Object.entries({ scale: 'scale', inventory: 'layers', settings: 'settings-2' })) $(`[data-view=${view}]`).prepend(icon(name));
 }
@@ -933,6 +953,10 @@ function tagLinkIssue() {
 
 function renderTagLink() {
   if (!tagLink) return;
+  if (!state.busy && tagLink.uid && (!isFresh() || state.status?.nfc?.present !== true || state.status.nfc.uid !== tagLink.uid)) {
+    tagLink.error = tagLinkIssue();
+    tagLink.uid = '';
+  }
   $('#tag-link-uid').textContent = tagLink.uid || 'Not scanned';
   $('#tag-link-scan').disabled = state.busy || !!inventoryActionGuard(tagLink.spool.id);
   setButtonText($('#tag-link-scan'), state.busy ? 'Please wait' : tagLink.uid ? 'Scan again' : 'Scan tag');
@@ -972,8 +996,8 @@ function showWrite() {
   const article = /^[aeiou]/i.test(format.label) ? 'an' : 'a';
   const description = printer
     ? `This replaces the tag’s current contents with ${article} ${format.label} record so the printer’s stock firmware recognizes the material and color. ${format.note} The tag ID is then linked to this spool on the scale. Keep the tag still until the device verifies it.`
-    : 'This replaces the supported tag’s inventory record with the selected profile. Keep the same tag still at the reader until the device verifies it. This format does not create tags for stock printers.';
-  confirmAction({ title: printer ? `Write ${article} ${format.label} tag?` : 'Write this inventory tag?', description, rows: [['Spool', spool.name], ['Material / color', `${spool.material} / ${spool.color}`], ['Expected tag ID', uid || 'No tag'], ['Format', printer ? format.label : 'Spoolancer inventory / schema 1']], label: 'Write & verify tag', guard: () => !state.token ? 'Pair with the device first.' : String(state.status?.active_spool_id) !== String(spool.id) ? 'The active spool changed. Cancel and review it again.' : tagWriteGuard(state.status, uid, isFresh(), format.id), run: () => mutation('/api/nfc/write', { spool_id: spool.id, expected_uid: uid, format: format.id, confirm: true }, 'The device completed the write and read-back check.') });
+    : `${tagStorage(state.status?.nfc).note} This writes the inventory record described above. Keep the same tag still at the reader until the device verifies it. This format does not create tags for stock printers.`;
+  confirmAction({ title: printer ? `Write ${article} ${format.label} tag?` : 'Write this inventory tag?', description, rows: [['Spool', spool.name], ['Material / color', `${spool.material} / ${spool.color}`], ['Expected tag ID', uid || 'No tag'], ['Tag type', state.status?.nfc?.type || 'Unknown'], ['Storage', tagStorage(state.status?.nfc, format.id).capacity], ['Format', printer ? format.label : state.status?.nfc?.inventory_write?.kind === 'link' ? 'Spoolancer inventory link' : 'Spoolancer full profile']], label: 'Write & verify tag', guard: () => !state.token ? 'Pair with the device first.' : String(state.status?.active_spool_id) !== String(spool.id) ? 'The active spool changed. Cancel and review it again.' : tagWriteGuard(state.status, uid, isFresh(), format.id), run: () => mutation('/api/nfc/write', { spool_id: spool.id, expected_uid: uid, format: format.id, confirm: true }, 'The device completed the write and read-back check.') });
 }
 
 function showSync() {
@@ -1076,6 +1100,7 @@ $('#action-confirm').addEventListener('click', async () => {
 });
 for (const selector of ['#new-spool', '#new-spool-scale', '#new-spool-empty']) $(selector).addEventListener('click', () => editSpool());
 $('#edit-active').addEventListener('click', () => editSpool(activeSpool()));
+$('#active-search').addEventListener('input', () => { populateSelector(); render(); });
 $('#select-spool').addEventListener('click', () => chooseSpool($('#active-select').value));
 $('#active-select').addEventListener('change', render);
 $('#inventory-search').addEventListener('input', renderInventory);
@@ -1090,6 +1115,10 @@ $('#calibration-restart').addEventListener('click', () => {
   $('#tare-calibration').focus();
 });
 $('#write-tag').addEventListener('click', showWrite);
+$('#erase-tag').addEventListener('click', () => {
+  const uid = state.status?.nfc?.uid;
+  confirmAction({ title: 'Erase this tag?', description: 'This clears the tag memory (NTAG user pages, or MIFARE Classic sector 1 with its factory key restored). Spool links to this tag ID are kept; unlink them separately. Genuine Bambu Lab and Snapmaker tags cannot be erased. Keep the tag still until the device verifies it.', rows: [['Expected tag ID', uid || 'No tag'], ['Tag type', state.status?.nfc?.type || 'Unknown']], label: 'Erase & verify tag', guard: () => !state.token ? 'Pair with the device first.' : !uid ? 'Place one tag on the reader.' : String(state.status?.nfc?.uid) !== String(uid) ? 'The tag changed. Cancel and review it again.' : '', run: () => mutation('/api/nfc/erase', { expected_uid: uid, confirm: true }, 'The device erased the tag and verified it.') });
+});
 for (const format of TAG_FORMATS) $('#tag-format').append(new Option(format.label, format.id));
 $('#tag-format').addEventListener('change', render);
 $('#link-tag').addEventListener('click', () => showTagLink(activeSpool()));
@@ -1114,7 +1143,7 @@ $('#tag-link-confirm').addEventListener('click', async () => {
   try {
     const result = await mutation('/api/spools/tag', { id: pending.spool.id, expected_uid: pending.uid, confirm: true }, 'RFID linked on this scale. The tag was not modified.');
     if (result && tagLink === pending) $('#tag-link-dialog').close();
-  } catch (error) { if (tagLink === pending) { pending.error = error.message; renderTagLink(); } }
+  } catch (error) { if (tagLink === pending) { pending.uid = ''; pending.error = error.message; renderTagLink(); } }
 });
 $('#sync-button').addEventListener('click', showSync);
 $('#save-measurement').addEventListener('click', () => {
@@ -1228,10 +1257,15 @@ $('#save-server').addEventListener('click', async () => {
   finally { setBusy(false); }
 });
 $('#test-spoolman').addEventListener('click', async () => {
+  if (!requirePair() || state.busy) return;
+  const url = $('#config-form').elements.spoolman_url.value.trim();
+  if (!url || !validSpoolmanUrl(url)) { $('#server-result').textContent = 'Enter a valid server address before testing.'; return; }
+  setBusy(true); $('#server-result').textContent = 'Connecting to Spoolman and checking its inventory…';
   try {
-    if ($('#config-form').elements.spoolman_url.value.trim() !== savedSpoolmanUrl) throw new Error('Save the server address before testing it.');
-    await mutation('/api/spoolman/test', {}, 'The device reached the configured Spoolman server.');
-  } catch (error) { notice(error.message, true); }
+    const result = await api('/api/spoolman/test', { method: 'POST', body: { url } });
+    $('#server-result').textContent = `${result.message} ${url === savedSpoolmanUrl ? 'Select Refresh spools to load the inventory.' : 'Select Save & load spools to use it.'}`;
+  } catch (error) { $('#server-result').textContent = error.message; }
+  finally { setBusy(false); }
 });
 for (const component of ['nfc', 'leds', 'scale']) $(`#test-${component}`).addEventListener('click', () => { void runDiagnostic(component); });
 $('#firmware-check').addEventListener('click', () => { void checkFirmware(); });
@@ -1254,7 +1288,14 @@ $('#calibration-form').addEventListener('submit', event => {
   } });
 });
 window.addEventListener('hashchange', () => { setView(); maybeScanNetworks(); });
-$('#refresh-inventory').addEventListener('click', async () => { if (!requirePair() || state.busy) return; setBusy(true); try { await loadPrivate(true, true); } finally { setBusy(false); } });
+async function refreshInventory() {
+  if (!requirePair() || state.busy || privateLoading) return;
+  setBusy(true);
+  try { await loadPrivate(true, true); await refreshStatus(); }
+  finally { setBusy(false); }
+}
+$('#refresh-inventory').addEventListener('click', refreshInventory);
+$('#refresh-scale-inventory').addEventListener('click', refreshInventory);
 $('#discover-spoolman').addEventListener('click', discoverSpoolman);
 $('#spool-form').addEventListener('input', renderSpoolMass);
 $('#spool-form').addEventListener('change', renderSpoolMass);

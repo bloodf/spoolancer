@@ -1,6 +1,6 @@
 # Spoolancer device firmware
 
-This is an Arduino/PlatformIO implementation for ESP32-S3 N16R8 hardware. The builds use 16 MB flash and octal PSRAM, read the HX711, communicate with the PN532 over HSU, and serve the local web interface. One `spoolancer-oled-led` board was flashed on 27 October 2026 and reported successful USB startup, detected memory and mounted storage. On 30 October, a connected OLED exposed an initialization stall; the corrected application reached normal startup, and the owner confirmed that the OLED and webpage work. **LED operation, detailed display states, weighing, NFC and real Spoolman behavior remain unvalidated.** See the [boot record](../docs/DEVICE-BOOT.md) and [full evidence record](../docs/STATUS.md).
+This is an Arduino/PlatformIO implementation for ESP32-S3 N16R8 hardware. The builds use 16 MB flash and octal PSRAM, read the HX711, communicate with the PN532 over I²C, and serve the local web interface. One `spoolancer-oled-led` board was flashed on 27 October 2026 and reported successful USB startup, detected memory and mounted storage. On 30 October, a connected OLED exposed an initialization stall; the corrected application reached normal startup, and the owner confirmed that the OLED and webpage work. **LED operation, detailed display states, weighing, NFC and real Spoolman behavior remain unvalidated.** See the [boot record](../docs/DEVICE-BOOT.md) and [full evidence record](../docs/STATUS.md).
 
 | Build environment | Controls |
 |---|---|
@@ -23,13 +23,12 @@ python3 firmware/tests/run.py
 python3 firmware/tests/json_numbers_test.py
 ```
 
-The pre-build script copies exactly `web/index.html`, `web/styles.css`, `web/app.js`, and `web/logic.js`, and `web/favicon.svg` into the asset image. It does not include the desktop demonstration. The HTTP server serves only these assets; private storage has no file-serving route.
+The pre-build script embeds exactly `web/index.html`, `web/styles.css`, `web/app.js`, `web/logic.js` and `web/favicon.svg` into the application as deterministic gzip content. A single firmware `.bin` therefore updates both firmware and webpage. It also copies those files into a legacy asset image for older release updaters. It does not include the desktop demonstration. The HTTP server serves only these assets; private storage has no file-serving route.
 
 When ready to test the hardware, connect the board's **COM** USB-C port and use:
 
 ```sh
 pio run -d firmware -e spoolancer-headless -t upload --upload-port YOUR_SERIAL_PORT
-pio run -d firmware -e spoolancer-headless -t uploadfs --upload-port YOUR_SERIAL_PORT
 pio device monitor -d firmware -e spoolancer-headless --port YOUR_SERIAL_PORT
 ```
 
@@ -37,7 +36,7 @@ Both upload commands were run successfully for `spoolancer-oled-led`; other prof
 
 For the integrated touchscreen, use `-e spoolancer-touch-8048` for build, filesystem and upload commands. It pins Arduino_GFX 1.4.9 and uses the reference RGB panel/GT911 layout described below. Treat it as experimental until the exact purchased board revision has been checked and tested.
 
-The `spiffs` partition contains LittleFS web assets at `0x810000`, size `0x6f0000` (7,274,496 bytes). A separate 1 MB `inventory` partition at `0xf00000` stores local spools and the remote-operation journal. Its CSV subtype is written numerically as `0x82`, the same ESP32 SPIFFS subtype, so PlatformIO 6.12 does not mistake the last private filesystem for the asset-upload target. A post-build configuration guard refuses filesystem build/upload targets with the wrong address or size. Configuration, PIN and calibration use NVS. Uploading assets leaves inventory separate; erasing the whole flash destroys all three. Inventory initializes once; a later mount or parsing failure disables writes and preserves data for recovery.
+The legacy `spiffs` partition reserves space for LittleFS web assets at `0x810000`, size `0x6f0000` (7,274,496 bytes). A separate 1 MB `inventory` partition at `0xf00000` stores local spools and the remote-operation journal. Its CSV subtype is written numerically as `0x82`, the same ESP32 SPIFFS subtype, so PlatformIO 6.12 does not mistake the last private filesystem for the asset-upload target. A post-build configuration guard refuses filesystem build/upload targets with the wrong address or size. New firmware serves its embedded webpage without mounting or updating `spiffs`. Configuration, PIN and calibration use NVS. Uploading assets leaves inventory separate; erasing the whole flash destroys all three. Inventory initializes once; a later mount or parsing failure disables writes and preserves data for recovery.
 
 After building firmware and filesystems, `python3 firmware/tests/check_filesystem.py --env spoolancer-headless` checks the generated binary partition table, image size, and unpacked contents against the five current web files. Omit `--env` to inspect all five built variants. It does not upload anything.
 
@@ -71,7 +70,7 @@ The OLED shows material, valid remaining grams, gross grams, status and IP addre
 
 ## Headless first use
 
-Use the development board’s existing **BOOT button on GPIO0**. No separate setup button, button wiring, or button perfboard is needed. The firmware enables GPIO0’s pull-up. Keep HX711 DOUT15/CLK16 and PN532 RX18/TX17 as specified in [WIRING.md](../WIRING.md), with both PN532 switches OFF. Leave the screen and Previous/Next/Select controls unconnected; this variant does not use them.
+Use the development board’s existing **BOOT button on GPIO0**. No separate setup button, button wiring, or button perfboard is needed. The firmware enables GPIO0’s pull-up. Keep HX711 DOUT15/CLK16 and connect PN532 SDA4/SCL5 as specified in [WIRING.md](../WIRING.md), with switch 1 ON and switch 2 OFF. Leave the screen and Previous/Next/Select controls unconnected; this variant does not use them.
 
 Use BOOT **after the firmware has started**, with the button initially released. Holding BOOT while powering on or pressing RST selects the ESP32 download boot mode, not Wi-Fi recovery. If that happens, release BOOT and press RST once, then use BOOT while the scale is running. The gesture handler ignores a button already held when it first starts polling until it sees a release. RST alone only restarts the board.
 
@@ -89,7 +88,7 @@ An upgrade preserves a valid legacy PIN, even if Wi-Fi was never configured. Pai
 
 ## Screen version first use
 
-1. Follow [WIRING.md](../WIRING.md). The fixed pin map is in `include/Pins.h`; PN532 switches are both OFF for HSU.
+1. Follow [WIRING.md](../WIRING.md). The fixed pin map is in `include/Pins.h`; PN532 switch 1 is ON and switch 2 is OFF for I²C. Headless/LED/OLED builds share SDA GPIO4 and SCL GPIO5 on `Wire`, controller 0 at 100 kHz. The OLED is at `0x3C`, PN532 at `0x24`. Updating from NFC GPIO17/18 requires matching firmware and both reader signal wires moved. PN532/OLED VCC and I²C logic use 3.3 V. Integrated touch and legacy ST7789 maps are unchanged and use their separate NFC controller.
 2. Read the eight-digit device PIN on the screen or serial console. Join `Spoolancer-xxxx` using that PIN as its setup Wi-Fi password, then open `http://192.168.4.1`.
 3. Pair in the browser with the PIN. Configure the home Wi-Fi network if desired. A failed connection keeps the setup AP available. Browser sessions last two hours and are held only in memory.
 4. With the cradle empty and still, zero it. Place a known 100–2000 g reference, enter its weight and calibrate. Check independent known weights before relying on measurements.
@@ -103,8 +102,8 @@ The exposed peripheral-header reference is [ESP3D's Sunton 4.3-inch 8048 page](h
 
 | Peripheral signal | Integrated board GPIO |
 |---|---:|
-| PN532 TXD → ESP RX | 13 |
-| PN532 RXD ← ESP TX | 11 |
+| PN532 SDA / TXD | 13 |
+| PN532 SCL / RXD | 11 |
 | HX711 DOUT | 12 |
 | HX711 SCK | 17 |
 | Physical Wi-Fi/access recovery | Onboard BOOT, GPIO0 |
@@ -117,7 +116,7 @@ Native controls select spools, read tags, write inventory tags, save measurement
 
 The configured measurement range is 20–2000 g **gross**, including the empty spool. This remains a limit even though inventory can describe an initial filament weight up to 5000 g. Unknown empty-spool weight blocks net-weight saving and synchronization. Calibration and zero are separate from the empty-spool weight.
 
-The HX711 is sampled only when ready. Weighing uses a median of three samples, responsive smoothing and time-based stability: four observations spanning at least 500 ms, with a 2 g entry band and 3 g exit band around a fixed anchor. Weight keeps updating while stable. A 600 ms sampling gap invalidates the reading. Tare and span calibration retain their separate 20-sample raw-data checks. A synthetic 10 SPS step test becomes stable at 700 ms, compared with the previous 2,000 ms window; this does not establish physical settling time or accuracy.
+The HX711 is sampled only when ready. Weighing uses a median of three samples, responsive smoothing and time-based stability measured against the smoothed value: four observations spanning at least 500 ms, with a 2 g entry band and 3 g exit band around a fixed anchor. The median rejects isolated spikes. Changes above 8 g bypass smoothing; smaller changes, including ±3 g resting noise, are smoothed. Weight keeps updating while stable. A 600 ms sampling gap invalidates the reading. Tare and span calibration retain their separate 20-sample raw-data checks. A synthetic 10 SPS step test becomes stable at 700 ms, compared with the previous 2,000 ms window; this does not establish physical settling time or accuracy.
 
 Firmware clears the selection after a loaded cradle returns near zero; wait for this before placing the next spool. A newly presented unrecognized tag also clears selection; an explicit read without a match keeps the current manual selection. The sensor cannot identify a different untagged spool swapped without a detected empty interval: select the correct record manually.
 
@@ -136,15 +135,15 @@ The existing screen build retains these controls:
 
 ## NFC format and limits
 
-Original Bambu Lab, Snapmaker and other ISO14443A tags are **read-only UID identification**. Their proprietary filament fields are not decoded. Linking a scanned identifier to an existing spool only changes the scale's saved association. It does not change printer data. To make a tag recognizable to a stock printer, write one of the printer formats below.
+The scale can link supported tag identifiers without rewriting their contents. An explicit read also attempts a read-only Bambu Lab or Snapmaker material preview using the implemented layouts. Experimental printer-format writers and Bambu magic-card cloning are described below. Read-back verification does not establish acceptance by a physical printer.
 
 Identification polls NFC-A first, then NFC-B, FeliCa 212/424 and Jewel, subject to the PN532's reported firmware capabilities. Legacy NFC-A UIDs remain uppercase hexadecimal (4/7/10 bytes). Other identifiers are namespaced: `B:` + 4-byte PUPI, `F:` + 8-byte IDm, `J:` + 4-byte ID. Protocol parsers reject malformed/truncated responses and reported multiple targets. A single attempt waits at most 350 ms per family/rate, yielding to scale/status work; the absent-tag path can total 1,750 ms. Polling stops at the first family found, and Jewel cannot report multiple targets, so place only one physical tag in the field. Randomized identifiers are unsuitable for persistent binding. ISO15693/Type 5 is not supported by this reader. No memory commands are sent to B/F/J tags.
 
 Identity scanning for linking is independent of tag-memory decoding. Valid single-target IDs can be associated even when the contents are protected or unreadable. A fresh scan must match the user's confirmation, and an ID already assigned to another stored profile is rejected. Explicit UID association takes priority over an older NDEF profile on a reused tag.
 
-Writes require one detected, unlocked NTAG213/215/216 with an exact supported version response and unprotected read/write capability container. Accepted NDEF capacities are respectively 144/496/872 bytes (physical user memory is 144/504/888). The complete serialized record must fit before any write; the current profile normally exceeds NTAG213 capacity. NTAG216 remains the recommended writable sticker. Only supported blank NDEF or Spoolancer-owned MIME records are accepted. Factory lock-control layouts not supported by the writer remain read-only. Other tag types, locked/protected tags, and foreign content are refused. UID is checked against the confirmation, reselected during each 16-byte write group, and checked on final read-back. Reserved lock/configuration/credential pages are never written. Tag movement, interruption or power loss can leave an incomplete record; the UI must report failure and the tag must be rescanned. This is not a transactional NFC device.
+Writes require one detected, unlocked NTAG213/215/216 with an exact supported version response and unprotected read/write capability container. Accepted NDEF capacities are respectively 144/496/872 bytes (physical user memory is 144/504/888). The complete serialized record must fit before any write; the full profile normally exceeds NTAG213 capacity. The writer uses the full profile when it fits, or a compact inventory link when it does not. It never truncates fields. A compact record contains only `schema: 1`, `spool_id` and `link_only: true`; the complete spool profile remains in the scale or Spoolman inventory. The browser shows detected type, encoded bytes including NDEF overhead, capacity, and full-profile/link mode before confirmation. The UID association is saved only after read-back verification. Only supported blank NDEF or Spoolancer-owned MIME records are accepted. Factory lock-control layouts not supported by the writer remain read-only. Other tag types, locked/protected tags, and foreign content are refused. UID is checked against the confirmation, reselected during each 16-byte write group, and checked on final read-back. Reserved lock/configuration/credential pages are never written. Tag movement, interruption or power loss can leave an incomplete record; the UI must report failure and the tag must be rescanned. This is not a transactional NFC device.
 
-The actual format is a single NDEF MIME record, `application/vnd.spoolancer+json`, in a Type 2 extended-length NDEF TLV. JSON payload limit is 650 bytes. It contains:
+The actual format is a single NDEF MIME record, `application/vnd.spoolancer+json`, in a Type 2 NDEF TLV, using short lengths when possible. JSON payload limit is 830 bytes (a full NTAG216). It contains:
 
 ```json
 {
@@ -157,7 +156,13 @@ The actual format is a single NDEF MIME record, `application/vnd.spoolancer+json
   "empty_weight_g": 250,
   "initial_weight_g": 1000,
   "density_g_cm3": 1.24,
-  "diameter_mm": 1.75
+  "diameter_mm": 1.75,
+  "details": {
+    "extruder_temp_c": 215, "bed_temp_c": 60, "article_number": "PLA-BK-1",
+    "multi_color_hexes": "111111,eeeeee", "multi_color_direction": "coaxial",
+    "external_id": "generic_pla_black", "lot_nr": "L-77", "price": 19.5,
+    "location": "Shelf A", "filament_comment": "Dry first", "comment": "Opened 2026-11"
+  }
 }
 ```
 
@@ -179,9 +184,9 @@ Material text maps to PLA, PLA+, PLA Silk, PLA Matte, PLA-CF, PETG, PETG-CF, ABS
 
 ### Reading and cloning Bambu Lab / Snapmaker tags
 
-Genuine Bambu Lab and Snapmaker U1 tags are MIFARE Classic 1K with per-tag sector keys derived from the UID (Bambu by HKDF-SHA256, Snapmaker by HMAC-SHA256). The firmware derives those keys and **reads** the tag to show its brand, material and color as a read-only preview (`POST /api/nfc/read` returns `metadata.source:"printer_tag"`). These tags carry an RSA-2048 signature only the vendor can produce, so new or edited tags are impossible.
+Genuine Bambu Lab and Snapmaker U1 tags are MIFARE Classic 1K with per-tag sector keys derived from the UID (Bambu by HKDF-SHA256, Snapmaker by HMAC-SHA256). The firmware derives those keys and **reads** the tag to show its brand, material and color as a read-only preview (`POST /api/nfc/read` returns `metadata.source:"printer_tag"`). Spoolancer does not generate manufacturer signatures for custom Bambu or stock Snapmaker records.
 
-A Bambu tag can be **cloned** byte-for-byte onto a Gen2/CUID or FUID magic card: its data blocks are read with the derived keys and its sector trailers are reconstructed (Key A = derived, access bits `87 87 87 69`, Key B = 0), exactly as genuine tags store them. `POST /api/nfc/clone {step:"read"}` reads the source; `{step:"write",confirm:true}` writes the magic card. The write writes block 0 first and verifies the UID changed, so a non-magic card is refused without any sector being rekeyed. The clone keeps the original material and color — it cannot change them. **Snapmaker cannot be cloned**: its signature covers the sector keys, so a clone fails verification. For custom Snapmaker tags, use the OpenSpool format with the community U1 Extended firmware.
+A Bambu tag can be **cloned** byte-for-byte onto a Gen2/CUID or FUID magic card: its data blocks are read with the derived keys and its sector trailers are reconstructed (Key A = derived, access bits `87 87 87 69`, Key B = 0), exactly as genuine tags store them. `POST /api/nfc/clone {step:"read"}` reads the source; `{step:"write",confirm:true}` writes the magic card. The write writes block 0 first and verifies the UID changed, so a non-magic card is refused without any sector being rekeyed. The clone keeps the original material and color — it cannot change them. **Snapmaker cloning is not implemented**: the clone path only accepts a recognized Bambu source. For custom Snapmaker tags, use the OpenSpool format with the community U1 Extended firmware.
 
 Printer formats overwrite any unlocked tag after confirmation, including foreign content. Locked or password-protected NTAGs and Classic sectors with unknown keys are refused before writing. Not possible: **Bambu Lab** AMS and **stock Snapmaker U1** tags carry RSA signatures that only the manufacturer can produce; **Prusa OpenPrintTag** uses ISO15693, which the PN532 cannot reach. **Sovol** printers have no filament tag reader. Formats were reproduced from source and checked against published byte vectors; they have not been tested on each printer.
 
@@ -191,7 +196,9 @@ Settings offers discovery on the connected LAN and manual configuration. Discove
 
 Use a numeric IPv4 HTTP base address such as `http://192.168.1.20:7912`; a port and base path are optional. Manual DNS names, HTTPS, and authenticated reverse proxies are not implemented. Use it on a trusted local network: device pairing and Spoolman requests use HTTP, and flash storage is not encrypted.
 
-When configured, Spoolman is the authoritative inventory. Complete paginated snapshots replace the visible cache atomically, up to 200 active remote spools. Local records and unfinished registrations are kept separately and never substituted for remote inventory on an error. Cached remote data is marked stale after 30 seconds or a failed request; refresh attempts are throttled for ten seconds. A remote profile is read-only here, except for a local tag binding. Unknown server weights remain unknown. Persisted caches are stale after reboot and are written only with explicit record operations, not every poll.
+When configured, Spoolman is the authoritative inventory. Complete paginated snapshots replace the visible cache atomically, up to 200 active remote spools. Local records and unfinished registrations are kept separately and never substituted for remote inventory on an error. Cached remote data is marked stale after 30 seconds or a failed request; background retries are throttled for ten seconds. An explicit refresh can retry immediately. One inventory page is read per main-loop turn, and a snapshot interrupted by a server mutation is restarted. A remote profile is read-only here, except for a local tag binding. Unknown server weights remain unknown. Persisted caches are stale after reboot and are written only with explicit record operations, not every poll.
+
+Native Spoolman spool RFID tags and supported legacy custom fields are imported. Only tags attached to an individual spool identify a roll; filament-level tags are ignored. Exactly one active matching spool is selected. Duplicate links must be resolved first. Testing an unsaved URL performs a read-only request and keeps the configured server and its status.
 
 Every sync saves the current validated measurement locally first. An existing link uses `PATCH /api/v1/spool/{id}` with the **absolute** `remaining_weight`, avoiding duplicate consumption subtraction. A new link finds an exact vendor name or creates the vendor, then creates a filament and spool. The density and diameter fields are editable; the defaults are not measurements. Existing linked filament metadata is not updated automatically.
 
@@ -203,7 +210,7 @@ If a spool was externally deleted during an uncertain archive, retry can finish 
 
 Changing the configured server is blocked while any links or unresolved operations remain, so numeric IDs cannot silently target a different database. Remote profiles are read-only in the spool editor. Recovery links a saved draft to a confirmed server ID; when that record is already cached, reconciliation preserves the draft identity and rejects conflicting tag bindings.
 
-HTTP requests use a 150 ms connection timeout, cooperative socket writes/header/body reads with a two-second deadline, and a 20 KB response cap. Scale sampling continues during cooperative waits. HTTP/1.0 is requested; redirects, compressed bodies and transfer encodings are rejected. The browser waits up to 30 seconds for sync and does not retry automatically. A browser timeout is an unknown outcome, not proof that the operation was canceled.
+HTTP requests allow 1.5 seconds to connect, then cooperative socket writes/header/body reads share a five-second deadline and a 20 KB response cap. Scale sampling continues during cooperative waits. HTTP/1.0 is requested. Fixed-length, connection-closed, and bounded chunked responses are accepted. Redirects, compressed bodies, conflicting framing, and truncated responses are rejected. The browser waits up to 30 seconds for sync and does not retry automatically. A browser timeout is an unknown outcome, not proof that the operation was canceled.
 
 ## API
 
@@ -224,6 +231,7 @@ Status identifies `device.variant` as `headless`, `oled-led`, `touch-8048`, or `
 | `POST /api/scale/calibrate` | `{reference_g}` |
 | `POST /api/nfc/read` | `{}`; return `nfc`, validated metadata if readable and matched `spool_id`; a readable single identifier can succeed even when tag contents cannot be decoded |
 | `POST /api/nfc/write` | `{spool_id,expected_uid,confirm:true,format?}`; `format` is `spoolancer` (default), `creality`, `qidi`, `anycubic`, `elegoo` or `openspool`. Success only after read-back; the UID is then linked to the spool |
+| `POST /api/nfc/erase` | `{expected_uid,confirm:true}`. Unlocked NTAG21x: zeroes all user memory and leaves an empty NDEF message. MIFARE Classic 1K: zeroes sector 1 and restores the factory key (from FF, Creality-derived or Qidi keys). Genuine Bambu/Snapmaker tags are refused. Spool UID links are kept |
 | `POST /api/nfc/clone` | `{step:"read"}` reads a genuine Bambu tag; `{step:"write",confirm:true}` clones it onto a Gen2/FUID magic card. Read-only Bambu only; Snapmaker and non-magic cards are refused |
 | `GET /api/config` | Device name, Wi-Fi SSID, Spoolman URL, `has_wifi_password`; no password/PIN/token |
 | `POST /api/config` | Partial `device_name`, `wifi_ssid`, `wifi_password`, `wifi_open`, legacy `clear_wifi_password`, `spoolman_url` |
@@ -240,11 +248,15 @@ Text limits are UTF-8 **bytes** on the device: name64, brand60, material30, devi
 
 ## Over-the-air updates
 
-Settings → Hardware tests → **Firmware update** checks the project's GitHub releases and, when a newer one exists, installs it over Wi-Fi. The device asks `https://api.github.com/repos/bloodf/spoolancer/releases/latest`, downloads the two assets named for its own board variant — `spoolancer-<variant>-littlefs.bin` (web UI and assets) then `spoolancer-<variant>-firmware.bin` (the app) — flashes them to the inactive OTA slot and the filesystem partition, and reboots. The variant string matches `device.variant` (`headless`, `headless-led`, `oled-led`, `touch-8048`, `st7789`). The running version is reported as `device.firmware` and is set at build time from the release tag (`0.0.0-dev` for local builds).
+Settings → Hardware tests → **Firmware update** installs a board-specific application image over Wi-Fi. Every new image contains its matching webpage. Both the release updater and manual `POST /api/update/upload?confirm=true` switch firmware and webpage together through the inactive app partition. A separate webpage/data upload is not needed. Wi-Fi, calibration and inventory remain in their existing partitions.
 
-The same card also accepts a firmware `.bin` you downloaded yourself (for example a release asset, or a local build) and flashes it over `POST /api/update/upload`, for offline or pre-release installs. Pick the image built for this board; the upload always asks for confirmation first.
+The release updater resolves `spoolancer-<variant>-firmware.bin` from GitHub. Legacy `littlefs.bin` release assets remain published for older updaters; new firmware does not write them. The variant string matches `device.variant` (`headless`, `headless-led`, `oled-led`, `touch-8048`, `st7789`). `device.web_build` and the `X-Spoolancer-Web-Build` HTTP header identify the bundled web content.
 
-Recovery: the two app partitions (`ota_0`/`ota_1`) mean a bad app image leaves the previous one in place; a failed filesystem write only costs the web assets, which a repeated update or a USB `uploadfs` restores. The transport is HTTPS but the certificate chain is not pinned and the image is not signed (`WiFiClientSecure::setInsecure`); the recovery paths above bound the risk. Pin a CA bundle and sign images before trusting this over an untrusted network.
+The original `0.5.0-prototype` has the same partition map but no OTA receiver. A newer webpage can show an upload button even when the application does not implement it. Verify receiver availability separately: missing `/api/update` and `/api/update/upload` routes require one application update over USB. Once the receiver is installed, the existing firmware-only uploader accepts these self-contained images without a new package format.
+
+An interrupted manual upload does not select an unfinished app image. Firmware and webpage share the app slot; changing or rolling back the selected app also selects its matching webpage. Automatic boot rollback is not claimed. The updater retains its existing HTTPS transport and signature limitations.
+
+Run `python3 firmware/tests/embedded_web_test.py spoolancer-oled-led` after building to verify that all five current web files are present inside `firmware.bin` and decode byte-for-byte to their source. Without a profile argument, the test checks the generator, route lookup, compression and missing-file failures using a temporary native executable.
 
 To cut a release, push a `vX.Y.Z` tag (or run the **Release firmware** workflow with that tag). CI builds every variant's firmware and filesystem image, injects the tag as the firmware version, and publishes them as the release assets the OTA expects. See [the release workflow](../.github/workflows/release.yml).
 
@@ -253,6 +265,6 @@ To cut a release, push a `vX.Y.Z` tag (or run the **Release firmware** workflow 
 The real-library numeric JSON test runs after PlatformIO installs ArduinoJson. It verifies that new fields are created through their member proxies, that finite weights and explicit unknown/null values appear in responses, and that spool weights survive serialization/reload. CI runs it after compiling the firmware. This catches a failure that pure sensor stubs cannot detect: converting an absent member to a bound JsonVariant before assignment can discard the numeric field.
 
 
-The native tests exercise measurement rejection rules, identity/color validation, documented PN532 A/B/F/J response fixtures, malformed/truncated/multi-target responses, NTAG213/215/216 capacity and protection, reserved-page exclusion, NDEF boundaries, cache/refresh and bounded timeout yielding. They also cover removal/unlink policies, uncertain archive state, HX711 calibration/freshness using mocked GPIO/time, BOOT timing/rollover, startup-held suppression, one-reset-per-hold behavior, AP expiry, setup throttling, no-button first-run setup and hostile Host/Origin rejection under AddressSanitizer/UndefinedBehaviorSanitizer. All five build variants and filesystem packaging validate build integration. They do not test a physical button, sensor, UART, NFC RF placement, display, Wi-Fi/AP onboarding, or a running Spoolman server. Those bench checks remain necessary, especially with the spool seated and the movable reader wiring connected.
+The NFC fixtures run through both UART and I²C transports, including I²C ready bytes and separate ACK/response transactions. The native tests exercise measurement rejection rules, identity/color validation, documented PN532 A/B/F/J response fixtures, malformed/truncated/multi-target responses, NTAG213/215/216 capacity and protection, reserved-page exclusion, NDEF boundaries, cache/refresh and bounded timeout yielding. They also cover removal/unlink policies, uncertain archive state, HX711 calibration/freshness using mocked GPIO/time, BOOT timing/rollover, startup-held suppression, one-reset-per-hold behavior, AP expiry, setup throttling, no-button first-run setup and hostile Host/Origin rejection under AddressSanitizer/UndefinedBehaviorSanitizer. All five build variants and filesystem packaging validate build integration. They do not test a physical button, sensor, UART/I²C wiring, NFC RF placement, display, Wi-Fi/AP onboarding, or a running Spoolman server. Those bench checks remain necessary, especially with the spool seated and the movable reader wiring connected.
 
 Primary references: [Espressif Arduino core](https://github.com/espressif/arduino-esp32), [PlatformIO ESP32-S3 board definition](https://github.com/platformio/platform-espressif32/blob/v6.12.0/boards/esp32-s3-devkitc-1.json), [PN532 user manual](https://www.nxp.com/docs/en/user-guide/141520.pdf), [NTAG213/215/216 datasheet](https://www.nxp.com/docs/en/data-sheet/NTAG213_215_216.pdf), and Spoolman [spool](https://github.com/Donkie/Spoolman/blob/master/spoolman/api/v1/spool.py), [filament](https://github.com/Donkie/Spoolman/blob/master/spoolman/api/v1/filament.py) and [vendor](https://github.com/Donkie/Spoolman/blob/master/spoolman/api/v1/vendor.py) API source.

@@ -18,15 +18,19 @@ with tempfile.TemporaryDirectory(prefix="spoolancer-tests-") as directory:
         "-o", str(executable),
     ], check=True)
     subprocess.run([str(executable)], check=True)
-    nfc_executable = Path(directory) / "nfc-test"
-    subprocess.run([
-        os.environ.get("CXX", "c++"), "-std=c++17", "-Wall", "-Wextra", "-Werror",
-        "-fsanitize=address,undefined", "-fno-omit-frame-pointer", "-g",
-        "-I", str(root / "tests/nfc_stubs"), "-I", str(root / "include"), "-I", str(root / "src"),
-        str(root / "tests/nfc_test.cpp"), str(root / "tests/read_tags_test.cpp"), str(root / "src/Nfc.cpp"),
-        "-o", str(nfc_executable),
-    ], check=True)
-    subprocess.run([str(nfc_executable)], check=True)
+    for transport in ("uart", "i2c"):
+        nfc_executable = Path(directory) / f"nfc-{transport}-test"
+        subprocess.run([
+            os.environ.get("CXX", "c++"), "-std=c++17", "-Wall", "-Wextra", "-Werror",
+            "-fsanitize=address,undefined", "-fno-omit-frame-pointer", "-g",
+            "-DSPOOLANCER_HEADLESS=1",
+            *(["-DNFC_TEST_I2C=1"] if transport == "i2c" else []),
+            "-I", str(root / "tests/nfc_stubs"), "-I", str(root / "include"), "-I", str(root / "src"),
+            str(root / "tests/nfc_test.cpp"), str(root / "tests/read_tags_test.cpp"), str(root / "src/Nfc.cpp"),
+            "-o", str(nfc_executable),
+        ], check=True)
+        print(f"NFC transport: {transport}", flush=True)
+        subprocess.run([str(nfc_executable)], check=True)
     actions_executable = Path(directory) / "spool-actions-test"
     subprocess.run([
         os.environ.get("CXX", "c++"), "-std=c++17", "-Wall", "-Wextra", "-Werror",
@@ -36,3 +40,5 @@ with tempfile.TemporaryDirectory(prefix="spoolancer-tests-") as directory:
     ], check=True)
     subprocess.run([str(actions_executable)], check=True)
 subprocess.run([sys.executable, str(root / "tests/storage_guard_test.py")], check=True)
+
+subprocess.run([sys.executable, str(root / "tests/embedded_web_test.py")], check=True)

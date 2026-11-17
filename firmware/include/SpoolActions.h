@@ -1,12 +1,44 @@
 #pragma once
 #include <cstring>
 #include <cstdio>
+#include <cctype>
 
 namespace SpoolActions {
 enum class Removal { Local, Archive, Unresolved, MissingServer };
 inline bool archiving(const char *pending) { return pending && std::strcmp(pending, "archive") == 0; }
+inline bool normalizeUid(const char *uid, char (&out)[33]) {
+  out[0] = 0;
+  if (!uid) return false;
+  size_t at = 0;
+  const bool prefixed = (uid[0] == 'B' || uid[0] == 'F' || uid[0] == 'J') && uid[1] == ':';
+  if (prefixed) { out[at++] = *uid++; out[at++] = *uid++; }
+  for (; *uid; ++uid) {
+    if (*uid == ':' || *uid == '-' || *uid == ' ') continue;
+    if (!std::isxdigit(static_cast<unsigned char>(*uid)) || at >= 32) return false;
+    out[at++] = std::toupper(static_cast<unsigned char>(*uid));
+  }
+  out[at] = 0;
+  return prefixed ? (out[0] == 'F' ? at == 18 : at == 10) : (at == 8 || at == 14 || at == 20);
+}
 inline bool identifiesSpool(bool visible, const char *boundUid, const char *observedUid) {
-  return visible && boundUid && *boundUid && observedUid && std::strcmp(boundUid, observedUid) == 0;
+  char bound[33], observed[33];
+  return visible && normalizeUid(boundUid, bound) && normalizeUid(observedUid, observed) &&
+         std::strcmp(bound, observed) == 0;
+}
+template<class Spool> bool tagMatches(const Spool &spool, const char *uid) {
+  if (identifiesSpool(true, spool.tagUid.c_str(), uid)) return true;
+  for (const auto &alias : spool.serverTags)
+    if (identifiesSpool(true, alias.c_str(), uid)) return true;
+  return false;
+}
+template<class Spools, class Visible> int matchTag(const Spools &spools, const char *uid, Visible visible) {
+  int found = -1;
+  for (size_t i = 0; i < spools.size(); ++i) {
+    if (!visible(spools[i]) || !tagMatches(spools[i], uid)) continue;
+    if (found >= 0) return -2;
+    found = static_cast<int>(i);
+  }
+  return found;
 }
 inline bool confirmedMissing(const char *pending, bool spoolmanVerified, bool exactMissingReply, bool absentFromList) {
   return archiving(pending) && spoolmanVerified && exactMissingReply && absentFromList;

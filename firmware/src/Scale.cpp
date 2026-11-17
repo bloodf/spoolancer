@@ -44,15 +44,17 @@ void Scale::updateFilter(uint32_t now, uint32_t elapsed) {
   std::sort(recent, recent + 3);
   const double value = recent[1];
   const double unit = calibrated() ? std::abs(countsPerGram) : 800.0;
-  // Reject isolated spikes, but follow a real load change after two samples.
-  if (!std::isfinite(filtered) || std::abs(value - filtered) > 3 * unit) filtered = value;
+  // The median rejects isolated spikes. Keep +/-3 g resting noise in the
+  // smoothing path; only larger load changes bypass it after two samples.
+  if (!std::isfinite(filtered) || std::abs(value - filtered) > 8 * unit) filtered = value;
   else filtered += (value - filtered) * (double(elapsed) / (300.0 + elapsed));
 
-  // A fixed anchor catches slow drift; separate entry/exit bands avoid chatter.
+  // Judge the same smoothed reading that users see, rather than restarting
+  // the timer on every noisy median. A fixed anchor still catches slow drift.
   // The displayed value keeps updating even while the stable flag is held.
   const double band = (settled ? 3 : 2) * unit;
-  if (!trackingSteady || std::abs(value - steadyAnchor) > band) {
-    steadyAnchor = value; steadySince = now;
+  if (!trackingSteady || std::abs(filtered - steadyAnchor) > band) {
+    steadyAnchor = filtered; steadySince = now;
     trackingSteady = true; settled = false; steadySamples = 1;
   } else {
     if (steadySamples < 4) ++steadySamples;

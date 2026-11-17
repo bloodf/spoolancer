@@ -21,6 +21,30 @@ Scale calibratedScale() {
   window(scale, 0);
   return scale;
 }
+void restingNoiseTests() {
+  const double factors[] = {500.0, 80.0, -80.0};
+  for (const double factor : factors) {
+    Scale scale; scale.begin(); scale.zeroSet = true; scale.countsPerGram = factor;
+    window(scale, int32_t(1000 * factor));
+    assert(scale.stable());
+    // A stationary 1 kg load with +/-3 g converter noise must remain usable.
+    for (int i = 0; i < 120; ++i) {
+      sample(scale, int32_t((1000 + (i % 2 ? -3 : 3)) * factor));
+      assert(scale.stable());
+      assert(std::abs(scale.gross() - 1000) < 1);
+    }
+    // A real small addition must still appear; this must not freeze the weight.
+    window(scale, int32_t(1002 * factor));
+    assert(scale.stable() && std::abs(scale.gross() - 1002) < .1);
+
+    // Noise while placing a new load must not restart the entry timer forever.
+    Scale arriving; arriving.begin(); arriving.zeroSet = true; arriving.countsPerGram = factor;
+    window(arriving, 0);
+    for (int i = 0; i < 20; ++i)
+      sample(arriving, int32_t((1000 + (i % 2 ? -1.5 : 1.5)) * factor));
+    assert(arriving.stable() && std::abs(arriving.gross() - 1000) < 1);
+  }
+}
 void responseTests() {
   Scale scale = calibratedScale();
   assert(scale.stable());
@@ -159,5 +183,5 @@ void scaleDriverTests() {
   assert(!recalibrated.fresh());
   window(recalibrated, -25000);
   assert(recalibrated.stable() && recalibrated.gross() == 250);
-  responseTests();
+  restingNoiseTests(); responseTests();
 }

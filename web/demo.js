@@ -1,4 +1,4 @@
-import { fullSpoolTare, measurement, pinIsOptional, scaleCalibrationGuard, scaleZeroGuard, setupBody, setupState, tagWriteGuard, validateSpool, wifiCredentials } from './logic.js';
+import { canonicalTagUid, spoolTagUids, fullSpoolTare, measurement, pinIsOptional, scaleCalibrationGuard, scaleZeroGuard, setupBody, setupState, tagWriteGuard, validateSpool, wifiCredentials } from './logic.js';
 
 const copy = value => structuredClone(value);
 const fail = (message, status = 400) => { const error = new Error(message); error.status = status; throw error; };
@@ -15,7 +15,7 @@ export function createDemo({ now = Date.now } = {}) {
     auth: { pin_required: true, invalid: false }, setup: { required: false, complete: true, can_submit: false, physical_confirmation_required: false },
     scale: { gross_g: 842, calibrated: true, zero_set: true, stable: true, fresh: true, tare_ready: true, calibration_ready: true },
     nfc: { present: true, uid: '04:A1:B2:C3:D4:E5:F6', type: 'NTAG216', writable: true, raw_writable: true, chip: 'ntag', spool_id: 'demo-1', last_message: 'Spoolancer inventory tag detected. The values in this preview are simulated.', last_error: '' },
-    active_spool_id: 'demo-1', network: { connected: true, ip: '192.168.1.42' },
+    selection_source: 'manual', active_spool_id: 'demo-1', network: { connected: true, ip: '192.168.1.42' },
     spoolman: { configured: true, pending: false, last_message: 'Demo server configured. No network requests are sent.', last_error: '' },
   };
   const config = { device_name: 'Studio scale', wifi_ssid: 'Workshop', wifi_open: false, spoolman_url: 'http://192.168.1.50:7912', has_wifi_password: true };
@@ -23,6 +23,7 @@ export function createDemo({ now = Date.now } = {}) {
   let nextId = 4;
   let nextSpoolmanId = 40;
   let paired = false;
+  let inventoryPolls = 0;
   let ledTestStarted = null;
   let pin = '12345678';
   let apExpires = 0;
@@ -47,6 +48,8 @@ export function createDemo({ now = Date.now } = {}) {
 
   function setScenario(value) {
     connectAt = null;
+    inventoryPolls = value === 'remote-loading' ? 3 : 0;
+    status.spoolman.inventory_refreshing = inventoryPolls > 0;
     if (value === 'headless-setup') {
       paired = false; pin = '12345678';
       status.auth = { pin_required: true, invalid: false };
@@ -76,6 +79,7 @@ export function createDemo({ now = Date.now } = {}) {
 
     }
     status.scale = { gross_g: 842, calibrated: true, zero_set: true, stable: true, fresh: true, tare_ready: true, calibration_ready: true };
+    status.selection_source = "manual";
     status.active_spool_id = profiles.find(profile => !profile.archived)?.id || null;
     status.nfc = { present: true, uid: '04:A1:B2:C3:D4:E5:F6', type: 'NTAG216', writable: true, raw_writable: true, chip: 'ntag', spool_id: 'demo-1', last_message: 'Spoolancer inventory tag detected. The values in this preview are simulated.', last_error: '' };
     const first = profiles.find(profile => profile.id === 'demo-1');
@@ -84,6 +88,16 @@ export function createDemo({ now = Date.now } = {}) {
     config.spoolman_url = value === 'local' ? '' : 'http://192.168.1.50:7912';
     status.spoolman.last_error = '';
     status.spoolman.pending = false;
+    if (['spoolman-library', 'nfc-spoolman', 'remote-loading'].includes(value)) {
+      profiles[1].spoolman_id = 13; profiles[2].spoolman_id = 14;
+      profiles[1].server_tag_uids = ['04112233445566'];
+      if (value === 'nfc-spoolman') {
+        status.nfc.uid = '04112233445566'; status.nfc.spool_id = 'demo-2';
+        status.active_spool_id = 'demo-2'; status.selection_source = 'nfc';
+      }
+    }
+    if (value === 'ntag213') status.nfc.type = 'NTAG213';
+    if (value === 'ntag215') status.nfc.type = 'NTAG215';
     if (value === 'moving') { status.scale.stable = false; status.scale.tare_ready = false; status.scale.calibration_ready = false; }
     if (value === 'uncalibrated') Object.assign(status.scale, { calibrated: false, zero_set: false, gross_g: null });
     if (value === 'stale') status.scale.fresh = false;
@@ -125,6 +139,25 @@ export function createDemo({ now = Date.now } = {}) {
     }
   }
 
+  function refreshTagStorage() {
+    const capacity = {NTAG213:144, NTAG215:496, NTAG216:872}[status.nfc.type] || 0;
+    status.nfc.capacity_bytes = status.nfc.present ? capacity : 0;
+    delete status.nfc.inventory_write;
+    const spool = profiles.find(item => item.id === status.active_spool_id);
+    if (!capacity || !status.nfc.present || !spool) return;
+    const ndefBytes = json => {
+      const length = new TextEncoder().encode(JSON.stringify(json)).length;
+      const record = (length <= 255 ? 3 : 6) + 30 + length;
+      return record + (record < 255 ? 2 : 4) + 1;
+    };
+    const record = {schema:1, spool_id:spool.id, name:spool.name, brand:spool.brand, material:spool.material,
+      color:spool.color, empty_weight_g:spool.empty_weight_g, initial_weight_g:spool.initial_weight_g,
+      density_g_cm3:spool.density_g_cm3, diameter_mm:spool.diameter_mm};
+    const link = ndefBytes(record) > capacity;
+    const bytes = ndefBytes(link ? {schema:1, spool_id:spool.id, link_only:true} : record);
+    status.nfc.inventory_write = {spool_id:spool.id, kind:link ? 'link' : 'profile', bytes, fits:bytes <= capacity};
+  }
+
   function refreshSetup() {
     if (!status.setup) return;
     if (connectAt !== null && now() >= connectAt) {
@@ -140,13 +173,16 @@ export function createDemo({ now = Date.now } = {}) {
 
   const inventory = () => {
     const configured = status.spoolman.configured;
+    const refreshing = inventoryPolls > 0;
+    if (inventoryPolls > 0) --inventoryPolls;
+    status.spoolman.inventory_refreshing = refreshing;
     const error = ['sync-error', 'remote-error'].includes(scenario) ? 'Spoolman did not respond. Check its address and connection.' : '';
     const visible = profiles.filter(p => !p.archived);
     const remote = visible.filter(p => p.spoolman_id).map(p => ({ ...p, source: 'spoolman', metadata_readonly: true }));
     return {
-      spools: copy(configured ? ['remote-empty', 'remote-error'].includes(scenario) ? [] : remote : visible.map(p => ({ ...p, source: 'local', metadata_readonly: false }))),
+      spools: refreshing ? [] : copy(configured ? ['remote-empty', 'remote-error'].includes(scenario) ? [] : remote : visible.map(p => ({ ...p, source: 'local', metadata_readonly: false }))),
       drafts: copy(configured ? profiles.filter(p => p.draft || p.removal_pending || inactiveTagLink(p)).map(p => ({ ...p, inactive_tag_link: !!inactiveTagLink(p) })) : []),
-      inventory: { source: configured ? 'spoolman' : 'local', configured, stale: !!error, cached: scenario === 'sync-error', error, limit: 200, age_seconds: scenario === 'sync-error' ? 120 : 0 },
+      inventory: { source: configured ? 'spoolman' : 'local', configured, refreshing, stale: refreshing || !!error, cached: scenario === 'sync-error', error, limit: 200, age_seconds: scenario === 'sync-error' ? 120 : 0 },
     };
   };
 
@@ -181,6 +217,7 @@ export function createDemo({ now = Date.now } = {}) {
     }
     if (path === '/api/status' && method === 'GET') {
       status.diagnostics.led_test_remaining_ms = ledTestStarted === null ? 0 : Math.max(0, 12000 - (now() - ledTestStarted));
+      refreshTagStorage();
       return copy(status);
     }
     if (path === '/api/wifi/scan') {
@@ -219,7 +256,7 @@ export function createDemo({ now = Date.now } = {}) {
         const available = scenario !== 'reader-missing', multiple = scenario === 'multiple-tags';
         const detected = available && status.nfc.present && !!status.nfc.uid && !multiple;
         return {ok:true, component, state:detected ? 'pass' : available && !multiple ? 'warning' : 'fail', reader_available:available, tag_detected:detected, targets:multiple ? 2 : detected ? 1 : 0, uid:detected ? status.nfc.uid : '', type:status.nfc.type,
-          message:detected ? 'One tag ID was read. Reader communication and tag detection passed. No tag data or spool profile was changed.' : !available ? 'PN532 did not respond. Check power, HSU/UART mode and crossed TX/RX, then retry.' : multiple ? 'Multiple tags detected. Keep only one tag beside the antenna.' : 'PN532 is responding, but no single tag was read. Hold one tag beside the antenna and test again.'};
+          message:detected ? 'One tag ID was read. Reader communication and tag detection passed. No tag data or spool profile was changed.' : !available ? 'PN532 did not respond. Check 3.3 V power, I2C mode (switch 1 ON, 2 OFF), SDA and SCL connections, then retry.' : multiple ? 'Multiple tags detected. Keep only one tag beside the antenna.' : 'PN532 is responding, but no single tag was read. Hold one tag beside the antenna and test again.'};
       }
       const scale = status.scale;
       return {ok:true, component, state:!scale.fresh ? 'fail' : !scale.calibrated || !scale.stable ? 'warning' : 'pass', fresh:scale.fresh, stable:scale.stable, calibrated:scale.calibrated, sample_count:scale.fresh ? 20 : 0, raw_mean:scale.fresh ? 123456 : null, gross_g:scale.fresh && scale.calibrated ? scale.gross_g : null,
@@ -308,7 +345,7 @@ export function createDemo({ now = Date.now } = {}) {
     }
     if (path === '/api/active-spool') {
       if (!profiles.some(s => s.id === body.id)) fail('Choose an existing spool.');
-      status.active_spool_id = body.id;
+      status.active_spool_id = body.id; status.selection_source = "manual";
       return { ok: true };
     }
     if (path === '/api/scale/tare') {
@@ -331,16 +368,21 @@ export function createDemo({ now = Date.now } = {}) {
     if (path === '/api/nfc/read') {
       if (!status.nfc.present) fail(status.nfc.last_error || 'No tag is present.');
       const visible = inventory().spools;
-      const linked = visible.find(s => s.tag_uid === status.nfc.uid);
+      const linked = visible.find(s => spoolTagUids(s).includes(canonicalTagUid(status.nfc.uid)));
       status.nfc.spool_id = linked?.id || null;
-      status.active_spool_id = status.nfc.spool_id;
+      status.active_spool_id = status.nfc.spool_id; status.selection_source = linked ? "nfc" : "none";
       return { ok: true, nfc: copy(status.nfc), spool_id: status.nfc.spool_id || null, message: status.nfc.last_message };
     }
     if (path === '/api/nfc/clone') {
       if (body.step === 'read') return { ok: true, step: 'read', source_uid: '04:7A:BC:12:34:56:78', label: 'Bambu Lab PLA Basic #FF6A00', message: 'Demo: source tag read. This preview does not touch hardware.' };
       return { ok: true, message: 'Demo: magic card clone verified. No hardware was used.' };
     }
+    if (path === '/api/nfc/erase') {
+      if (!body.confirm || !body.expected_uid) fail('Confirm the expected tag UID before erasing.');
+      return { ok: true, message: 'Demo: tag erase verified. No tag was changed.' };
+    }
     if (path === '/api/nfc/write') {
+      refreshTagStorage();
       if (!body.confirm || !body.expected_uid) fail('Confirm the expected tag UID before writing.');
       const error = tagWriteGuard(status, body.expected_uid, true, body.format || 'spoolancer');
       if (error) fail(error);
@@ -369,7 +411,7 @@ export function createDemo({ now = Date.now } = {}) {
       return { ok: true, reconnect_required: reconnect, ap_ssid: 'Spoolancer-demo', ip: '192.168.4.1' };
     }
     if (path === '/api/spoolman/test') {
-      if (!status.spoolman.configured) fail('Configure a Spoolman server first.');
+      if (!body.url && !status.spoolman.configured) fail('Enter a Spoolman server first.');
       if (scenario === 'sync-error') fail('Demo server unavailable. Nothing was synchronized.', 503);
       return { ok: true, message: 'Demo connection test completed. No server was contacted.' };
     }

@@ -368,3 +368,41 @@ noscript { display: block; background: var(--warning-bg); padding: 20px; }
 
 .firmware-upload { display: grid; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border, rgba(127,127,127,0.25)); }
 .firmware-upload input[type="file"] { font-size: 0.85rem; color: var(--muted); }
+
+/* Inventory is a list of individual rolls; prioritize identity and the next action. */
+.inventory-grid { display: flex; flex-direction: column; gap: 12px; }
+.inventory-card { display: grid; grid-template-columns: minmax(190px, 1.2fr) minmax(250px, 1.6fr) minmax(190px, .9fr); align-items: center; gap: 24px; padding: 20px; }
+.inventory-card .spool-identity { margin: 0; gap: 16px; }
+.inventory-card .spool-identity h3 { font-size: 18px; }
+.inventory-card .spool-drawing { width: 48px; height: 48px; border-width: 4px; }
+.inventory-card .spool-drawing:before { inset: 5px; }
+.inventory-card .spool-drawing:after { display: none; }
+.inventory-card .spool-drawing i { inset: 12px; border-width: 3px; }
+.inventory-card .card-top { margin: 0 0 8px; align-items: center; flex-wrap: wrap; gap: 8px; }
+.inventory-row-state { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.inventory-card .details-list { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 20px; margin: 0; }
+.inventory-card .details-list > div { display: block; padding: 0; border: 0; }
+.inventory-card .details-list dd { text-align: left; margin-top: 4px; max-width: 100%; }
+.inventory-actions { display: grid; grid-template-columns: 1fr 1fr; }
+.inventory-actions .button { padding: 10px; min-height: 44px; font-size: 13px; }
+.inventory-card .inline-result { grid-column: 1 / -1; }
+.selection-message { padding: 12px; margin: 0 0 16px; background: var(--raised); border-radius: 8px; color: var(--ink); font-size: 14px; line-height: 1.5; }
+#scale-inventory-summary { margin-bottom: 8px; overflow-wrap: anywhere; }
+#active-search { margin-bottom: 12px; }
+#refresh-scale-inventory { width: 100%; margin-top: 8px; }
+.hardware-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: start; }
+#firmware-update { grid-column: 1 / -1; }
+#firmware-update .firmware-upload { max-width: 640px; }
+#firmware-update .helper { max-width: 72ch; }
+.connection.pending i { background: var(--amber); }
+::selection { background: var(--teal); color: var(--card); }
+input, textarea { caret-color: var(--teal); }
+@media (max-width: 1000px) {
+  .inventory-card { grid-template-columns: minmax(190px, 1fr) minmax(240px, 1fr); }
+  .inventory-actions { grid-column: 1 / -1; grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+@media (max-width: 760px) {
+  .hardware-grid { grid-template-columns: 1fr; }
+  .inventory-card { grid-template-columns: 1fr; gap: 20px; }
+  .inventory-actions { grid-template-columns: 1fr 1fr; }
+}

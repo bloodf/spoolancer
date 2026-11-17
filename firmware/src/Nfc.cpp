@@ -7,7 +7,7 @@
 bool Nfc::fail(const char *message) { lastError = message; return false; }
 bool Nfc::stepByte(uint8_t &byte, uint32_t end) {
   while (int32_t(end - millis()) > 0) {
-    if (serial.available()) { byte = serial.read(); return true; }
+    if (serial->available()) { byte = serial->read(); return true; }
     if (idleHook) idleHook();
     delay(1);
   }
@@ -17,13 +17,14 @@ bool Nfc::command(const uint8_t *data, size_t size, uint8_t *response, size_t &l
   const uint32_t started = millis();
   const int32_t remaining = int32_t(deadline - started);
   if (!size || size > 80 || remaining <= 0) return false;
-  while (serial.available()) serial.read();
+  if (serial) while (serial->available()) serial->read();
   uint8_t frame[90] = {0, 0, 0xff, uint8_t(size + 1), uint8_t(0 - (size + 1)), 0xd4};
   uint8_t checksum = 0xd4;
   for (size_t i = 0; i < size; ++i) { frame[6 + i] = data[i]; checksum += data[i]; }
   frame[6 + size] = -checksum; frame[7 + size] = 0;
-  serial.write(frame, size + 8);
   const uint32_t end = started + std::min<uint32_t>(350, remaining);
+  if (wire) return i2cCommand(frame, size + 8, response, length, end);
+  serial->write(frame, size + 8);
   bool ack = false;
   while (int32_t(end - millis()) > 0) {
     uint8_t byte = 0, a = 1, b = 1; // Require two real zero bytes before 0xFF.
@@ -53,7 +54,64 @@ bool Nfc::command(const uint8_t *data, size_t size, uint8_t *response, size_t &l
 timeout:
   // ACK aborts an unfinished PN532 command; discard a late frame on the next call.
   const uint8_t cancel[] = {0, 0, 0xff, 0, 0xff, 0};
-  serial.write(cancel, sizeof(cancel));
+  serial->write(cancel, sizeof(cancel));
+  return false;
+}
+// Each I2C transaction starts with a ready byte, followed by a complete frame.
+// Polling does not require an IRQ wire. Never treat this as a UART byte stream.
+size_t Nfc::i2cRead(uint8_t *frame, size_t size, uint32_t end) {
+  while (int32_t(end - millis()) > 0) {
+    // A busy reader must receive STOP after its status byte. Requesting a
+    // whole frame here can stretch the clock until the ESP32 times out.
+    const size_t polled = wire->requestFrom(uint8_t(0x24), size_t(1));
+    const int ready = polled ? wire->read() : 0;
+    while (wire->available()) wire->read();
+    if (polled && (ready & 1)) {
+      const size_t received = wire->requestFrom(uint8_t(0x24), size + 1);
+      const int status = received ? wire->read() : 0;
+      size_t count = 0;
+      while (wire->available()) {
+        const int byte = wire->read();
+        if (count < size) frame[count++] = uint8_t(byte);
+      }
+      if (received && (status & 1)) return count;
+    }
+    if (idleHook) idleHook();
+    delay(1);
+  }
+  return 0;
+}
+bool Nfc::i2cCommand(const uint8_t *frame, size_t size, uint8_t *response, size_t &length, uint32_t end) {
+  const uint8_t ack[] = {0, 0, 0xff, 0, 0xff, 0};
+  transportStep = "command_write";
+  wire->beginTransmission(0x24);
+  const size_t written = wire->write(frame, size);
+  const uint8_t error = wire->endTransmission();
+  i2cError = error;
+  if (written != size || error != 0) return false;
+  uint8_t incoming[197] = {};
+  transportStep = "ack_frame";
+  bool valid = i2cRead(incoming, sizeof(ack), end) == sizeof(ack) &&
+               std::memcmp(incoming, ack, sizeof(ack)) == 0;
+  if (valid) {
+    transportStep = "response_frame";
+    const size_t received = i2cRead(incoming, std::min<size_t>(length, 188) + 9, end);
+    const uint8_t len = incoming[3];
+    valid = received >= 9 && incoming[0] == 0 && incoming[1] == 0 && incoming[2] == 0xff &&
+            uint8_t(len + incoming[4]) == 0 && len >= 2 && len <= 190 &&
+            received >= size_t(len) + 7 && size_t(len - 2) <= length &&
+            incoming[5] == 0xd5 && incoming[6] == uint8_t(frame[6] + 1);
+    if (valid) {
+      uint8_t sum = 0;
+      for (size_t i = 5; i <= size_t(len) + 5; ++i) sum += incoming[i];
+      valid = sum == 0 && incoming[len + 6] == 0;
+    }
+    if (valid) {
+      length = len - 2; std::memcpy(response, incoming + 7, length); transportStep = "ready"; return true;
+    }
+  }
+  // Abort an unfinished or malformed exchange before the next command.
+  wire->beginTransmission(0x24); wire->write(ack, sizeof(ack)); wire->endTransmission();
   return false;
 }
 void Nfc::begin(std::function<void()> idle) {
@@ -61,15 +119,29 @@ void Nfc::begin(std::function<void()> idle) {
   available = present = writable = rawWritable = contentsKnown = typeKnown = couldBeNtag = false;
   uid = payload = lastError = lastMessage = ""; type = "none";
   targets = supportedProtocols = 0; layout = {};
-  // Retries after a missing reader only repeat the handshake, not the UART setup.
-  if (!serialStarted) { serial.begin(115200, SERIAL_8N1, Pins::nfcRx, Pins::nfcTx); serialStarted = true; }
-  const uint8_t wake[] = {0x55, 0x55, 0, 0, 0};
-  serial.write(wake, sizeof(wake)); delay(5);
+  i2cError = 0; transportStep = wire ? "bus_start" : "uart_start";
+  // A diagnostic retry repeats the handshake without reinitializing either bus.
+  if (!transportStarted) {
+    if (wire) {
+      if (wire->setBufferSize(256) < 256 || !wire->begin(Pins::nfcSda, Pins::nfcScl, 100000)) {
+        fail("PN532 I2C bus initialization failed."); return;
+      }
+      wire->setTimeOut(20);
+    } else serial->begin(115200, SERIAL_8N1, Pins::nfcRx, Pins::nfcTx);
+    transportStarted = true;
+  }
+  if (wire) {
+    wire->beginTransmission(0x24); delay(20); wire->endTransmission();
+  } else {
+    const uint8_t wake[] = {0x55, 0x55, 0, 0, 0};
+    serial->write(wake, sizeof(wake)); delay(5);
+  }
   deadline = millis() + 1500;
   uint8_t out[32]; size_t len = sizeof(out);
   const uint8_t version[] = {0x02};
   if (!command(version, sizeof(version), out, len) || len != 4 || out[0] != 0x32) {
-    fail("PN532 not detected. Check HSU switches, power and RX/TX wiring."); return;
+    fail(wire ? "PN532 not detected. Check I2C switches (1 ON, 2 OFF), 3.3 V power and SDA/SCL wiring." :
+                "PN532 not detected. Check HSU switches, power and RX/TX wiring."); return;
   }
   supportedProtocols = out[3];
   const uint8_t sam[] = {0x14, 1, 0x14, 1}; len = sizeof(out);
@@ -82,6 +154,16 @@ bool Nfc::select(bool identify, uint8_t technology) {
   uid = ""; type = "none"; targets = 0; present = false; layout = {};
   couldBeNtag = false; typeKnown = true; sak = 0; uidLength = 0;
   uint8_t out[80]; size_t len = sizeof(out);
+  // MaxTg=2 can leave a card halted. Power down the field before a fresh
+  // discovery, including the UID checks between writes, without losing collision detection.
+  const uint8_t fieldOff[] = {0x32, 1, 2};
+  if (!command(fieldOff, sizeof(fieldOff), out, len)) return fail("Cannot reset the NFC field. Scan again.");
+  const uint32_t fieldOffAt = millis();
+  while (millis() - fieldOffAt < 10) {
+    if (idleHook) idleHook();
+    delay(1);
+  }
+  len = sizeof(out);
   // UM0701-02 7.3.5: Type B needs AFI; FeliCa needs its five-byte polling payload.
   uint8_t selectCommand[] = {0x4a, uint8_t(technology == 4 ? 1 : 2), technology, 0, 0xff, 0xff, 1, 0};
   const size_t commandLength = technology == 3 ? 4 : (technology == 1 || technology == 2) ? 8 : 3;
@@ -170,7 +252,7 @@ bool Nfc::inspect() {
                                 "UID only; proprietary filament data is not decoded.";
     return true;
   }
-  uint8_t start[16], config[16], content[720] = {};
+  uint8_t start[16], config[16], content[880] = {}; // 16-byte read granularity over 872 NDEF bytes.
   if (!readPages(2, start)) return fail("Cannot read tag capability container.");
   if (!Domain::ntagContainer(layout, start)) { lastMessage = "Unrecognized capability container; UID only."; return true; }
   if (!readPages(layout.lockPage, config) || !readPages(4, content)) return fail("Cannot read tag protection or NDEF pages; the UID can still be linked.");
@@ -236,7 +318,7 @@ bool Nfc::sameTag(const String &expectedUid) {
 bool Nfc::writeRange(const String &expectedUid, uint8_t firstPage, const uint8_t *data, size_t bytes, const uint8_t *placeholder) {
   // A failed partial write must never make the next poll reuse the old record.
   contentsKnown = false;
-  deadline = millis() + 10000;
+  deadline = millis() + 10000 + bytes * 20; // Full-memory erases of an NTAG216 need longer.
   // The first page is published last, so an interrupted write never looks complete.
   if (!writePage(firstPage, placeholder)) return fail("Cannot start tag write; contents may be incomplete.");
   for (size_t at = 4; at < bytes; at += 4) {
@@ -255,13 +337,13 @@ bool Nfc::writeRange(const String &expectedUid, uint8_t firstPage, const uint8_t
 bool Nfc::writeInventory(const String &expectedUid, const String &json) {
   if (!scan(true) || uid != expectedUid || targets != 1 || !writable)
     return fail("Write refused: rescan one unlocked blank/Spoolancer NTAG213, NTAG215 or NTAG216 and confirm its UID.");
-  uint8_t bytes[720] = {};
+  uint8_t bytes[872] = {};
   const size_t capacity = std::min(sizeof(bytes), layout.capacity());
   const size_t size = Domain::encodeNdef(reinterpret_cast<const uint8_t *>(json.c_str()), json.length(), bytes, capacity);
   if (!size) {
     char message[144];
-    snprintf(message, sizeof(message), "Record needs %u bytes; %s has %u NDEF bytes (650-byte JSON limit). Link its UID instead.",
-             unsigned(Domain::ndefSize(std::strlen(Domain::ndefMime), json.length())), layout.name, unsigned(layout.capacity()));
+    snprintf(message, sizeof(message), "Record needs %u bytes; %s has %u NDEF bytes (%u-byte JSON limit). Link its UID instead.",
+             unsigned(Domain::ndefSize(std::strlen(Domain::ndefMime), json.length())), layout.name, unsigned(layout.capacity()), unsigned(Domain::maxPayload));
     return fail(message);
   }
   const uint8_t empty[] = {3, 0, 0xfe, 0};
@@ -273,7 +355,7 @@ bool Nfc::writeInventory(const String &expectedUid, const String &json) {
 bool Nfc::writeNdef(const String &expectedUid, const String &record, const char *mime) {
   if (!scan(true) || uid != expectedUid || targets != 1 || !rawWritable || !layout.capacity())
     return fail("Write refused: rescan one unlocked NTAG213, NTAG215 or NTAG216 and confirm its UID.");
-  uint8_t bytes[720] = {};
+  uint8_t bytes[872] = {};
   const size_t capacity = std::min(sizeof(bytes), layout.capacity());
   const size_t size = Domain::encodeNdef(reinterpret_cast<const uint8_t *>(record.c_str()), record.length(), bytes, capacity, mime);
   if (!size) {
@@ -294,6 +376,15 @@ bool Nfc::writeNtagPages(const String &expectedUid, uint8_t firstPage, const uin
   const uint8_t zero[4] = {};
   if (!writeRange(expectedUid, firstPage, data, pages * 4, zero)) return false;
   lastMessage = "Tag written and read-back verified."; return true;
+}
+bool Nfc::eraseNtag(const String &expectedUid) {
+  if (!scan(true) || uid != expectedUid || targets != 1 || !rawWritable || !layout.capacity())
+    return fail("Erase refused: rescan one unlocked NTAG213, NTAG215 or NTAG216 and confirm its UID.");
+  uint8_t bytes[872] = {3, 0, 0xfe, 0}; // Empty NDEF TLV + terminator, then zeros.
+  const size_t size = std::min(sizeof(bytes), layout.capacity());
+  if (!writeRange(expectedUid, 4, bytes, size, bytes)) return false;
+  scan(true);
+  lastMessage = "Tag erased and read-back verified."; return true;
 }
 bool Nfc::authClassic(uint8_t block, const uint8_t key[6]) {
   uint8_t request[12] = {0x60, block};

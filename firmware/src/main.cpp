@@ -22,10 +22,13 @@
 #include "StatusUi.h"
 #include "Setup.h"
 #include "RemoteInventory.h"
+#include "RemoteProfile.h"
 #include "RemoteHttp.h"
 #include "Discovery.h"
 #include "SpoolActions.h"
 #include "JsonNumbers.h"
+#include "InventoryTag.h"
+#include "WebAssets.h"
 #include <mdns.h>
 #include <lwip/sockets.h>
 #include <fcntl.h>
@@ -52,6 +55,8 @@ constexpr const char *deviceVariant = "st7789";
 #endif
 struct Spool {
   String id, name, brand, material, color, tagUid;
+  String details; // Serialized InventoryTag details object (extra Spoolman facts), or empty.
+  std::vector<String> serverTags;
   double empty = NAN, initial = 1000, density = 1.24, diameter = 1.75;
   double lastGross = NAN, lastRemaining = NAN, remoteRemaining = NAN;
   int remoteId = 0, vendorId = 0, filamentId = 0;
@@ -66,7 +71,17 @@ struct Config {
 struct Session { String token; uint32_t started = 0; } sessions[4];
 std::vector<Spool> spools;
 RemoteInventory::Cache remoteInventory;
+struct RemoteLoad {
+  bool running = false;
+  size_t offset = 0;
+  uint32_t started = 0, epoch = 0;
+  String target;
+  RemoteInventory::Pages pages;
+  std::vector<Spool> records;
+} remoteLoad;
+uint32_t remoteMutationEpoch = 0;
 String inventoryError;
+String selectionSource = "none";
 String activeId, pin, apName, nfcSpoolId, appMessage, syncMessage, syncError;
 JsonDocument nfcMetadata;
 // Holds a genuine Bambu tag image between the clone's read step and its write-to-magic-card step.
@@ -75,8 +90,12 @@ Preferences preferences;
 fs::LittleFSFS inventory;
 WebServer server(80);
 Scale scale;
-HardwareSerial nfcSerial(1);
-Nfc nfc(nfcSerial);
+#if defined(SPOOLANCER_HEADLESS) && !defined(SPOOLANCER_TOUCH)
+Nfc nfc(Wire); // PN532 and optional OLED share controller 0 on GPIO4/5.
+#else
+TwoWire nfcBus(1); // Integrated touch and legacy ST7789 keep their separate pin maps.
+Nfc nfc(nfcBus);
+#endif
 #ifndef SPOOLANCER_HEADLESS
 SPIClass displaySpi(FSPI);
 Adafruit_ST7789 display(&displaySpi, Pins::displayCs, Pins::displayDc, Pins::displayReset);
@@ -179,6 +198,10 @@ using JsonNumbers::numberOrNull;
 void spoolJson(JsonObject obj, const Spool &s, bool persisted = false) {
   obj["id"] = s.id; obj["name"] = s.name; obj["brand"] = s.brand;
   obj["material"] = s.material; obj["color"] = s.color;
+  if (!s.details.isEmpty()) {
+    JsonDocument details;
+    if (!deserializeJson(details, s.details) && details.is<JsonObject>()) obj["details"].set(details);
+  }
   numberOrNull(obj["empty_weight_g"], s.empty); numberOrNull(obj["initial_weight_g"], s.initial);
   numberOrNull(obj["density_g_cm3"], s.density); numberOrNull(obj["diameter_mm"], s.diameter);
   if (s.remoteId) obj["spoolman_id"] = s.remoteId; else obj["spoolman_id"] = nullptr;
@@ -186,6 +209,8 @@ void spoolJson(JsonObject obj, const Spool &s, bool persisted = false) {
   numberOrNull(obj["last_measurement_remaining_g"], s.measurement ? s.lastRemaining : NAN);
   numberOrNull(obj["last_gross_g"], s.lastGross);
   obj["measurement_sequence"] = s.measurement; obj["tag_uid"] = s.tagUid;
+  JsonArray serverTags = obj["server_tag_uids"].to<JsonArray>();
+  for (const auto &uid : s.serverTags) serverTags.add(uid);
   obj["sync_pending"] = !s.pending.isEmpty();
   obj["removal_pending"] = SpoolActions::archiving(s.pending.c_str());
   obj["inactive_tag_link"] = inactiveTagLink(s);
@@ -222,7 +247,13 @@ bool numericField(JsonObjectConst obj, const char *key, double &out, double low,
   if (!obj[key].is<double>()) return false;
   out = obj[key].as<double>(); return Domain::inRange(out, low, high);
 }
+void readDetails(JsonObjectConst obj, Spool &s) {
+  JsonDocument clean; s.details = "";
+  InventoryTag::cleanDetails(obj["details"].as<JsonObjectConst>(), clean.to<JsonObject>());
+  if (clean.as<JsonObjectConst>().size()) serializeJson(clean, s.details);
+}
 bool validateSpool(JsonObjectConst obj, Spool &s) {
+  readDetails(obj, s);
   if (!textField(obj, "name", s.name, 64) || !textField(obj, "brand", s.brand, 60) ||
       !textField(obj, "material", s.material, 30) || !textField(obj, "color", s.color, 7) ||
       !Domain::validColor(s.color.c_str()) ||
@@ -267,7 +298,13 @@ bool loadInventory() {
     s.id = obj["id"].as<String>();
     for (const auto &prior : loaded) if (prior.id == s.id) return false;
     s.tagUid = obj["tag_uid"] | "";
+    for (JsonVariantConst item : obj["server_tag_uids"].as<JsonArrayConst>()) {
+      char uid[33];
+      if (item.is<const char *>() && SpoolActions::normalizeUid(item.as<const char *>(), uid) && s.serverTags.size() < 16)
+        s.serverTags.emplace_back(uid);
+    }
     s.vendorId = obj["vendor_id"] | 0; s.filamentId = obj["filament_id"] | 0;
+    if (s.remote) readDetails(obj, s);
     s.pending = obj["pending"] | "";
     s.lastGross = obj["last_gross_g"].is<double>() ? obj["last_gross_g"].as<double>() : NAN;
     s.lastRemaining = obj["remaining_weight_g"].is<double>() ? obj["remaining_weight_g"].as<double>() : NAN;
@@ -333,8 +370,9 @@ String measurementProblem(const Spool &s) {
   if (SpoolActions::archiving(s.pending.c_str())) return "Finish checking this spool's archive status before measuring it.";
   if (s.remote && inventoryStale()) return "Refresh the Spoolman inventory before saving this measurement.";
   if (activeId != s.id) return "Select or scan this spool on the scale before saving.";
+  if (s.initial > Domain::maxFilament) return "This spool exceeds the 3000 g initial-filament measuring limit. Its inventory profile can be kept, but measurements cannot be saved.";
   if (!Domain::measurementAllowed(scale.gross(), s.empty, s.initial, scale.calibrated(), scale.stable(), scale.fresh())) {
-    return "Need a fresh stable calibrated weight (20–2000 g), known empty-spool weight, and remaining filament within the initial weight.";
+    return "Need a fresh stable calibrated weight (20–5000 g gross), known empty-spool weight, and remaining filament within the initial weight.";
   }
   return "";
 }
@@ -352,7 +390,8 @@ bool recordMeasurement(Spool &s) {
   if (!saved) s = previous;
   finishStatusOperation(saved); return saved;
 }
-void chooseSpool(const String &id) {
+void chooseSpool(const String &id, const char *source = "manual") {
+  selectionSource = id.isEmpty() ? "none" : source;
   activeId = id; activeHadLoad = scale.calibrated() && scale.fresh() && scale.gross() >= 20;
 }
 bool cycleVisibleSpool(bool forward) {
@@ -371,6 +410,14 @@ void nfcJson(JsonObject obj) {
   obj["available"] = nfc.available; obj["present"] = nfc.present;
   obj["uid"] = nfc.uid; obj["type"] = nfc.type; obj["writable"] = nfc.writable;
   obj["raw_writable"] = nfc.rawWritable; obj["chip"] = nfcChip();
+  obj["capacity_bytes"] = nfc.ndefCapacity();
+  if (const Spool *s = findSpool(activeId); s && nfc.ndefCapacity()) {
+    JsonDocument tag; spoolJson(tag.to<JsonObject>(), *s);
+    InventoryTag::prepare(tag, s->id.c_str(), nfc.ndefCapacity());
+    JsonObject plan = obj["inventory_write"].to<JsonObject>();
+    plan["spool_id"] = s->id; plan["kind"] = InventoryTag::linkOnly(tag.as<JsonObjectConst>()) ? "link" : "profile";
+    plan["bytes"] = InventoryTag::bytes(tag); plan["fits"] = InventoryTag::fits(tag, nfc.ndefCapacity());
+  }
   obj["last_message"] = nfc.lastMessage; obj["last_error"] = nfc.lastError;
   if (nfcSpoolId.isEmpty()) obj["spool_id"] = nullptr; else obj["spool_id"] = nfcSpoolId;
   if (!nfcMetadata.isNull()) obj["metadata"].set(nfcMetadata);
@@ -382,13 +429,21 @@ void readNfcImpl(bool explicitRead) {
   // A failed or unlinked explicit scan keeps the user's manual selection.
   if (!explicitRead && (nfc.targets > 1 || (nfc.present && nfc.uid != previousUid))) chooseSpool("");
   if (!nfc.present || nfc.targets != 1 || nfc.uid.isEmpty()) return;
-  // Payload metadata is a preview; only an explicit UID association selects an inventory record.
-  for (const auto &s : spools) if (SpoolActions::identifiesSpool(visibleSpool(s), s.tagUid.c_str(), nfc.uid.c_str())) nfcSpoolId = s.id;
+  // Resolve exactly one visible spool. Conflicting local/server links never select by guess.
+  const int match = SpoolActions::matchTag(spools, nfc.uid.c_str(), visibleSpool);
+  if (match == -2) {
+    chooseSpool("");
+    nfc.lastError = "This tag matches several inventory spools. Fix the duplicate RFID links before weighing.";
+    return;
+  }
+  if (match >= 0) nfcSpoolId = spools[match].id;
   if (!nfc.payload.isEmpty()) {
     JsonDocument tag;
     if (deserializeJson(tag, nfc.payload, DeserializationOption::NestingLimit(3)) || tag["schema"] != 1 ||
         !tag["spool_id"].is<const char *>() || !Domain::validId(tag["spool_id"])) {
       nfc.writable = false; nfc.lastError = "Invalid Spoolancer tag record; writing refused.";
+    } else if (InventoryTag::linkOnly(tag.as<JsonObjectConst>())) {
+      nfc.lastMessage = "Compact inventory link read. Full spool details stay in the scale or Spoolman inventory.";
     } else {
       Spool parsed;
       if (!validateSpool(tag.as<JsonObjectConst>(), parsed)) {
@@ -411,7 +466,7 @@ void readNfcImpl(bool explicitRead) {
   }
   // Re-selecting on every poll would override a manual choice while the same tag stays seated.
   // Retried while nothing is selected (tag read before the load settled), never over a manual choice.
-  if (!nfcSpoolId.isEmpty() && (explicitRead || activeId.isEmpty() || nfc.uid != previousUid) && (!scale.calibrated() || scale.gross() >= 20)) chooseSpool(nfcSpoolId);
+  if (!nfcSpoolId.isEmpty() && (explicitRead || activeId.isEmpty() || nfc.uid != previousUid)) chooseSpool(nfcSpoolId, "nfc");
 }
 void readNfc(bool explicitRead = false) {
   if (explicitRead) startStatusOperation(StatusModel::Operation::Nfc);
@@ -480,19 +535,14 @@ String writeSpoolTagImpl(Spool &s, const String &expectedUid, BrandTags::Format 
   JsonDocument profile; spoolJson(profile.to<JsonObject>(), s); Spool checked;
   if (!validateSpool(profile.as<JsonObjectConst>(), checked)) return "Complete the spool metadata in Spoolman before writing an inventory tag.";
   if (expectedUid.isEmpty()) return "Scan and confirm the target tag UID first.";
-  for (const auto &other : spools) if (other.id != s.id && other.tagUid == expectedUid)
+  for (const auto &other : spools) if (other.id != s.id && SpoolActions::tagMatches(other, expectedUid.c_str()))
     return "This UID is already linked to another local spool. Unlink it before rewriting this inventory tag.";
   if (format != BrandTags::Format::Spoolancer) {
     const String problem = writeBrandTag(s, expectedUid, format);
     if (!problem.isEmpty()) return problem;
   } else {
     JsonDocument tag; spoolJson(tag.to<JsonObject>(), s);
-    tag.remove("id"); tag.remove("spoolman_id"); tag.remove("remaining_weight_g"); tag.remove("last_gross_g");
-    tag.remove("measurement_sequence"); tag.remove("tag_uid"); tag.remove("sync_pending");
-    tag.remove("source"); tag.remove("metadata_readonly"); tag.remove("last_measurement_remaining_g");
-    tag.remove("removal_pending");
-    tag.remove("inactive_tag_link");
-    tag["schema"] = 1; tag["spool_id"] = s.id;
+    InventoryTag::prepare(tag, s.id.c_str(), nfc.ndefCapacity());
     String json; serializeJson(tag, json);
     if (!nfc.writeInventory(expectedUid, json)) return nfc.lastError;
   }
@@ -509,8 +559,27 @@ String writeSpoolTag(Spool &s, const String &expectedUid, BrandTags::Format form
   const String problem = writeSpoolTagImpl(s, expectedUid, format);
   finishStatusOperation(problem.isEmpty()); return problem;
 }
+// Clears tag memory only; UID links on the scale and in Spoolman are kept (unlink them separately).
+String eraseTag(const String &expectedUid) {
+  if (!nfc.scanIdentity() || nfc.uid != expectedUid) return "Present the confirmed tag alone, then try again.";
+  bool ok;
+  if (nfc.classic1k()) {
+    // Sector 1 holds the Creality CFS / Qidi Box records; restore the factory key afterwards.
+    uint8_t creality[6]; BrandTags::crealityKey(nfc.uidData(), creality);
+    const uint8_t keys[][6] = {{0xff, 0xff, 0xff, 0xff, 0xff, 0xff}, {creality[0], creality[1], creality[2], creality[3], creality[4], creality[5]},
+                               {0xd3, 0xf7, 0xd3, 0xf7, 0xd3, 0xf7}};
+    const uint8_t zeros[48] = {};
+    ok = nfc.writeClassicSector1(expectedUid, keys, 3, zeros, 3, keys[0]);
+  } else {
+    ok = nfc.eraseNtag(expectedUid);
+  }
+  if (!ok) return nfc.lastError.isEmpty() ? String("Tag could not be erased.") : nfc.lastError;
+  nfcSpoolId = ""; nfcMetadata.clear(); nextNfc = millis() + 2000;
+  return "";
+}
 void statusRoute() {
   JsonDocument doc; doc["mode"] = "device"; doc["device"]["name"] = config.name;
+  doc["device"]["web_embedded"] = true; doc["device"]["web_build"] = WebAssets::buildId;
   doc["device"]["firmware"] = SPOOLANCER_VERSION; doc["device"]["storage_ready"] = storeReady;
   doc["device"]["variant"] = deviceVariant;
   doc["auth"]["pin_required"] = Setup::pinRequired(config.auth);
@@ -556,6 +625,8 @@ void statusRoute() {
   tag["type"] = nfc.type; tag["writable"] = nfc.writable;
   tag["raw_writable"] = nfc.rawWritable; tag["chip"] = nfcChip();
   tag["last_message"] = nfc.lastMessage; tag["last_error"] = nfc.lastError;
+  tag["capacity_bytes"] = nfc.ndefCapacity();
+  if (hasSession()) nfcJson(tag); // Selection links and tag metadata stay private.
 #ifdef SPOOLANCER_STATUS_LEDS
   doc["diagnostics"]["leds_supported"] = true;
 #else
@@ -565,12 +636,17 @@ void statusRoute() {
   doc["network"]["connected"] = WiFi.status() == WL_CONNECTED;
   doc["network"]["ip"] = WiFi.status() == WL_CONNECTED ? WiFi.localIP().toString() : WiFi.softAPIP().toString();
   doc["network"]["ap_active"] = apActive;
+  doc["network"]["gateway"] = WiFi.gatewayIP().toString();
+  doc["network"]["subnet"] = WiFi.subnetMask().toString();
+  doc["spoolman"]["inventory_refreshing"] = remoteLoad.running;
+  doc["spoolman"]["url"] = config.spoolman;
   doc["spoolman"]["configured"] = !config.spoolman.isEmpty();
   doc["spoolman"]["inventory_source"] = config.spoolman.isEmpty() ? "local" : "spoolman";
   doc["spoolman"]["inventory_stale"] = !config.spoolman.isEmpty() && inventoryStale();
   doc["spoolman"]["inventory_error"] = inventoryError;
   doc["spoolman"]["last_message"] = syncMessage; doc["spoolman"]["last_error"] = syncError;
   doc["spoolman"]["pending"] = s && !s->pending.isEmpty();
+  doc["selection_source"] = selectionSource;
   doc["message"] = appMessage; reply(doc);
 }
 bool validServerUrl(const String &url) {
@@ -607,8 +683,33 @@ bool readHttpLine(WiFiClient &client, String &line, uint32_t deadline, size_t &h
   }
   return false;
 }
+// Allow ARP and routed Wi-Fi connections time to complete without pausing the scale.
+bool connectSpoolman(WiFiClient &client, const IPAddress &address, uint16_t port) {
+  const int fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+  if (fd < 0) return false;
+  if (fcntl(fd, F_SETFL, O_NONBLOCK) < 0) { close(fd); return false; }
+  sockaddr_in target{}; target.sin_family = AF_INET; target.sin_port = htons(port);
+  target.sin_addr.s_addr = uint32_t(address);
+  const int started = ::connect(fd, reinterpret_cast<sockaddr *>(&target), sizeof(target));
+  if (started < 0 && errno != EINPROGRESS && errno != EWOULDBLOCK) { close(fd); return false; }
+  const uint32_t end = millis() + 1500;
+  while (int32_t(end - millis()) > 0) {
+    scale.tick(); renderStatusUi();
+    fd_set ready; FD_ZERO(&ready); FD_SET(fd, &ready);
+    timeval wait{}; const int result = select(fd + 1, nullptr, &ready, nullptr, &wait);
+    if (result < 0) { if (errno == EINTR) continue; close(fd); return false; }
+    if (result > 0) {
+      int error = 0; socklen_t size = sizeof(error);
+      if (getsockopt(fd, SOL_SOCKET, SO_ERROR, &error, &size) || error) { close(fd); return false; }
+      client = WiFiClient(fd); return true;
+    }
+    delay(1);
+  }
+  close(fd); return false;
+}
 bool remoteRequestAt(const String &url, const char *method, const String &path, JsonDocument *input, JsonDocument &output, int &code, int allowedError = 0) {
-  code = 0;
+  code = 0; syncError = "";
+  if (url == config.spoolman && std::strcmp(method, "GET") != 0) ++remoteMutationEpoch;
   if (WiFi.status() != WL_CONNECTED || url.isEmpty() || !validServerUrl(url)) { syncError = "Connect Wi-Fi and configure a local Spoolman URL first."; return false; }
   String authority = url.substring(7), basePath;
   const int slash = authority.indexOf('/');
@@ -620,13 +721,13 @@ bool remoteRequestAt(const String &url, const char *method, const String &path, 
   WiFiClient client;
   scale.tick(); renderStatusUi();
   // code -1 marks that no request bytes left the device, so a create can be retried safely.
-  if (!client.connect(address, port, 150)) { code = -1; syncError = "Spoolman connection failed."; return false; }
+  if (!connectSpoolman(client, address, port)) { code = -1; syncError = "Cannot connect to " + url + ". Check the server address, TCP port and access from the scale Wi-Fi."; return false; }
   scale.tick(); renderStatusUi();
   String data; if (input) serializeJson(*input, data);
   const String headers = String(method) + " " + basePath + "/api/v1" + path + " HTTP/1.0\r\nHost: " + authority +
       "\r\nConnection: close\r\nAccept: application/json\r\nContent-Type: application/json\r\nContent-Length: " + String(data.length()) + "\r\n\r\n";
   const String request = headers + data;
-  const uint32_t deadline = millis() + 2000;
+  const uint32_t deadline = millis() + 5000;
   for (size_t offset = 0; offset < request.length();) {
     scale.tick(); renderStatusUi();
     const size_t length = std::min(size_t(128), request.length() - offset);
@@ -643,23 +744,27 @@ bool remoteRequestAt(const String &url, const char *method, const String &path, 
     client.stop(); syncError = "Spoolman returned an invalid or incomplete HTTP response."; return false;
   }
   if ((code < 200 || code >= 300) && code != allowedError) { client.stop(); syncError = "Spoolman returned HTTP " + String(code) + "."; return false; }
-  int remaining = -1; bool lengthSeen = false;
+  int remaining = -1; bool lengthSeen = false, chunked = false;
   for (;;) {
     if (!readHttpLine(client, line, deadline, headerBytes)) { client.stop(); syncError = "Spoolman response headers timed out or exceeded the limit."; return false; }
     if (line.isEmpty()) break;
-    if (!RemoteHttp::header(line.c_str(), remaining, lengthSeen)) {
+    if (!RemoteHttp::header(line.c_str(), remaining, lengthSeen, chunked)) {
       client.stop(); syncError = "Spoolman response has invalid headers, exceeds 20 KB, or uses unsupported transfer encoding. Use its direct HTTP address."; return false;
     }
   }
   String response; response.reserve(1024);
-  while (int32_t(deadline - millis()) > 0 && (client.connected() || client.available()) && remaining != 0) {
+  RemoteHttp::Body body(remaining, chunked);
+  bool validBody = true;
+  while (int32_t(deadline - millis()) > 0 && !body.done(client.connected() || client.available())) {
     scale.tick(); renderStatusUi();
     if (client.available()) {
-      response += char(client.read()); if (remaining > 0) --remaining;
-      if (response.length() > 20000) break;
-    } else delay(1);
+      if (!body.feed(char(client.read()), response)) { validBody = false; break; }
+    } else {
+      if (!client.connected()) break;
+      delay(1);
+    }
   }
-  const bool incomplete = !RemoteHttp::complete(remaining, client.connected(), response.length());
+  const bool incomplete = !validBody || !body.done(client.connected() || client.available());
   client.stop();
   if (response.length() > 20000 || incomplete || deserializeJson(output, response, DeserializationOption::NestingLimit(8))) {
     syncError = "Spoolman returned an incomplete or invalid JSON response."; return false;
@@ -669,43 +774,8 @@ bool remoteRequestAt(const String &url, const char *method, const String &path, 
 bool remoteRequest(const char *method, const String &path, JsonDocument *input, JsonDocument &output, int &code, int allowedError = 0) {
   return remoteRequestAt(config.spoolman, method, path, input, output, code, allowedError);
 }
-bool remoteNumber(JsonVariantConst value, double &result) {
-  if (value.isNull()) { result = NAN; return true; }
-  if (!value.is<double>() || !Domain::inRange(value.as<double>(), 0, 1000000)) return false;
-  result = value.as<double>(); return true;
-}
-bool remoteText(JsonVariantConst field, String &value, size_t limit) {
-  if (field.isNull()) { value = ""; return true; }
-  if (!textWithoutNul(field)) return false;
-  value = field.as<String>();
-  return value.length() <= limit && Setup::validText(value.c_str());
-}
 bool parseRemoteSpool(JsonObjectConst item, Spool &value) {
-  const JsonObjectConst filament = item["filament"].as<JsonObjectConst>();
-  if (!item["id"].is<int>() || item["id"].as<int>() < 1 || filament.isNull() ||
-      !filament["id"].is<int>() || filament["id"].as<int>() < 1 || !item["archived"].is<bool>()) return false;
-  value.remoteId = item["id"].as<int>(); value.filamentId = filament["id"].as<int>();
-  value.remote = true; value.remoteListed = !item["archived"].as<bool>();
-  const JsonObjectConst vendor = filament["vendor"].as<JsonObjectConst>();
-  value.vendorId = vendor["id"] | 0;
-  if (!remoteText(filament["name"], value.name, 64) || !remoteText(filament["material"], value.material, 64) ||
-      !remoteText(vendor["name"], value.brand, 64)) return false;
-  String color;
-  if (!remoteText(filament["color_hex"], color, 9)) return false;
-  if (color.startsWith("#")) color.remove(0, 1);
-  if (!color.isEmpty()) {
-    if (color.length() != 6 && color.length() != 8) return false;
-    for (const char c : color) if (!isxdigit(static_cast<unsigned char>(c))) return false;
-    value.color = "#" + color.substring(0, 6);
-  } else value.color = "";
-  double initial, filamentWeight, empty, filamentEmpty, vendorEmpty, remaining;
-  if (!remoteNumber(item["initial_weight"], initial) || !remoteNumber(filament["weight"], filamentWeight) ||
-      !remoteNumber(item["spool_weight"], empty) || !remoteNumber(filament["spool_weight"], filamentEmpty) ||
-      !remoteNumber(vendor["empty_spool_weight"], vendorEmpty) || !remoteNumber(item["remaining_weight"], remaining) ||
-      !remoteNumber(filament["density"], value.density) || !remoteNumber(filament["diameter"], value.diameter)) return false;
-  const auto weights = RemoteInventory::weights(initial, filamentWeight, empty, filamentEmpty, vendorEmpty, remaining);
-  value.initial = weights.initial; value.empty = weights.empty; value.lastRemaining = value.remoteRemaining = weights.remaining;
-  return true;
+  return RemoteProfile::decode(item, value);
 }
 void remoteIdentity(Spool &record) {
   for (const auto &old : spools) if (old.remoteId == record.remoteId) {
@@ -722,58 +792,69 @@ void remoteIdentity(Spool &record) {
 }
 bool refreshRemoteInventory(bool force = false) {
   if (config.spoolman.isEmpty()) return true;
-  const bool connected = WiFi.status() == WL_CONNECTED;
-  if (!connected) { inventoryError = "Spoolman is offline. Showing only its last cached inventory, if available."; return false; }
-  if (!remoteInventory.shouldRefresh(millis(), connected, force)) return !inventoryStale();
+  if (remoteLoad.running) return !inventoryStale();
+  if (!remoteInventory.shouldRefresh(millis(), WiFi.status() == WL_CONNECTED, force)) return !inventoryStale();
+  remoteLoad = {};
+  remoteLoad.running = true; remoteLoad.started = millis();
+  remoteLoad.epoch = remoteMutationEpoch; remoteLoad.target = config.spoolman;
   remoteInventory.begin(millis());
-  std::vector<Spool> fetched;
-  RemoteInventory::Pages pages;
-  const uint32_t started = millis();
-  bool complete = false;
-  for (size_t offset = 0; offset <= RemoteInventory::limit; offset += RemoteInventory::pageSize) {
-    if (uint32_t(millis() - started) > 6000) { syncError = "Spoolman inventory refresh timed out; retry to load the complete list."; break; }
-    JsonDocument response; int code;
-    const String path = "/spool?allow_archived=false&sort=id:asc&limit=" + String(RemoteInventory::pageSize) + "&offset=" + String(offset);
-    if (!remoteRequest("GET", path, nullptr, response, code) || !response.is<JsonArray>() || response.size() > RemoteInventory::pageSize) {
-      if (syncError.isEmpty()) syncError = "Unexpected Spoolman inventory response.";
-      break;
-    }
-    bool valid = true;
-    for (JsonVariantConst item : response.as<JsonArrayConst>()) {
-      Spool record;
-      if (!item.is<JsonObjectConst>() || !parseRemoteSpool(item.as<JsonObjectConst>(), record) || !pages.accept(record.remoteId)) {
-        syncError = "Spoolman inventory is invalid, changed during paging, or exceeds the 200-spool limit."; valid = false; break;
-      }
-      if (!record.remoteListed) continue;
-      remoteIdentity(record); fetched.push_back(record);
-    }
-    if (!valid) break;
-    if (pages.complete(response.size())) { complete = true; break; }
+  return !inventoryStale();
+}
+void remoteLoadFailed(const String &message) {
+  remoteLoad.running = false; remoteLoad.records.clear();
+  remoteInventory.finish(millis(), false); inventoryError = message;
+}
+void pollRemoteInventory() {
+  if (!remoteLoad.running) { refreshRemoteInventory(); return; }
+  if (remoteLoad.target != config.spoolman || remoteLoad.epoch != remoteMutationEpoch) {
+    remoteLoadFailed("Inventory changed during loading. Refreshing the server snapshot.");
+    remoteInventory.attempted = false; return;
   }
-  if (!complete) {
-    remoteInventory.finish(millis(), false); inventoryError = syncError;
-    return false;
+  if (WiFi.status() != WL_CONNECTED) { remoteLoadFailed("Wi-Fi disconnected while loading Spoolman."); return; }
+  if (uint32_t(millis() - remoteLoad.started) > 20000) {
+    remoteLoadFailed("Spoolman inventory loading timed out. Refresh to retry."); return;
   }
+  JsonDocument response; int code;
+  const String path = "/spool?allow_archived=false&sort=id:asc&limit=" + String(RemoteInventory::pageSize) +
+                      "&offset=" + String(remoteLoad.offset);
+  if (!remoteRequest("GET", path, nullptr, response, code) || !response.is<JsonArray>() ||
+      response.size() > RemoteInventory::pageSize) {
+    remoteLoadFailed(syncError.isEmpty() ? "Unexpected Spoolman inventory response." : syncError); return;
+  }
+  for (JsonVariantConst item : response.as<JsonArrayConst>()) {
+    Spool record;
+    if (!item.is<JsonObjectConst>() || !parseRemoteSpool(item.as<JsonObjectConst>(), record) ||
+        !remoteLoad.pages.accept(record.remoteId)) {
+      remoteLoadFailed("Spoolman inventory is invalid, changed during paging, or exceeds 200 spools."); return;
+    }
+    if (record.remoteListed) remoteLoad.records.push_back(record);
+  }
+  remoteLoad.offset += RemoteInventory::pageSize;
+  if (!remoteLoad.pages.complete(response.size())) return;
+  // Merge local measurements and RFID links at commit, never from an old partial page.
+  for (auto &record : remoteLoad.records) remoteIdentity(record);
   // Replace a complete server snapshot atomically. Unresolved local journals stay hidden, never deleted.
   std::vector<Spool> updated;
   for (const auto &old : spools) {
-    bool fetchedRecord = false;
-    for (const auto &current : fetched) if (current.id == old.id) { fetchedRecord = true; break; }
-    if (fetchedRecord) continue;
+    bool hasReplacement = false;
+    for (const auto &current : remoteLoad.records) if (current.id == old.id) { hasReplacement = true; break; }
+    if (hasReplacement) continue;
     if (old.remote && old.pending.isEmpty() && old.tagUid.isEmpty() && old.measurement == 0) continue;
     Spool retained = old; retained.remoteListed = false;
     updated.push_back(retained);
   }
-  if (updated.size() + fetched.size() > maxSpools) {
-    remoteInventory.finish(millis(), false); inventoryError = "The device cache is full. Existing records were preserved; inventory was not replaced."; return false;
+  if (updated.size() + remoteLoad.records.size() > maxSpools) {
+    remoteInventory.finish(millis(), false); inventoryError = "The device cache is full. Existing records were preserved; inventory was not replaced."; remoteLoad.running = false; remoteLoad.records.clear(); return;
   }
-  updated.insert(updated.end(), fetched.begin(), fetched.end());
-  spools = std::move(updated); remoteInventory.finish(millis(), true); inventoryError = "";
+  updated.insert(updated.end(), remoteLoad.records.begin(), remoteLoad.records.end());
+  spools = std::move(updated); remoteInventory.finish(millis(), true); inventoryError = ""; syncError = "";
+  syncMessage = "Loaded " + String(remoteLoad.records.size()) + " spools from Spoolman.";
   if (!activeId.isEmpty() && !findSpool(activeId)) chooseSpool("");
-  return true;
+  remoteLoad.running = false; remoteLoad.records.clear();
 }
 void inventoryJson(JsonObject obj) {
   const bool configured = !config.spoolman.isEmpty();
+  obj["refreshing"] = configured && remoteLoad.running;
   obj["source"] = configured ? "spoolman" : "local"; obj["configured"] = configured;
   obj["stale"] = configured && inventoryStale(); obj["cached"] = configured && remoteInventory.loaded;
   obj["error"] = configured ? inventoryError : ""; obj["limit"] = configured ? RemoteInventory::limit : maxLocalSpools;
@@ -1339,8 +1420,11 @@ void setupRoutes() {
         error(400, "Specify whether this is a new full spool or a used spool."); return;
       }
       const bool full = doc["spool_condition"] == "full";
+      if ((inferEmpty || (create && !full)) && value.initial > Domain::maxFilament) {
+        error(409, "This spool exceeds the 3000 g initial-filament measuring limit. Keep its inventory profile without estimating or saving a measurement."); return;
+      }
       if (inferEmpty && (!full || !scale.calibrated() || !scale.stable() || !scale.fresh() ||
-          !Domain::inRange(scale.gross(), 20, 2000) || !Domain::inRange(scale.gross() - value.initial, 0, 2000) ||
+          !Domain::inRange(scale.gross(), 20, Domain::maxGross) || !Domain::inRange(scale.gross() - value.initial, 0, 2000) ||
           !std::isfinite(value.empty) || std::abs(value.empty - (scale.gross() - value.initial)) > 1)) {
         error(409, "The full-spool measurement changed. Weigh it again before estimating the empty spool weight."); return;
       }
@@ -1385,7 +1469,7 @@ void setupRoutes() {
       String requested = doc["tag_uid"].as<String>();
       if (!textWithoutNul(doc["tag_uid"]) || (!requested.isEmpty() && !SpoolActions::validUid(requested.c_str()))) { error(400, "Invalid tag UID. Scan the physical tag first."); return; }
       if (!requested.isEmpty() && (!nfc.scanIdentity() || requested != nfc.uid)) { error(409, "Tag changed or multiple tags detected. Rescan before linking its UID."); return; }
-      for (const auto &s : spools) if (s.id != value.id && s.id != mergeCacheId && !requested.isEmpty() && s.tagUid == requested) { error(409, "This tag already identifies another spool."); return; }
+      for (const auto &s : spools) if (s.id != value.id && s.id != mergeCacheId && !requested.isEmpty() && SpoolActions::tagMatches(s, requested.c_str())) { error(409, "This tag already identifies another spool."); return; }
       value.tagUid = requested;
     }
     Spool before; std::vector<Spool> beforeMerge;
@@ -1447,7 +1531,7 @@ void setupRoutes() {
     if (!nfc.scanIdentity() || nfc.uid != expected) {
       finishStatusOperation(false); error(409, "Tag changed, disappeared, or multiple tags were detected. Scan one tag again before linking it."); return;
     }
-    for (const auto &other : spools) if (other.id != s->id && other.tagUid == expected) {
+    for (const auto &other : spools) if (other.id != s->id && SpoolActions::tagMatches(other, expected.c_str())) {
       finishStatusOperation(false); error(409, "This tag already identifies another spool. Change or remove that spool's link first."); return;
     }
     const String oldUid = s->tagUid; s->tagUid = expected;
@@ -1530,12 +1614,20 @@ void setupRoutes() {
       const bool detected = nfc.scanIdentity();
       nfcSpoolId = ""; nfcMetadata.clear(); nextNfc = millis() + 2000;
       result["reader_available"] = nfc.available; result["tag_detected"] = detected;
+      result["transport"] = "i2c"; result["sda_gpio"] = Pins::nfcSda; result["scl_gpio"] = Pins::nfcScl;
+      result["i2c_error"] = nfc.i2cError; result["transport_step"] = nfc.transportStep;
+      result["sda_high"] = digitalRead(Pins::nfcSda) == HIGH; result["scl_high"] = digitalRead(Pins::nfcScl) == HIGH;
       result["targets"] = nfc.targets; result["uid"] = nfc.uid; result["type"] = nfc.type;
       result["state"] = detected ? "pass" : nfc.available && nfc.targets < 2 ? "warning" : "fail";
       result["message"] = detected ? "One tag ID was read. Reader communication and tag detection passed. No tag data or spool profile was changed." :
         nfc.available && nfc.targets < 2 ? "PN532 is responding, but no single tag was read. Hold one tag beside the antenna and test again." :
         nfc.targets > 1 ? "Multiple tags detected. Keep only one tag beside the antenna and test again." :
-        "PN532 did not respond. Check power, HSU/UART mode and crossed TX/RX connections, then retry.";
+        "PN532 did not respond. Check 3.3 V power, I2C mode (switch 1 ON, 2 OFF), SDA and SCL connections, then retry.";
+      if (!nfc.available) {
+        result["message"] = nfc.i2cError == 2 ? String("No acknowledgement at PN532 I2C address 0x24 on GPIO") + Pins::nfcSda + " SDA / GPIO" + Pins::nfcScl + " SCL. Check power, common ground, shared header pins, and mode switches, then power-cycle."
+          : nfc.i2cError == 5 ? "PN532 I2C transaction timed out. Check SDA/SCL connections, pull-ups and power."
+          : "PN532 handshake failed after the I2C write. Check the transport details and retry after a power-cycle.";
+      }
       finishStatusOperation(detected);
     } else {
       startStatusOperation(StatusModel::Operation::Scale);
@@ -1591,6 +1683,16 @@ void setupRoutes() {
     ok(format == BrandTags::Format::Spoolancer ? "Tag written and read-back verified. Printer tags were not modified." :
        String(BrandTags::info(format).label) + " tag written and read-back verified. Its ID is linked to this spool.");
   });
+  server.on("/api/nfc/erase", HTTP_POST, [] {
+    if (!authorized()) return;
+    JsonDocument doc; if (!body(doc) || !confirmation(doc)) return;
+    if (!doc["expected_uid"].is<const char *>() || doc["expected_uid"].as<String>().isEmpty()) { error(400, "Scan and confirm the target tag UID first."); return; }
+    startStatusOperation(StatusModel::Operation::Nfc);
+    const String problem = eraseTag(doc["expected_uid"].as<String>());
+    finishStatusOperation(problem.isEmpty());
+    if (!problem.isEmpty()) { error(409, problem); return; }
+    ok("Tag erased and read-back verified. Its ID stays linked to any spool until you unlink it.");
+  });
   server.on("/api/nfc/clone", HTTP_POST, [] {
     // Two-step Bambu clone: read a genuine tag, then copy it byte-for-byte onto a magic card.
     if (!authorized()) return;
@@ -1617,7 +1719,7 @@ void setupRoutes() {
       finishStatusOperation(done);
       if (!done) { error(409, nfc.lastError); return; }
       cloneReady = false;
-      ok("Magic card cloned and read-back verified. The printer will treat it as the original spool.");
+      ok("Magic card cloned and read-back verified. Test recognition on your printer; acceptance is not guaranteed.");
       return;
     }
     finishStatusOperation(false); error(400, "Clone step must be \"read\" or \"write\".");
@@ -1674,7 +1776,7 @@ void setupRoutes() {
     const bool reconnect = changed.ssid != config.ssid || changed.password != config.password;
     if (!saveConfig(changed)) { error(507, "Could not save configuration."); return; }
     config = changed;
-    if (serverChanged) { remoteInventory = {}; inventoryError = ""; syncError = ""; syncMessage = ""; }
+    if (serverChanged) { remoteLoad = {}; remoteInventory = {}; inventoryError = ""; syncError = ""; syncMessage = ""; }
     JsonDocument result; result["ok"] = true; result["reconnect_required"] = reconnect;
     result["ap_ssid"] = apName; result["ip"] = "192.168.4.1";
 #ifdef SPOOLANCER_HEADLESS
@@ -1698,7 +1800,7 @@ void setupRoutes() {
     if (!rel.ok) { doc["error"] = rel.error; reply(doc); return; }
     doc["latest"] = rel.tag;
     doc["update_available"] = Ota::updateAvailable(SPOOLANCER_VERSION, rel.tag.c_str());
-    doc["notes_url"] = rel.notesUrl; doc["has_filesystem"] = !rel.fsUrl.isEmpty();
+    doc["notes_url"] = rel.notesUrl; doc["web_embedded"] = true; doc["has_filesystem"] = false;
     reply(doc);
   });
   server.on("/api/update", HTTP_POST, [] {
@@ -1720,7 +1822,7 @@ void setupRoutes() {
       uploadDidStart = false;
       if (!uploadError.isEmpty()) { const String e = uploadError; uploadError = ""; error(507, e); return; }
       JsonDocument r; r["ok"] = true;
-      r["message"] = "Firmware uploaded and verified. The device reboots in a moment to run it.";
+      r["message"] = "Firmware and embedded webpage uploaded and verified. The device reboots in a moment to run them.";
       reply(r);
       rebootAt = millis() + 1500;  // Reboot after the response is flushed.
     },
@@ -1756,12 +1858,23 @@ void setupRoutes() {
   server.on("/api/spoolman/test", HTTP_POST, [] {
     if (!authorized()) return;
     JsonDocument input; if (!body(input)) return;
+    if (!input["url"].isUnbound() && !textWithoutNul(input["url"])) { error(400, "Invalid server URL."); return; }
+    const String target = input["url"].isUnbound() ? config.spoolman : input["url"].as<String>();
+    if (target.isEmpty() || !validServerUrl(target)) { error(400, "Enter an HTTP server address before testing."); return; }
+    const String previousError = syncError;
     syncError = "";
     startStatusOperation(StatusModel::Operation::Sync);
-    const bool reached = !config.spoolman.isEmpty() && refreshRemoteInventory(true);
+    JsonDocument response; int code;
+    bool reached = remoteRequestAt(target, "GET", "/spool?limit=1", nullptr, response, code) &&
+                   response.is<JsonArray>() && response.size() <= 1;
+    if (reached && response.size()) { Spool probe; reached = parseRemoteSpool(response[0].as<JsonObjectConst>(), probe); }
+    const String testedError = syncError;
+    if (target != config.spoolman) syncError = previousError;
     finishStatusOperation(reached);
-    if (!reached) { error(502, syncError.isEmpty() ? "Unexpected Spoolman API response." : syncError); return; }
-    syncMessage = "Spoolman connected. Inventory is loaded from the server."; ok(syncMessage);
+    if (!reached) { error(502, testedError.isEmpty() ? "The address did not return a compatible Spoolman inventory." : testedError); return; }
+    JsonDocument result; result["ok"] = true; result["url"] = target;
+    result["message"] = "Spoolman inventory is readable at " + target + ".";
+    reply(result);
   });
   server.on("/api/spoolman/sync", HTTP_POST, [] {
     if (!authorized()) return;
@@ -1773,12 +1886,14 @@ void setupRoutes() {
     JsonDocument result; result["ok"] = true; result["spoolman_id"] = s->remoteId; result["message"] = syncMessage; reply(result);
   });
   auto asset = [](const char *path, const char *mime) {
-    if (!assetsReady || !LittleFS.exists(path)) { error(503, "Device web assets are missing. Build and upload the LittleFS asset image."); return; }
-    File file = LittleFS.open(path, FILE_READ);
+    const auto *file = WebAssets::find(path);
+    if (!file) { error(404, "Web asset not found."); return; }
     server.sendHeader("X-Content-Type-Options", "nosniff");
     server.sendHeader("Cache-Control", "no-cache");
     server.sendHeader("Content-Security-Policy", "default-src 'self'; connect-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; frame-ancestors 'none'");
-    server.streamFile(file, mime); file.close();
+    server.sendHeader("Content-Encoding", "gzip");
+    server.sendHeader("X-Spoolancer-Web-Build", WebAssets::buildId);
+    server.send_P(200, mime, reinterpret_cast<const char *>(file->data), file->size);
   };
   server.on("/", HTTP_GET, [asset] { asset("/index.html", "text/html"); });
   server.on("/index.html", HTTP_GET, [asset] { asset("/index.html", "text/html"); });
@@ -1924,7 +2039,7 @@ void setup() {
     scale.countsPerGram = saved["factor"] | 0.0;
   }
   scale.begin();
-  assetsReady = LittleFS.begin(false, "/assets", 5, "spiffs");
+  assetsReady = true; // Webpage is compiled into the app; no asset filesystem mount is needed.
   const bool initialized = preferences.getBool("storeReady", false);
   storeReady = inventory.begin(!initialized, "/inventory", 5, "inventory");
   if (storeReady && !initialized) preferences.putBool("storeReady", true);
@@ -1974,6 +2089,7 @@ void loop() {
   }
   scale.tick(); server.handleClient(); buttons();
   pollWifiScan(); pollDiscovery();
+  if (!rebootAt && !otaRequested && !uploadDidStart) pollRemoteInventory();
 #ifdef SPOOLANCER_TOUCH
   pollTouch();
 #endif

@@ -29,6 +29,8 @@ export function validateSpool(input) {
 }
 
 const finite = value => typeof value === 'number' && Number.isFinite(value);
+const maxFilament = 3000;
+const maxGross = 5000;
 
 export function measurement(status, spool, fresh) {
   const result = { state: 'offline', label: 'Device unavailable', message: 'Reconnect to the scale to see a live measurement.', gross: null, remaining: null, percent: null, canSync: false };
@@ -40,10 +42,11 @@ export function measurement(status, spool, fresh) {
   result.gross = scale.gross_g;
   if (scale.gross_g < 0) return { ...result, state: 'invalid', label: 'Below zero', message: 'Remove the spool and check scale zero.' };
   if (scale.gross_g < 20) return { ...result, state: 'empty', label: 'Place a spool', message: 'At least 20 g gross weight is needed to save a measurement.' };
-  if (scale.gross_g > 2000) return { ...result, state: 'invalid', label: 'Outside weighing range', message: 'This build targets up to 2,000 g gross spool weight. Remove the load.' };
+  if (scale.gross_g > maxGross) return { ...result, state: 'invalid', label: 'Outside weighing range', message: 'Gross weight exceeds the 5,000 g measuring limit. Remove the load.' };
   if (!spool) return scale.stable === true ? { ...result, state: 'unassigned', label: 'Stable gross weight', message: 'Select or add a spool to calculate remaining filament.' } : { ...result, state: 'unstable', label: 'Settling', message: 'Keep the spool still. Wait for a stable reading.' };
-  if (!finite(spool.empty_weight_g) || spool.empty_weight_g < 0 || spool.empty_weight_g > 2000) return { ...result, state: 'unknown-tare', label: 'Empty spool weight needed', message: 'Edit this spool and enter its known empty weight. Gross weight cannot establish remaining filament.' };
   if (!finite(spool.initial_weight_g) || spool.initial_weight_g < 1 || spool.initial_weight_g > 5000) return { ...result, state: 'invalid', label: 'Initial weight needed', message: 'Edit this spool and enter its initial filament weight, from 1 to 5,000 g.' };
+  if (spool.initial_weight_g > maxFilament) return { ...result, state: 'invalid', label: 'Outside spool capacity', message: 'This spool exceeds the 3,000 g initial-filament measuring limit. Its inventory profile is kept, but measurements cannot be saved.' };
+  if (!finite(spool.empty_weight_g) || spool.empty_weight_g < 0 || spool.empty_weight_g > 2000) return { ...result, state: 'unknown-tare', label: 'Empty spool weight needed', message: 'Edit this spool and enter its known empty weight. Gross weight cannot establish remaining filament.' };
   const remaining = scale.gross_g - spool.empty_weight_g;
   if (remaining < 0) return { ...result, state: 'invalid', label: 'Check the spool profile', message: 'Gross weight is below the saved empty spool weight.' };
   if (finite(spool.initial_weight_g) && remaining > spool.initial_weight_g) return { ...result, state: 'invalid', label: 'Check the starting weight', message: 'Remaining filament exceeds the saved initial filament weight.' };
@@ -53,7 +56,7 @@ export function measurement(status, spool, fresh) {
 
 // Printer formats mirror open-source writers accepted by stock firmware (see firmware/include/BrandTags.h).
 export const TAG_FORMATS = [
-  { id: 'spoolancer', label: 'Spoolancer inventory', chip: 'ntag', note: 'Full spool profile for this scale. Printers do not read it.' },
+  { id: 'spoolancer', label: 'Spoolancer inventory', chip: 'ntag', note: 'Full profile or compact inventory link, sized for this tag. Printers do not read it.' },
   { id: 'creality', label: 'Creality CFS (K2, K1, Hi)', chip: 'classic', note: 'MIFARE Classic 1K. Material ID, color and length; the printer supplies temperatures.' },
   { id: 'anycubic', label: 'Anycubic ACE (Kobra 3, S1)', chip: 'ntag', note: 'NTAG213/215/216. Material, color, temperatures, diameter and length.' },
   { id: 'elegoo', label: 'Elegoo Canvas (Centauri Carbon)', chip: 'ntag', note: 'NTAG213/215/216. Material, color, nozzle temperature and weight.' },
@@ -71,6 +74,11 @@ export function tagWriteGuard(status, expectedUid, fresh, format = 'spoolancer')
     if (tag.chip !== target.chip) return target.chip === 'classic' ? `${target.label} needs a MIFARE Classic 1K tag with a 4-byte ID.` : `${target.label} needs an NTAG213, NTAG215 or NTAG216 tag.`;
     if (tag.raw_writable !== true) return 'This tag is locked, password-protected or holds several targets. Bambu Lab and stock Snapmaker tags are signed and cannot be written.';
   } else if (tag.writable !== true) return tag.raw_writable === true ? 'This tag holds other content. The Spoolancer inventory record needs a blank or Spoolancer tag; choose a printer format to overwrite it.' : 'This tag is read-only or unsupported. Original printer tags are never written.';
+  if (format === 'spoolancer' && tag.inventory_write) {
+    const plan = tag.inventory_write;
+    if (String(plan.spool_id) !== String(status.active_spool_id)) return 'The selected spool changed. Refresh the tag preview.';
+    if (plan.fits !== true) return 'This inventory record does not fit the tag. Link its ID instead.';
+  }
   if (expectedUid && tag.uid !== expectedUid) return 'The tag changed. Cancel and preview the new tag before writing.';
   return '';
 }
@@ -82,9 +90,9 @@ export function tagLinkGuard(status, spool, expectedUid, spools, fresh) {
   const tag = status?.nfc;
   if (tag?.present !== true || !tag.uid) return 'No tag is present. Position one tag at the reader and scan again.';
   if (tag.uid !== expectedUid) return 'The tag changed. Scan again and review its ID.';
-  const owner = spools.find(item => String(item.id) !== String(spool.id) && item.tag_uid === expectedUid);
+  const owner = spools.find(item => String(item.id) !== String(spool.id) && spoolTagUids(item).includes(canonicalTagUid(expectedUid)));
   if (owner) return `This tag is already linked to ${owner.name}. Choose another tag.`;
-  if (spool.tag_uid === expectedUid) return 'This tag is already linked to this spool.';
+  if (spoolTagUids(spool).includes(canonicalTagUid(expectedUid))) return 'This tag is already linked to this spool.';
   return '';
 }
 
@@ -229,6 +237,7 @@ export function fullSpoolTare(status, fresh, initialWeight, condition) {
   if (condition !== 'full') throw new Error('Choose New, full spool before estimating empty weight.');
   const initial = optionalNumber(initialWeight, 'Initial filament weight', { min: 1, max: 5000 });
   if (initial === null) throw new Error('Enter the full spool’s declared filament weight.');
+  if (initial > maxFilament) throw new Error('Empty-spool estimation is limited to 3,000 g of initial filament. Keep larger inventory profiles without estimating their empty weight.');
   const reading = measurement(status, null, fresh);
   if (reading.state !== 'unassigned') throw new Error(reading.message);
   const empty = reading.gross - initial;
@@ -244,7 +253,7 @@ export function inventoryState(payload, configured) {
   if (source === 'spoolman' && inventory.source !== 'spoolman') {
     return { source, stale: true, cached: false, error: 'Server inventory could not be loaded. Refresh or check Spoolman settings.', spools: [] };
   }
-  return { source, stale: inventory.stale === true, cached: inventory.cached === true,
+  return { source, refreshing: inventory.refreshing === true, stale: inventory.stale === true, cached: inventory.cached === true,
     error: typeof inventory.error === 'string' ? inventory.error : '', limit: inventory.limit || 200,
     spools: Array.isArray(payload?.spools) ? payload.spools.filter(spool => source === 'local' || spool.source === 'spoolman') : [] };
 }
@@ -273,4 +282,53 @@ export function ledSegments(percent) {
     const fraction = Math.min(1, Math.max(0, percent / 20 - i));
     return fraction <= 0 ? null : fraction >= 1 - 1e-9 ? '#00c8ff' : fraction <= .25 + 1e-9 ? '#ff2d2d' : fraction <= .5 + 1e-9 ? '#ff8c00' : fraction <= .75 + 1e-9 ? '#ffdc00' : '#78dc32';
   });
+}
+
+
+export function tagStorage(tag, format = 'spoolancer') {
+  if (!tag?.present || !Number.isInteger(tag.capacity_bytes) || tag.capacity_bytes <= 0)
+    return { capacity: 'Not available', note: '' };
+  const capacity = tag.capacity_bytes;
+  if (format !== 'spoolancer') return { capacity: `${capacity} bytes NDEF`, note: '' };
+  const plan = tag.inventory_write;
+  if (!plan || !Number.isInteger(plan.bytes) || plan.bytes <= 0)
+    return { capacity: `${capacity} bytes NDEF`, note: 'Choose a spool to preview its inventory record.' };
+  const mode = plan.kind === 'link' ? 'Compact inventory link' : 'Full spool profile';
+  return {
+    capacity: `${plan.bytes} / ${capacity} bytes`,
+    note: plan.fits === true
+      ? `${mode} fits this tag.${plan.kind === 'link' ? ' Full material, color and weight details stay in the scale or Spoolman inventory.' : ''}`
+      : 'The record is too large. Writing is blocked; link the tag ID instead.',
+  };
+}
+
+
+export function canonicalTagUid(uid) {
+  if (typeof uid !== 'string') return '';
+  const prefix = /^[BFJ]:/.test(uid) ? uid.slice(0, 2) : '';
+  const body = uid.slice(prefix.length).replace(/[: -]/g, '').toUpperCase();
+  return /^[0-9A-F]+$/.test(body) && (prefix ? body.length === (prefix === 'F:' ? 16 : 8) : [8, 14, 20].includes(body.length))
+    ? prefix + body : '';
+}
+export function spoolTagUids(spool) {
+  return [...new Set([spool?.tag_uid, ...(spool?.server_tag_uids || [])].map(canonicalTagUid).filter(Boolean))];
+}
+export function filterSpools(spools, query = '') {
+  const term = query.trim().toLowerCase();
+  return spools.filter(s => !term || [s.name, s.brand, s.material, s.color, s.spoolman_id ? `#${s.spoolman_id}` : '', ...spoolTagUids(s)]
+    .some(value => String(value || '').toLowerCase().includes(term)));
+}
+export function spoolLabel(spool) {
+  return [spool.spoolman_id ? `#${spool.spoolman_id}` : '', spool.name || spool.material || 'Unnamed spool', spool.brand].filter(Boolean).join(' · ');
+}
+export function selectionMessage(status, spools) {
+  const tag = status?.nfc;
+  if (tag?.available === false) return 'NFC reader offline. Choose a spool below, or check the reader in Settings → Hardware tests.';
+  if (!tag?.present || !tag.uid) return 'Choose a spool below, or place a linked NFC tag beside the reader.';
+  const linked = spools.find(s => String(s.id) === String(tag.spool_id));
+  if (!linked) return 'This tag is not linked to an available spool. Choose one, then select Add RFID.';
+  if (String(status.active_spool_id) === String(linked.id) && status.selection_source === 'nfc')
+    return `NFC selected ${spoolLabel(linked)}. Wait for a stable weight, then save.`;
+  if (String(status.active_spool_id) === String(linked.id)) return `This spool matches the detected tag. Wait for a stable weight, then save.`;
+  return `Tag belongs to ${spoolLabel(linked)}. Select Read tag to use that spool.`;
 }

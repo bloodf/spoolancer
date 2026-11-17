@@ -7,10 +7,16 @@
 #include <iostream>
 #include <vector>
 
+#ifdef NFC_TEST_I2C
+using TestPort = TwoWire;
+#else
+using TestPort = HardwareSerial;
+#endif
+
 namespace {
 uint32_t now = 0;
 struct ReaderFixture {
-  HardwareSerial serial;
+  TestPort serial;
   std::array<uint8_t, 924> memory{};
   std::array<uint8_t, 7> uid{4, 1, 2, 3, 4, 5, 6};
   std::array<uint8_t, 8> version{0, 4, 4, 2, 1, 0, 0x13, 3};
@@ -172,6 +178,44 @@ static void identityOnly() {
   assert(!reader.writeInventory(reader.uid, "replacement") && fixture.writes == 0);
 }
 
+static void repeatedStationaryTag() {
+  ReaderFixture fixture;
+  const auto respond = fixture.serial.onWrite;
+  bool halted = false, resetFails = false;
+  uint32_t fieldOffAt = 0;
+  bool fieldOff = false;
+  fixture.serial.onWrite = [&](const uint8_t *frame, size_t size) {
+    if (size < 8 || frame[2] != 0xff) return;
+    const uint8_t *request = frame + 6;
+    if (request[0] == 0x32 && request[1] == 1) {
+      if (resetFails) return;
+      if (!(request[2] & 1)) { fieldOff = true; fieldOffAt = now; }
+      fixture.reply(0x32, {}); return;
+    }
+    if (request[0] == 0x4a) {
+      if (fieldOff && now - fieldOffAt >= 5) halted = false;
+      fieldOff = false;
+      if (halted) { fixture.reply(0x4a, {0}); return; }
+      respond(frame, size);
+      halted = true; // MaxTg=2 may halt the first card while looking for another.
+      return;
+    }
+    respond(frame, size);
+  };
+  Nfc reader(fixture.serial); reader.begin([] {});
+  for (int attempt = 0; attempt < 6; ++attempt)
+    assert(reader.scanIdentity() && reader.uid == "04010203040506");
+  assert(reader.scan(true) && reader.writable);
+  assert(reader.writeInventory("04010203040506", "stationary tag") && reader.payload == "stationary tag");
+  fixture.multiple = true;
+  const int writes = fixture.writes;
+  assert(!reader.scanIdentity() && reader.uid.isEmpty());
+  assert(!reader.writeInventory("04010203040506", "ambiguous") && fixture.writes == writes);
+  fixture.multiple = false; resetFails = true;
+  assert(!reader.scanIdentity() && reader.uid.isEmpty() && !reader.present);
+  assert(!reader.writeInventory("04010203040506", "reset failed") && fixture.writes == writes);
+}
+
 static void otherProtocols() {
   struct Example { uint8_t technology; std::vector<uint8_t> response; const char *uid; };
   // PN532 UM0701-02 7.3.5 published response vectors (plus FeliCa at 424 kbps).
@@ -248,7 +292,7 @@ static void otherProtocols() {
 namespace {
 // MIFARE Classic 1K behind a PN532: per-sector Key A authentication, 16-byte READ/WRITE.
 struct ClassicFixture {
-  HardwareSerial serial;
+  TestPort serial;
   std::array<uint8_t, 4> uid{0xde, 0xad, 0xbe, 0xef};
   std::array<uint8_t, 1024> memory{};
   int authenticated = -1, writes = 0;
@@ -456,7 +500,73 @@ static void bambuReadClone() {
   assert(std::memcmp(normal.uid.data(), (const uint8_t[]){0x55,0x66,0x77,0x88}, 4) == 0);
 }
 
+#ifdef NFC_TEST_I2C
+void i2cFaults() {
+  ReaderFixture fixture;
+  Nfc reader(fixture.serial);
+  unsigned idle = 0;
+  fixture.serial.busyReads = 4;
+  reader.begin([&] { ++idle; });
+  assert(reader.available && idle >= 4 && fixture.serial.beginCalls == 1);
+  assert(fixture.serial.busyFrameReads == 0); // A NOT READY status must end the read.
+  reader.begin([] {});
+  assert(reader.available && fixture.serial.beginCalls == 1);
+  fixture.serial.nack = true;
+  reader.begin([] {});
+  assert(!reader.available && !reader.present);
+  assert(reader.i2cError == 2 && std::strcmp(reader.transportStep, "command_write") == 0);
+  fixture.serial.nack = false;
+  fixture.serial.truncate = true;
+  reader.begin([] {});
+  assert(!reader.available);
+  assert(reader.i2cError == 0 && std::strcmp(reader.transportStep, "ack_frame") == 0);
+  fixture.serial.truncate = false;
+  const auto reply = fixture.serial.onWrite;
+  for (int corruption = 0; corruption < 3; ++corruption) {
+    fixture.serial.onWrite = [&, corruption](const uint8_t *frame, size_t size) {
+      reply(frame, size);
+      auto &bytes = fixture.serial.incoming;
+      if (bytes.size() > 6) {
+        if (corruption == 0) bytes[2] = 0; // Malformed ACK.
+        if (corruption == 1) bytes[bytes.size() - 2] ^= 1; // Bad response checksum.
+        if (corruption == 2) bytes[bytes.size() - 1] = 1; // Bad postamble.
+      }
+    };
+    reader.begin([] {});
+    assert(!reader.available);
+  }
+  fixture.serial.onWrite = reply;
+  reader.begin([] {});
+  assert(reader.available && reader.scanIdentity() && fixture.writes == 0);
+  assert(reader.i2cError == 0 && std::strcmp(reader.transportStep, "ready") == 0);
+  ReaderFixture offline;
+  offline.serial.failBegin = true;
+  Nfc missing(offline.serial); missing.begin([] {});
+  assert(!missing.available && !missing.lastError.isEmpty());
+
+  // An OLED transfer during readiness polling must leave the PN532 frame intact.
+  ReaderFixture shared;
+  assert(shared.serial.begin(4, 5, 100000)); // Display starts the common bus first.
+  shared.serial.busyReads = 4;
+  Nfc sharedReader(shared.serial);
+  sharedReader.begin([&] {
+    const uint8_t displayData[] = {0x40, 0x55};
+    shared.serial.beginTransmission(0x3c);
+    assert(shared.serial.write(displayData, sizeof(displayData)) == sizeof(displayData));
+    assert(shared.serial.endTransmission() == 0);
+  });
+  assert(sharedReader.available && sharedReader.scanIdentity());
+  assert(shared.serial.oledWrites >= 4 && shared.writes == 0);
+  const unsigned starts = shared.serial.beginCalls;
+  sharedReader.begin([] {});
+  assert(sharedReader.available && shared.serial.beginCalls == starts);
+}
+#endif
+
 int main() {
+#ifdef NFC_TEST_I2C
+  i2cFaults();
+#endif
   readTagTests(); classicWrites(); brandNtagWrites(); bambuReadClone();
   ReaderFixture fixture;
   unsigned idleCalls = 0;
@@ -502,7 +612,7 @@ int main() {
   fixture.dropSelect = true;
   const uint32_t started = now;
   assert(!reader.scan(false) && !reader.present && !reader.writable);
-  assert(now - started == 1750 && idleCalls >= 1750);
+  assert(now - started >= 1750 && now - started < 2000 && idleCalls >= 1750);
   fixture.dropSelect = false; fixture.dropVersion = true;
   assert(reader.scan(false) && !reader.writable);
   fixture.dropVersion = false;
@@ -520,6 +630,6 @@ int main() {
     device.begin([] {});
     assert(device.available && device.scanIdentity() && !device.uid.isEmpty() && probe.writes == 0);
   }
-  tagProfiles(); identityOnly(); otherProtocols();
+  tagProfiles(); identityOnly(); repeatedStationaryTag(); otherProtocols();
   std::cout << "PASS: NFC A/B/FeliCa/Jewel UID association, NTAG213/215/216 capacity/protection/read-back, cache, malformed/foreign tags, Creality/Qidi Classic sector writes, Anycubic/Elegoo/OpenSpool NTAG writes, Bambu/Snapmaker read and magic-card clone and bounded timeout yielding\n";
 }

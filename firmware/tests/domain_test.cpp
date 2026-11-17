@@ -15,7 +15,12 @@ static void measurements() {
   assert(!measurementAllowed(NAN, 250, 1000, true, true, true));
   assert(!measurementAllowed(INFINITY, 250, 1000, true, true, true));
   assert(!measurementAllowed(1250, NAN, 1000, true, true, true));
-  assert(!measurementAllowed(2001, 250, 5000, true, true, true));
+  assert(measurementAllowed(3500, 500, 3000, true, true, true));
+  assert(measurementAllowed(5000, 2000, 3000, true, true, true));
+  assert(!measurementAllowed(5000.1, 2000, 3000, true, true, true));
+  assert(!measurementAllowed(3500, 500, 3000.1, true, true, true));
+  assert(!measurementAllowed(3500, 500, 5000, true, true, true));
+  assert(!measurementAllowed(5000, 1999, 3000, true, true, true));
   assert(!measurementAllowed(19, 0, 1000, true, true, true));
   assert(!measurementAllowed(249, 250, 1000, true, true, true));
   assert(!measurementAllowed(1251, 250, 1000, true, true, true));
@@ -74,13 +79,13 @@ static void tagProtection() {
 }
 
 static void records() {
-  std::array<uint8_t, 720> encoded{};
+  std::array<uint8_t, 872> encoded{};
   const size_t typeLen = std::strlen(Domain::ndefMime);
   for (size_t length : {size_t(1), size_t(200), size_t(219), size_t(220), size_t(254), size_t(255), size_t(256), Domain::maxPayload}) {
     std::string payload(length, 'x');
     payload[0] = '{';
     const size_t total = Domain::encodeNdef(reinterpret_cast<const uint8_t *>(payload.data()), payload.size(), encoded.data(), encoded.size());
-    assert(total && total <= 720 && total == Domain::ndefSize(typeLen, length));
+    assert(total && total <= 872 && total == Domain::ndefSize(typeLen, length));
     // Short TLV below 0xFF record bytes; short record up to 255 payload bytes.
     const size_t header = encoded[1] == 0xff ? 4 : 2;
     const size_t recordLen = (length <= 255 ? 3 : 6) + typeLen + length;

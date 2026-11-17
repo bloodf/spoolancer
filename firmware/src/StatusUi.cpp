@@ -30,6 +30,8 @@ uint32_t lastRender = 0, lastOled = 0;
 bool screenAvailable = false, testingLeds = false;
 uint32_t ledTestStarted = 0;
 #ifdef SPOOLANCER_OLED
+static_assert(Pins::nfcSda == Pins::oledSda && Pins::nfcScl == Pins::oledScl,
+              "OLED and PN532 must share the standalone I2C pins.");
 // Wire owns the pins; U8g2 pin arguments would reconfigure an active I2C bus.
 #ifdef SPOOLANCER_OLED_SH1106
 U8G2_SH1106_128X64_NONAME_F_HW_I2C oled(U8G2_R0, U8X8_PIN_NONE);
@@ -75,12 +77,12 @@ void begin() {
   Serial.println("Status UI: initial LED transfer complete");
 #ifdef SPOOLANCER_OLED
   Serial.printf("Status UI: probing OLED on SDA%d/SCL%d\n", Pins::oledSda, Pins::oledScl);
-  Wire.begin(Pins::oledSda, Pins::oledScl); Wire.setTimeOut(10);
+  Wire.begin(Pins::oledSda, Pins::oledScl, 100000); Wire.setTimeOut(10);
   Wire.beginTransmission(SPOOLANCER_OLED_ADDRESS);
   if (Wire.endTransmission() == 0) {
     Serial.println("Status UI: OLED acknowledged; initializing display");
-    // Both bundled SSD1306/SH1106 controller definitions use 400 kHz I2C.
-    oled.setI2CAddress(SPOOLANCER_OLED_ADDRESS * 2); oled.setBusClock(400000);
+    // Keep OLED transfers at the PN532's shared-bus clock.
+    oled.setI2CAddress(SPOOLANCER_OLED_ADDRESS * 2); oled.setBusClock(100000);
     oled.begin(); screenAvailable = true;
   }
   Serial.printf("Status OLED: %s (address 0x%02x)\n", screenAvailable ? "I2C acknowledged; verify controller and image" : "not found; web remains available", SPOOLANCER_OLED_ADDRESS);

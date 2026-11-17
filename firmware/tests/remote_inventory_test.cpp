@@ -2,6 +2,7 @@
 #include "Discovery.h"
 #include "RemoteHttp.h"
 #include <cassert>
+#include <string>
 #include <cstring>
 
 void remoteInventoryTests() {
@@ -35,21 +36,40 @@ void remoteInventoryTests() {
   assert(!RemoteHttp::status("HTTP/1.1 20", code));
   assert(!RemoteHttp::status("HTTP/1.1 2000", code));
   assert(!RemoteHttp::status("HTTP/1.1 2xx Nope", code));
-  int remaining = -1; bool lengthSeen = false;
-  assert(RemoteHttp::header("Content-Length: 42", remaining, lengthSeen) && remaining == 42);
-  assert(!RemoteHttp::header("content-length: 42", remaining, lengthSeen));
-  for (const char *bad : {"Content-Length: -1", "Content-Length:", "Content-Length: 20 10", "Content-Length: 20001", "Transfer-Encoding: chunked", "Content-Encoding: gzip", "Bad", " Content-Length: 1"}) {
+  int remaining = -1; bool lengthSeen = false, chunked = false;
+  assert(RemoteHttp::header("Content-Length: 42", remaining, lengthSeen, chunked) && remaining == 42);
+  assert(!RemoteHttp::header("content-length: 42", remaining, lengthSeen, chunked));
+  for (const char *bad : {"Content-Length: -1", "Content-Length:", "Content-Length: 20 10", "Content-Length: 20001", "Content-Encoding: gzip", "Bad", " Content-Length: 1"}) {
     remaining = -1; lengthSeen = false;
-    assert(!RemoteHttp::header(bad, remaining, lengthSeen));
+    assert(!RemoteHttp::header(bad, remaining, lengthSeen, chunked));
   }
   remaining = -1; lengthSeen = false;
-  assert(RemoteHttp::header("X: y", remaining, lengthSeen));
-  assert(RemoteHttp::header("content-length: 20000", remaining, lengthSeen));
-  assert(RemoteHttp::complete(0, true, 20000));
-  assert(!RemoteHttp::complete(4, false, 38)); // Truncated declared body.
-  assert(!RemoteHttp::complete(-1, true, 42)); // Close-delimited timeout is not EOF.
-  assert(RemoteHttp::complete(-1, false, 42));
-  assert(!RemoteHttp::complete(0, false, 20001));
+  assert(RemoteHttp::header("X: y", remaining, lengthSeen, chunked));
+  assert(RemoteHttp::header("content-length: 20000", remaining, lengthSeen, chunked));
+  {
+    remaining=-1; lengthSeen=chunked=false;
+    assert(RemoteHttp::header("Transfer-Encoding: chunked",remaining,lengthSeen,chunked) && chunked);
+    assert(!RemoteHttp::header("Content-Length: 4",remaining,lengthSeen,chunked));
+    assert(RemoteHttp::header("Content-Encoding: identity",remaining,lengthSeen,chunked));
+    for (const std::string wire : {"3\r\n[1,\r\n2\r\n2]\r\n0\r\n\r\n",
+                                   "3;x=y\r\n[1,\r\n2\r\n2]\r\n0\r\nX-Trace: value\r\n\r\n"}) {
+      RemoteHttp::Body body(-1,true); std::string text;
+      for (char byte : wire) assert(body.feed(byte,text));
+      assert(body.done(true) && text=="[1,2]");
+    }
+    for (const std::string wire : {"Z\r\n", "FFFFF\r\n", "1\r\naX", "0\r\n\n"}) {
+      RemoteHttp::Body body(-1,true); std::string text; bool valid=true;
+      for(char byte:wire) if(!body.feed(byte,text)){valid=false;break;}
+      assert(!valid);
+    }
+    RemoteHttp::Body truncated(-1,true); std::string text;
+    for(char byte:std::string("1\r\nx\r\n")) assert(truncated.feed(byte,text));
+    assert(!truncated.done(false));
+    RemoteHttp::Body fixed(2,false); text.clear(); assert(fixed.feed('a',text));
+    assert(!fixed.done(false)); assert(fixed.feed('b',text) && fixed.done(true));
+    assert(!fixed.feed('c',text));
+    RemoteHttp::Body closed(-1,false); assert(!closed.done(true) && closed.done(false));
+  }
   const auto subnet = Discovery::range(0xc0a80132, 0xffffff00);
   assert(subnet.first == 0xc0a80101 && subnet.last == 0xc0a801fe);
   assert(Discovery::eligible(0xc0a80145, subnet));
@@ -65,7 +85,7 @@ void remoteInventoryTests() {
   cache.begin(100); cache.finish(200, true);
   assert(cache.loaded && !cache.stale(300, true));
   assert(cache.stale(300, false));
-  assert(!cache.shouldRefresh(300, true, true));
+  assert(cache.shouldRefresh(300, true, true)); // Explicit retry is not silently throttled.
   assert(cache.shouldRefresh(10100, true, true));
   assert(!cache.shouldRefresh(10100, true, false));
   assert(cache.shouldRefresh(30200, true, false));

@@ -12,6 +12,14 @@ A blank tag with the same chip family is not enough for either printer. Arbitrar
 
 The [U1-RFID project](https://github.com/DnG-Crafts/U1-RFID) supports writable NTAG215/216 OpenSpool tags through community extended firmware. That is a different setup from the owner's decision to keep stock U1 firmware. The [stock/extended support matrix](https://github.com/paxx12-snapmaker-u1/SnapmakerU1-Extended-Firmware/blob/develop/docs/design/rfid.md) distinguishes those paths.
 
+## Capacity-aware inventory records
+
+The scale identifies NTAG213, NTAG215 and NTAG216 using GET_VERSION and checks the capability container and lock state before writing. The factory NDEF areas are 144, 496 and 872 bytes, respectively; physical user memory is 144, 504 and 888 bytes. NDEF framing also consumes space. See the [NXP datasheet](https://www.nxp.com/docs/en/data-sheet/NTAG213_215_216.pdf).
+
+For Spoolancer inventory writes, the web page previews the actual encoded size. A full profile is used when it fits; otherwise the tag carries a compact schema-1 inventory link with `spool_id` and `link_only: true`. Full metadata stays in the scale or Spoolman. Another scale needs the corresponding inventory and UID association; this link does not carry a portable full material profile. No field is silently truncated. Optional Spoolman details (`details`: temperatures, article number, multi-color, external ID, lot, price, location, comments) are included when they fit and dropped least-important first (comments, location, price, lot…) on smaller tags. **Erase tag** clears tag memory without changing UID links.
+
+Printer-specific records retain their format and must fit in full. A smaller tag does not make an unsupported printer format compatible. Unknown, protected or official tags are not made writable by this change.
+
 ## Identifying a spool without writing its tag
 
 In **Inventory → Add RFID / Change RFID**, scan one tag and confirm the spool and tag ID. The association is saved on the scale; the tag's contents stay unchanged. This also works when the tag's contents are protected or cannot be decoded. A spool can be registered first and linked later.
@@ -20,7 +28,7 @@ The 30 October implementation covers the PN532 reader's passive target families:
 
 | Family | Identification used by Spoolancer | Memory writing |
 | --- | --- | --- |
-| NFC-A / ISO14443A: NTAG, Ultralight, MIFARE Classic, Type 4A including DESFire | 4-, 7- or 10-byte UID, stored as uppercase hexadecimal | Only the supported NTAG213/215/216 path below |
+| NFC-A / ISO14443A: NTAG, Ultralight, MIFARE Classic, Type 4A including DESFire | 4-, 7- or 10-byte UID, stored as uppercase hexadecimal | Supported NTAG inventory records and experimental printer-specific NTAG/Classic formats |
 | NFC-B / ISO14443B | PUPI, stored as `B:` plus hexadecimal | Not implemented |
 | NFC-F / FeliCa, 212 or 424 kbit/s | IDm, stored as `F:` plus hexadecimal | Not implemented |
 | Jewel / Topaz | ID, stored as `J:` plus hexadecimal | Not implemented |
@@ -38,6 +46,6 @@ Writing stores Spoolancer schema 1 on the tag itself. This is separate from link
 | NTAG215 | 504 bytes | 496 bytes | Short profiles can fit; the actual serialized size is checked |
 | NTAG216 | 888 bytes | 872 bytes | Recommended when writing complete profiles |
 
-The firmware checks exact chip version, capability container, lock/protection state and existing content. It calculates the full record size before any write and reports the required/available bytes when it does not fit. It accepts supported blank NDEF or its own records, refuses foreign records and verifies read-back. Factory lock-control layouts that the writer does not support remain read-only. It never writes lock, configuration or credential pages. An interrupted write can still leave an incomplete record.
+The firmware checks exact chip version, capability container, lock/protection state and existing content. It calculates the full record size before any write. If a full profile does not fit, it uses a compact inventory link and previews its size before confirmation. It accepts supported blank NDEF or its own records, refuses foreign records and verifies read-back. Factory lock-control layouts that the writer does not support remain read-only. It never writes lock, configuration or credential pages. An interrupted write can still leave an incomplete record.
 
-Original Bambu/Snapmaker tags remain identifier-only here. Spoolancer does not decode their material fields, clone them, sign custom printer records or make arbitrary tags usable by stock printer firmware. Its writable format is not yet OpenSpool. See the [implemented NFC safeguards](../firmware/README.md#nfc-format-and-limits), [NXP PN532 user manual](https://www.nxp.com/docs/en/user-guide/141520.pdf) and [NXP NTAG213/215/216 datasheet](https://www.nxp.com/docs/en/data-sheet/NTAG213_215_216.pdf).
+Original Bambu/Snapmaker tags can identify a linked spool. Explicit reads also attempt a material preview. The firmware includes experimental printer-format writers and a Bambu magic-card clone path; it does not create manufacturer signatures. These features have software fixtures and byte read-back checks, but physical printer acceptance is unverified. Spoolancer inventory and OpenSpool are separate selectable formats. See the [implemented NFC safeguards and formats](../firmware/README.md#nfc-format-and-limits).

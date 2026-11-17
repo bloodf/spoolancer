@@ -3,10 +3,16 @@ namespace Pins {
 #ifdef SPOOLANCER_TOUCH
 constexpr int hxData = 12, hxClock = 17;
 constexpr int nfcRx = 13, nfcTx = 11;
+constexpr int nfcSda = 13, nfcScl = 11;
 constexpr int sdSelect = 10;
 #else
 constexpr int hxData = 15, hxClock = 16;
 constexpr int nfcRx = 18, nfcTx = 17;
+#ifdef SPOOLANCER_HEADLESS
+constexpr int nfcSda = 4, nfcScl = 5;
+#else
+constexpr int nfcSda = 17, nfcScl = 18;
+#endif
 #endif
 constexpr int wifiReset = 0;
 constexpr int oledSda = 4, oledScl = 5, statusLed = 6;

@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { TAG_FORMATS, fullSpoolTare, inventoryState, inventoryActionSpool, cleanLocalDraft, ledSegments, measurement, networkChoices, pinIsOptional, scaleCalibrationGuard, scaleZeroGuard, setupBody, setupState, tagWriteGuard, tagLinkGuard, validateSpool, validSpoolmanUrl, wifiCredentials, normalizeHex, materialSelection, resolveMaterial, normalizeTheme, resolveTheme, readThemePreference, saveThemePreference, THEME_STORAGE_KEY, pairingState, sessionBody } from '../logic.js';
+import {readFileSync} from 'node:fs';
+import { filterSpools, spoolLabel, spoolTagUids, selectionMessage, tagStorage, TAG_FORMATS, fullSpoolTare, inventoryState, inventoryActionSpool, cleanLocalDraft, ledSegments, measurement, networkChoices, pinIsOptional, scaleCalibrationGuard, scaleZeroGuard, setupBody, setupState, tagWriteGuard, tagLinkGuard, validateSpool, validSpoolmanUrl, wifiCredentials, normalizeHex, materialSelection, resolveMaterial, normalizeTheme, resolveTheme, readThemePreference, saveThemePreference, THEME_STORAGE_KEY, pairingState, sessionBody } from '../logic.js';
 import { createDemo } from '../demo.js';
 
 const spool = { id: 'a', name: 'Green PLA', material: 'PLA', brand: 'Generic', color: '#306040', empty_weight_g: 250, initial_weight_g: 1000, density_g_cm3: 1.24, diameter_mm: 1.75, spoolman_id: null };
@@ -67,10 +68,31 @@ test('settling keeps the same remaining-weight display basis but cannot save', (
   assert.equal(m.canSync, false);
 });
 
-test('save/sync gate agrees with the physical 20–2000 g range', () => {
-  const zeroTare = { ...spool, empty_weight_g: 0, initial_weight_g: 5000 };
-  for (const gross of [0, 19.9, -1, 2000.1, Infinity, NaN]) assert.equal(measurement({ scale: { ...status.scale, gross_g: gross } }, zeroTare, true).canSync, false, String(gross));
-  for (const gross of [20, 2000]) assert.equal(measurement({ scale: { ...status.scale, gross_g: gross } }, zeroTare, true).canSync, true, String(gross));
+test('save/sync accepts 3 kg filament and enforces the 5 kg gross limit', () => {
+  const zeroTare = { ...spool, empty_weight_g: 0, initial_weight_g: 3000 };
+  for (const gross of [0, 19.9, -1, 5000.1, Infinity, NaN]) assert.equal(measurement({ scale: { ...status.scale, gross_g: gross } }, zeroTare, true).canSync, false, String(gross));
+  for (const gross of [20, 2000, 2000.1, 3000]) assert.equal(measurement({ scale: { ...status.scale, gross_g: gross } }, zeroTare, true).canSync, true, String(gross));
+  const full = measurement({ scale: { ...status.scale, gross_g: 3500 } }, { ...spool, empty_weight_g: 500, initial_weight_g: 3000 }, true);
+  assert.equal(full.canSync, true);
+  assert.equal(full.remaining, 3000);
+  assert.equal(full.percent, 100);
+  assert.equal(measurement({ scale: { ...status.scale, gross_g: 5000 } }, { ...spool, empty_weight_g: 2000, initial_weight_g: 3000 }, true).canSync, true);
+  assert.equal(measurement({ scale: { ...status.scale, gross_g: 5000.1 } }, { ...spool, empty_weight_g: 2000, initial_weight_g: 3000 }, true).canSync, false);
+  assert.match(measurement({ scale: { ...status.scale, gross_g: 5000.1 } }, null, true).message, /5,000 g.*Remove/);
+});
+
+test('larger inventory profiles remain valid but cannot be measured', () => {
+  for (const initial of [3000.1, 5000]) {
+    const profile = validateSpool({ ...spool, initial_weight_g: initial });
+    assert.equal(profile.initial_weight_g, initial);
+    for (const empty of [250, null]) {
+      const result = measurement(status, { ...profile, empty_weight_g: empty }, true);
+      assert.equal(result.canSync, false);
+      assert.equal(result.remaining, null);
+      assert.equal(result.label, 'Outside spool capacity');
+      assert.match(result.message, /3,000 g.*inventory profile is kept/);
+    }
+  }
 });
 
 test('inconsistent tare or initial weight never produces valid remaining', () => {
@@ -130,6 +152,16 @@ async function pairedDemo() {
   const post = (path, body) => demo.request(path, { method: 'POST', body, token });
   return { ...demo, token, post };
 }
+
+test('demo keeps a larger inventory profile and refuses its physical measurements', async () => {
+  const demo = await pairedDemo();
+  demo.setScenario('local');
+  const result = await demo.post('/api/spools', { ...spool, id: undefined, initial_weight_g: 5000 });
+  await demo.post('/api/active-spool', { id: result.spool.id });
+  await assert.rejects(demo.post('/api/measurements', { spool_id: result.spool.id, confirm: true }), /3,000 g.*inventory profile is kept/);
+  const inventory = await demo.request('/api/spools', { token: demo.token });
+  assert.equal(inventory.spools.find(item => item.id === result.spool.id).initial_weight_g, 5000);
+});
 
 test('demo is explicitly marked and private endpoints require pairing', async () => {
   const demo = createDemo();
@@ -491,11 +523,15 @@ test('every screen variant uses web setup without a BOOT enrollment window', () 
 test('full spool tare estimation needs an explicit full assertion and a stable measured gross', () => {
   const full = { scale: { ...status.scale, gross_g: 1248.2 } };
   assert.deepEqual(fullSpoolTare(full, true, '1000', 'full'), { empty: 248.2, gross: 1248.2, initial: 1000 });
+  assert.deepEqual(fullSpoolTare({ scale: { ...status.scale, gross_g: 3500 } }, true, 3000, 'full'), { empty: 500, gross: 3500, initial: 3000 });
+  assert.deepEqual(fullSpoolTare({ scale: { ...status.scale, gross_g: 5000 } }, true, 3000, 'full'), { empty: 2000, gross: 5000, initial: 3000 });
+  assert.throws(() => fullSpoolTare({ scale: { ...status.scale, gross_g: 5000.1 } }, true, 3000, 'full'), /5,000 g/);
+  assert.throws(() => fullSpoolTare({ scale: { ...status.scale, gross_g: 3500 } }, true, 3000.1, 'full'), /3,000 g/);
   assert.throws(() => fullSpoolTare(full, true, 1000, 'used'), /Choose New/);
   assert.throws(() => fullSpoolTare(full, false, 1000, 'full'), /Reconnect/);
   assert.throws(() => fullSpoolTare(full, true, '', 'full'), /declared/);
   assert.throws(() => fullSpoolTare(status, true, 1000, 'full'), /below/);
-  for (const patch of [{ stable: false }, { calibrated: false }, { fresh: false }, { gross_g: 2001 }, { gross_g: null }]) {
+  for (const patch of [{ stable: false }, { calibrated: false }, { fresh: false }, { gross_g: 5000.1 }, { gross_g: null }]) {
     assert.throws(() => fullSpoolTare({ scale: { ...full.scale, ...patch } }, true, 1000, 'full'));
   }
 });
@@ -604,15 +640,15 @@ test('an uncertain registration keeps the same draft and requires server reconci
 });
 
 test('RFID linking accepts a read-only UID and requires a preview of the same present tag', () => {
-  const tag = { nfc: { present: true, uid: '04:AA', writable: false, last_error: 'Contents unreadable' } };
-  assert.equal(tagLinkGuard(tag, spool, '04:AA', [spool], true), '');
+  const tag = { nfc: { present: true, uid: '04AABBCC', writable: false, last_error: 'Contents unreadable' } };
+  assert.equal(tagLinkGuard(tag, spool, '04AABBCC', [spool], true), '');
   assert.match(tagLinkGuard(tag, spool, '', [spool], true), /Scan the tag/);
-  assert.match(tagLinkGuard(tag, spool, '04:BB', [spool], true), /changed/);
-  assert.match(tagLinkGuard(tag, spool, '04:AA', [spool], false), /Reconnect/);
-  assert.match(tagLinkGuard({ nfc: { present: false } }, spool, '04:AA', [spool], true), /No tag/);
-  assert.match(tagLinkGuard(tag, null, '04:AA', [spool], true), /no longer/);
-  assert.match(tagLinkGuard(tag, spool, '04:AA', [spool, { id: 'b', name: 'Blue PETG', tag_uid: '04:AA' }], true), /Blue PETG/);
-  assert.match(tagLinkGuard(tag, { ...spool, tag_uid: '04:AA' }, '04:AA', [spool], true), /already linked to this spool/);
+  assert.match(tagLinkGuard(tag, spool, '04BBCCDD', [spool], true), /changed/);
+  assert.match(tagLinkGuard(tag, spool, '04AABBCC', [spool], false), /Reconnect/);
+  assert.match(tagLinkGuard({ nfc: { present: false } }, spool, '04AABBCC', [spool], true), /No tag/);
+  assert.match(tagLinkGuard(tag, null, '04AABBCC', [spool], true), /no longer/);
+  assert.match(tagLinkGuard(tag, spool, '04AABBCC', [spool, { id: 'b', name: 'Blue PETG', tag_uid: '04AABBCC' }], true), /Blue PETG/);
+  assert.match(tagLinkGuard(tag, { ...spool, tag_uid: '04AABBCC' }, '04AABBCC', [spool], true), /already linked to this spool/);
 });
 
 test('a registered non-active local spool can gain and change RFID without writing tag memory', async () => {
@@ -928,4 +964,85 @@ test('LED diagnostic runs for twelve seconds without blocking status or claiming
   assert.equal((await demo.request('/api/status')).diagnostics.led_test_remaining_ms, 6000);
   clock += 6000;
   assert.equal((await demo.request('/api/status')).diagnostics.led_test_remaining_ms, 0);
+});
+
+test('tag storage previews compact links and full records without claiming physical memory is all payload', () => {
+  for (const [type, capacity, bytes, kind] of [['NTAG213',144,101,'link'], ['NTAG215',496,310,'profile'], ['NTAG216',872,310,'profile']]) {
+    const status = {active_spool_id:'a', nfc:{present:true, writable:true, uid:'04:AA', type, capacity_bytes:capacity,
+      inventory_write:{spool_id:'a', bytes, kind, fits:true}}};
+    assert.equal(tagStorage(status.nfc).capacity, `${bytes} / ${capacity} bytes`);
+    assert.match(tagStorage(status.nfc).note, kind === 'link' ? /Full material, color and weight details stay/ : /Full spool profile fits/);
+    assert.equal(tagWriteGuard(status, '04:AA', true), '');
+    assert.match(tagWriteGuard({...status, active_spool_id:'b'}, '04:AA', true), /changed/);
+    status.nfc.inventory_write.fits = false;
+    assert.match(tagWriteGuard(status, '04:AA', true), /does not fit/);
+    assert.match(tagStorage(status.nfc).note, /Writing is blocked/);
+  }
+  assert.equal(tagStorage({present:false, capacity_bytes:144}).capacity, 'Not available');
+  assert.equal(tagStorage({present:true, capacity_bytes:0}).capacity, 'Not available');
+});
+
+test('demo supports NTAG213 inventory link and NTAG215/216 full-profile previews', async () => {
+  const demo = createDemo();
+  for (const [scenario, type, capacity, kind] of [['ntag213','NTAG213',144,'link'], ['ntag215','NTAG215',496,'profile'], ['ready','NTAG216',872,'profile']]) {
+    demo.setScenario(scenario);
+    const status = await demo.request('/api/status');
+    assert.equal(status.nfc.type, type);
+    assert.equal(status.nfc.capacity_bytes, capacity);
+    assert.equal(status.nfc.inventory_write.kind, kind);
+    assert.ok(status.nfc.inventory_write.bytes <= capacity);
+  }
+});
+
+test('server spool selection searches IDs and NFC aliases without losing roll identity', async () => {
+  const demo = await pairedDemo();
+  demo.setScenario('spoolman-library');
+  const library = await demo.request('/api/spools', {token:demo.token});
+  assert.equal(library.spools.length,3);
+  assert.equal(filterSpools(library.spools,'#13')[0].id,'demo-2');
+  assert.match(spoolLabel(library.spools[1]), /#13.*Warm white PETG.*Polymaker/);
+  assert.equal(filterSpools(library.spools,'04112233445566')[0].id,'demo-2');
+  assert.equal(filterSpools(library.spools,'missing').length,0);
+  await demo.post('/api/active-spool',{id:'demo-2'});
+  assert.equal((await demo.request('/api/status')).active_spool_id,'demo-2');
+  demo.setScenario('nfc-spoolman');
+  const status = await demo.request('/api/status');
+  assert.equal(status.active_spool_id,'demo-2');
+  assert.match(selectionMessage(status,library.spools),/NFC selected #13/);
+  assert.deepEqual(spoolTagUids(library.spools[1]),['04112233445566']);
+});
+
+
+test('a queued server inventory stays loading until a complete snapshot is available', async () => {
+  const demo = await pairedDemo(); demo.setScenario('remote-loading');
+  for (let i=0;i<3;++i) {
+    const pending = inventoryState(await demo.request('/api/spools',{token:demo.token}),true);
+    assert.equal(pending.refreshing,true); assert.equal(pending.stale,true);
+    assert.deepEqual(pending.spools,[]); assert.equal(pending.error,'');
+  }
+  const loaded = inventoryState(await demo.request('/api/spools',{token:demo.token}),true);
+  assert.equal(loaded.refreshing,false); assert.equal(loaded.stale,false);
+  assert.deepEqual(loaded.spools.map(s=>s.spoolman_id),[12,13,14]);
+});
+
+test('testing a server address before saving leaves configuration unchanged', async () => {
+  const demo = await pairedDemo(); demo.setScenario('local');
+  const before = await demo.request('/api/config',{token:demo.token});
+  assert.equal((await demo.post('/api/spoolman/test',{url:'http://192.168.1.50:7912'})).ok,true);
+  assert.deepEqual(await demo.request('/api/config',{token:demo.token}),before);
+});
+
+
+test('static UI controls referenced by startup are present in the webpage', () => {
+  const html = readFileSync(new URL('../index.html',import.meta.url),'utf8');
+  const app = readFileSync(new URL('../app.js',import.meta.url),'utf8');
+  const ids = [...app.matchAll(/\$\('#([a-zA-Z0-9-]+)'\)/g)].map(match=>match[1]);
+  const generated = [...app.matchAll(/\.id = '([a-zA-Z0-9-]+)'/g)].map(match=>match[1]);
+  for(const id of new Set(ids)) assert.ok(html.includes(`id="${id}"`) || generated.includes(id),`Missing UI control: ${id}`);
+});
+
+
+test('an offline reader is distinct from a reader with no tag', () => {
+  assert.match(selectionMessage({nfc:{available:false}},[]),/reader offline/);
+  assert.match(selectionMessage({nfc:{available:true,present:false}},[]),/Choose a spool below/);
 });

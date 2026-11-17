@@ -1,12 +1,14 @@
 #pragma once
 #include <Arduino.h>
+#include <Wire.h>
 #include <functional>
 #include "Domain.h"
 #include "ReadTags.h"
 
 class Nfc {
  public:
-  explicit Nfc(HardwareSerial &port) : serial(port) {}
+  explicit Nfc(HardwareSerial &port) : serial(&port) {}
+  explicit Nfc(TwoWire &bus) : wire(&bus) {}
   void begin(std::function<void()> idle);
   // Background polls reuse known content only after a fresh same-UID check.
   bool scan(bool refreshContents = true);
@@ -16,6 +18,8 @@ class Nfc {
   // Any unlocked NTAG21x: NDEF record of another MIME type, or raw user pages from page 4.
   bool writeNdef(const String &expectedUid, const String &payload, const char *mime);
   bool writeNtagPages(const String &expectedUid, uint8_t firstPage, const uint8_t *data, size_t pages);
+  // Unlocked NTAG21x: zero all user memory and leave an empty NDEF message (a blank tag).
+  bool eraseNtag(const String &expectedUid);
   // MIFARE Classic 1K sector 1 (blocks 4-6). Tries each Key A; optionally sets newKey as Key A/B.
   bool writeClassicSector1(const String &expectedUid, const uint8_t (*keys)[6], size_t keyCount,
                            const uint8_t *blocks, size_t blockCount, const uint8_t *newKey);
@@ -33,14 +37,19 @@ class Nfc {
   bool rawWritable = false;
   String uid, type = "none", payload, lastError, lastMessage;
   uint8_t targets = 0;
+  uint8_t i2cError = 0;
+  const char *transportStep = "not_started";
  private:
-  HardwareSerial &serial;
+  HardwareSerial *serial = nullptr;
+  TwoWire *wire = nullptr;
   std::function<void()> idleHook;
   uint32_t deadline = 0;
   Domain::NtagLayout layout;
   uint8_t supportedProtocols = 0, sak = 0, uidLength = 0, uidBytes[10] = {};
-  bool serialStarted = false, couldBeNtag = false, typeKnown = false, contentsKnown = false;
+  bool transportStarted = false, couldBeNtag = false, typeKnown = false, contentsKnown = false;
   bool stepByte(uint8_t &byte, uint32_t end);
+  bool i2cCommand(const uint8_t *frame, size_t size, uint8_t *response, size_t &length, uint32_t end);
+  size_t i2cRead(uint8_t *frame, size_t size, uint32_t end);
   bool command(const uint8_t *data, size_t size, uint8_t *response, size_t &length);
   bool select(bool identify = true, uint8_t technology = 0);
   bool find(bool identify);

@@ -5,6 +5,8 @@
 #include <cstring>
 
 namespace Domain {
+constexpr double maxFilament = 3000;
+constexpr double maxGross = 5000;
 inline bool validColor(const char *s) {
   if (!s || std::strlen(s) != 7 || s[0] != '#') return false;
   for (size_t i = 1; i < 7; ++i)
@@ -23,8 +25,8 @@ inline bool inRange(double n, double low, double high) {
 }
 inline bool measurementAllowed(double gross, double empty, double initial,
                                bool calibrated, bool stable, bool fresh) {
-  return calibrated && stable && fresh && inRange(gross, 20, 2000) &&
-         inRange(empty, 0, 2000) && inRange(initial, 1, 5000) &&
+  return calibrated && stable && fresh && inRange(gross, 20, maxGross) &&
+         inRange(empty, 0, 2000) && inRange(initial, 1, maxFilament) &&
          gross >= empty && gross - empty <= initial;
 }
 struct NtagLayout {
@@ -54,7 +56,7 @@ inline bool ntagUnlocked(const NtagLayout &tag, const uint8_t *page2, const uint
          (locks[4] & 0xc0) == 0 && locks[7] == 0xff && (locks[8] & 0xc0) == 0;
 }
 constexpr const char *ndefMime = "application/vnd.spoolancer+json";
-constexpr size_t maxPayload = 650;
+constexpr size_t maxPayload = 830; // Fills an NTAG216 (872 NDEF bytes) with the Spoolancer MIME type.
 // Bytes a single MIME record needs inside a Type 2 NDEF TLV, including the terminator.
 // Short forms are used when they fit: SR record for payloads up to 255 bytes and the
 // one-byte TLV length below 0xFF, as NFC Forum Type 2 readers (phones) require.
