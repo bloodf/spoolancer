@@ -175,8 +175,7 @@ async function loadPrivate(reportError = true, refreshInventory = false) {
   } finally {
     privateLoading = false;
     renderInventory();
-    if (state.token) { try { await refreshStatus(); } catch { state.lastSeen = 0; } }
-    render();
+    render(); // The 500 ms status poll picks up device state; no extra request here.
   }
 }
 
@@ -186,7 +185,7 @@ async function poll() {
   try {
     await refreshStatus();
     await ensureLocalSession();
-    if (state.token && (Date.now() - state.lastPrivate > 15000 || ((state.inventory?.refreshing || state.status?.spoolman?.inventory_refreshing) && Date.now() - state.lastPrivate > 800)) && !state.busy) await loadPrivate(false);
+    if (state.token && (Date.now() - state.lastPrivate > 30000 || ((state.inventory?.refreshing || state.status?.spoolman?.inventory_refreshing) && Date.now() - state.lastPrivate > 800)) && !state.busy) await loadPrivate(false);
     maybeScanNetworks();
     if (visibleView === 'settings' && state.token && !lastDiscovered && state.status?.network?.connected && !state.status?.spoolman?.configured) void discoverSpoolman();
   } catch {

@@ -1,3 +1,4 @@
+#include <cstring>
 #include "StatusUi.h"
 #ifdef SPOOLANCER_STATUS_LEDS
 #if !defined(SPOOLANCER_HEADLESS) || defined(SPOOLANCER_TOUCH)
@@ -67,6 +68,10 @@ void drawScreen(const Snapshot &snapshot, const StatusModel::View &view) {
   } else snprintf(line, sizeof(line), "%s", StatusModel::problemText(view.problem));
   oled.drawStr(0, 52, line);
   oled.drawStr(0, 63, snapshot.ip[0] ? snapshot.ip : "Wi-Fi disconnected");
+  // A full frame takes ~90 ms on the shared 100 kHz bus; send only when it changed.
+  static uint8_t lastFrame[1024]; static bool sent = false;
+  if (sent && std::memcmp(lastFrame, oled.getBufferPtr(), sizeof(lastFrame)) == 0) return;
+  std::memcpy(lastFrame, oled.getBufferPtr(), sizeof(lastFrame)); sent = true;
   oled.sendBuffer();
 }
 #endif

@@ -253,7 +253,8 @@ void readDetails(JsonObjectConst obj, Spool &s) {
   if (clean.as<JsonObjectConst>().size()) serializeJson(clean, s.details);
 }
 bool validateSpool(JsonObjectConst obj, Spool &s) {
-  readDetails(obj, s);
+  // The spool form does not send details; keep the existing ones unless a record carries its own.
+  if (!obj["details"].isNull()) readDetails(obj, s);
   if (!textField(obj, "name", s.name, 64) || !textField(obj, "brand", s.brand, 60) ||
       !textField(obj, "material", s.material, 30) || !textField(obj, "color", s.color, 7) ||
       !Domain::validColor(s.color.c_str()) ||
@@ -324,12 +325,15 @@ void reply(JsonDocument &doc, int code = 200) {
   server.sendHeader("Cache-Control", "no-store"); server.send(code, "application/json", body);
 }
 void ok(const String &message) { JsonDocument doc; doc["ok"] = true; doc["message"] = message; reply(doc); }
+uint32_t lastPrivateRequest = 0; bool privateSeen = false;
 bool hasSession() {
   const String header = server.header("Authorization");
   if (header.startsWith("Bearer ")) {
     const String token = header.substring(7);
     for (const auto &session : sessions)
-      if (session.token.length() == 64 && token == session.token && uint32_t(millis() - session.started) < sessionMs) return true;
+      if (session.token.length() == 64 && token == session.token && uint32_t(millis() - session.started) < sessionMs) {
+        lastPrivateRequest = millis(); privateSeen = true; return true;
+      }
   }
   return false;
 }
@@ -432,7 +436,8 @@ void readNfcImpl(bool explicitRead) {
   // Resolve exactly one visible spool. Conflicting local/server links never select by guess.
   const int match = SpoolActions::matchTag(spools, nfc.uid.c_str(), visibleSpool);
   if (match == -2) {
-    chooseSpool("");
+    // Clear once when the tag arrives; later polls must not undo a manual choice.
+    if (explicitRead || nfc.uid != previousUid) chooseSpool("");
     nfc.lastError = "This tag matches several inventory spools. Fix the duplicate RFID links before weighing.";
     return;
   }
@@ -541,6 +546,8 @@ String writeSpoolTagImpl(Spool &s, const String &expectedUid, BrandTags::Format 
     const String problem = writeBrandTag(s, expectedUid, format);
     if (!problem.isEmpty()) return problem;
   } else {
+    // Size the record for the tag actually present now, not a layout left by an earlier UID-only scan.
+    if (!nfc.scan(true) || nfc.uid != expectedUid || !nfc.ndefCapacity()) return "Present the confirmed NTAG213/215/216 alone, then try again.";
     JsonDocument tag; spoolJson(tag.to<JsonObject>(), s);
     InventoryTag::prepare(tag, s.id.c_str(), nfc.ndefCapacity());
     String json; serializeJson(tag, json);
@@ -636,10 +643,7 @@ void statusRoute() {
   doc["network"]["connected"] = WiFi.status() == WL_CONNECTED;
   doc["network"]["ip"] = WiFi.status() == WL_CONNECTED ? WiFi.localIP().toString() : WiFi.softAPIP().toString();
   doc["network"]["ap_active"] = apActive;
-  doc["network"]["gateway"] = WiFi.gatewayIP().toString();
-  doc["network"]["subnet"] = WiFi.subnetMask().toString();
   doc["spoolman"]["inventory_refreshing"] = remoteLoad.running;
-  doc["spoolman"]["url"] = config.spoolman;
   doc["spoolman"]["configured"] = !config.spoolman.isEmpty();
   doc["spoolman"]["inventory_source"] = config.spoolman.isEmpty() ? "local" : "spoolman";
   doc["spoolman"]["inventory_stale"] = !config.spoolman.isEmpty() && inventoryStale();
@@ -793,6 +797,10 @@ void remoteIdentity(Spool &record) {
 bool refreshRemoteInventory(bool force = false) {
   if (config.spoolman.isEmpty()) return true;
   if (remoteLoad.running) return !inventoryStale();
+  if (WiFi.status() != WL_CONNECTED) {
+    inventoryError = "Spoolman is offline: Wi-Fi is disconnected. Showing only its last cached inventory, if available.";
+    return false;
+  }
   if (!remoteInventory.shouldRefresh(millis(), WiFi.status() == WL_CONNECTED, force)) return !inventoryStale();
   remoteLoad = {};
   remoteLoad.running = true; remoteLoad.started = millis();
@@ -805,7 +813,13 @@ void remoteLoadFailed(const String &message) {
   remoteInventory.finish(millis(), false); inventoryError = message;
 }
 void pollRemoteInventory() {
-  if (!remoteLoad.running) { refreshRemoteInventory(); return; }
+  if (!remoteLoad.running) {
+    // Background refresh only while someone uses the private UI (or before the first snapshot):
+    // each attempt can block the loop for a connect timeout when Spoolman is down.
+    const bool active = privateSeen && uint32_t(millis() - lastPrivateRequest) < 120000;
+    if (active || !remoteInventory.successful) refreshRemoteInventory();
+    return;
+  }
   if (remoteLoad.target != config.spoolman || remoteLoad.epoch != remoteMutationEpoch) {
     remoteLoadFailed("Inventory changed during loading. Refreshing the server snapshot.");
     remoteInventory.attempted = false; return;
@@ -815,11 +829,14 @@ void pollRemoteInventory() {
     remoteLoadFailed("Spoolman inventory loading timed out. Refresh to retry."); return;
   }
   JsonDocument response; int code;
+  // Background loading reports through inventoryError and never clears a measurement-sync error.
+  const String previousSyncError = syncError;
   const String path = "/spool?allow_archived=false&sort=id:asc&limit=" + String(RemoteInventory::pageSize) +
                       "&offset=" + String(remoteLoad.offset);
-  if (!remoteRequest("GET", path, nullptr, response, code) || !response.is<JsonArray>() ||
-      response.size() > RemoteInventory::pageSize) {
-    remoteLoadFailed(syncError.isEmpty() ? "Unexpected Spoolman inventory response." : syncError); return;
+  const bool fetched = remoteRequest("GET", path, nullptr, response, code);
+  const String requestError = syncError; syncError = previousSyncError;
+  if (!fetched || !response.is<JsonArray>() || response.size() > RemoteInventory::pageSize) {
+    remoteLoadFailed(requestError.isEmpty() ? "Unexpected Spoolman inventory response." : requestError); return;
   }
   for (JsonVariantConst item : response.as<JsonArrayConst>()) {
     Spool record;
@@ -847,8 +864,8 @@ void pollRemoteInventory() {
     remoteInventory.finish(millis(), false); inventoryError = "The device cache is full. Existing records were preserved; inventory was not replaced."; remoteLoad.running = false; remoteLoad.records.clear(); return;
   }
   updated.insert(updated.end(), remoteLoad.records.begin(), remoteLoad.records.end());
-  spools = std::move(updated); remoteInventory.finish(millis(), true); inventoryError = ""; syncError = "";
-  syncMessage = "Loaded " + String(remoteLoad.records.size()) + " spools from Spoolman.";
+  spools = std::move(updated); remoteInventory.finish(millis(), true); inventoryError = "";
+  if (syncError.isEmpty()) syncMessage = "Loaded " + String(remoteLoad.records.size()) + " spools from Spoolman.";
   if (!activeId.isEmpty() && !findSpool(activeId)) chooseSpool("");
   remoteLoad.running = false; remoteLoad.records.clear();
 }
