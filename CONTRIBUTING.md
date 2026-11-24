@@ -70,3 +70,15 @@ Keep real passwords, pairing PINs, session tokens, private spool records and ser
 ## Release bundles
 
 After committing a clean tree, run `python3 tools/package_release.py`. It reads the exact commit and `VERSION`, then creates source, headless print and touch print ZIPs plus `SHA256SUMS.txt` under ignored `dist/`. Each ZIP contains a per-file manifest with the commit and SHA-256 hashes. A print bundle includes every listed STEP/STL pair, fit samples and complete native/STEP assemblies. The script refuses to overwrite an existing bundle; use `--output` with a fresh directory to reproduce it. Publication is a separate maintainer step.
+
+## Privacy
+
+Keep the owner's private setup out of source, tests, fixtures, docs, commits,
+branch names, issues, pull requests and comments. Do not include machine names,
+home or worktree paths, private network details, service ports or hostnames,
+thread and task IDs, personal email or provider accounts, quota or credit data,
+device identifiers, Wi-Fi names, or secrets.
+
+Use RFC 5737 addresses such as `192.0.2.10`, example domains, `printer-1`,
+`<serial>`, and `$HOME/...`. Keep hardware findings and redact the identifying
+details. Run `sh scripts/check-privacy.sh` before submitting changes.
